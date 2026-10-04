@@ -20,16 +20,15 @@ overflow-x:hidden;
 
 .star{
 position:fixed;
-color:#fff;
+color:white;
 opacity:.8;
 pointer-events:none;
 animation:fall linear infinite;
-z-index:0;
 }
 
 @keyframes fall{
-from{transform:translateY(-10vh) rotate(0deg)}
-to{transform:translateY(110vh) rotate(360deg)}
+from{transform:translateY(-10vh)}
+to{transform:translateY(110vh)}
 }
 
 .container{
@@ -39,18 +38,14 @@ max-width:650px;
 margin:auto;
 }
 
-h1{
-text-align:center;
-margin-bottom:25px;
-}
+h1{text-align:center}
 
 .box{
-background:rgba(10,10,35,.75);
+background:rgba(10,10,35,.8);
 border:1px solid rgba(255,255,255,.15);
 border-radius:20px;
 padding:20px;
 margin-bottom:20px;
-box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
 input,textarea{
@@ -59,8 +54,6 @@ padding:13px;
 margin:8px 0;
 border:0;
 border-radius:12px;
-background:#fff;
-color:#111;
 font-size:15px;
 }
 
@@ -79,12 +72,10 @@ background:#7567d9;
 color:white;
 font-size:16px;
 font-weight:bold;
-cursor:pointer;
 }
 
-button:hover{
-background:#897ce8;
-}
+#error,#loginError{color:#ff8995;margin-top:10px}
+#success{color:#8fffb0;margin-top:10px}
 
 .post{
 background:rgba(255,255,255,.08);
@@ -98,21 +89,6 @@ width:100%;
 border-radius:12px;
 margin-top:10px;
 }
-
-.small{
-opacity:.7;
-font-size:13px;
-}
-
-#error{
-color:#ff8f9c;
-margin-top:10px;
-}
-
-#success{
-color:#8fffb0;
-margin-top:10px;
-}
 </style>
 </head>
 
@@ -124,9 +100,9 @@ margin-top:10px;
 
 <h1>☆ Minuit côtier ☆</h1>
 
-<div class="box">
+<div class="box" id="loginBox">
 
-<h2>ورود به پنل</h2>
+<h2>ورود به پنل مدیریت</h2>
 
 <input id="email" type="email" placeholder="ایمیل">
 
@@ -139,11 +115,11 @@ margin-top:10px;
 </div>
 
 
-<div id="adminPanel" style="display:none;">
+<div id="adminPanel" style="display:none">
 
 <div class="box">
 
-<h2>انتشار پست</h2>
+<h2>انتشار پست ☆</h2>
 
 <input id="title" placeholder="عنوان پست">
 
@@ -176,31 +152,33 @@ margin-top:10px;
 
 <script>
 
-// اطلاعات Supabase
+/* آدرس پروژه */
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+
+/*
+================================================
+اینجا کلید Publishable خودت را قرار بده
+================================================
+*/
 
 const SUPABASE_KEY =
 "sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7";
 
 
-/* ساخت ستاره‌ها */
+/* ستاره‌ها */
 for(let i=0;i<80;i++){
 
 const star=document.createElement("div");
 
 star.className="star";
-
 star.textContent="☆";
 
 star.style.left=Math.random()*100+"vw";
-
 star.style.top=Math.random()*-100+"vh";
-
 star.style.fontSize=(5+Math.random()*8)+"px";
-
 star.style.animationDuration=(5+Math.random()*10)+"s";
-
 star.style.animationDelay=Math.random()*8+"s";
 
 document.getElementById("stars").appendChild(star);
@@ -212,7 +190,6 @@ document.getElementById("stars").appendChild(star);
 async function login(){
 
 const email=document.getElementById("email").value.trim();
-
 const password=document.getElementById("password").value;
 
 const error=document.getElementById("loginError");
@@ -223,32 +200,40 @@ const response=await fetch(
 SUPABASE_URL+"/auth/v1/token?grant_type=password",
 {
 method:"POST",
-
 headers:{
 "apikey":SUPABASE_KEY,
 "Content-Type":"application/json"
 },
-
 body:JSON.stringify({
 email:email,
 password:password
 })
-});
+}
+);
 
 const data=await response.json();
 
 if(!response.ok){
 
-error.textContent=data.error_description || data.msg || "ورود ناموفق بود.";
+error.textContent=
+data.error_description ||
+data.msg ||
+"ورود ناموفق بود.";
 
 return;
 }
 
-localStorage.setItem("access_token",data.access_token);
+localStorage.setItem(
+"access_token",
+data.access_token
+);
 
-localStorage.setItem("refresh_token",data.refresh_token);
+localStorage.setItem(
+"refresh_token",
+data.refresh_token
+);
 
-document.querySelector(".box").style.display="none";
+document.getElementById("loginBox").style.display="none";
 
 document.getElementById("adminPanel").style.display="block";
 
@@ -273,16 +258,7 @@ const error=document.getElementById("error");
 const success=document.getElementById("success");
 
 error.textContent="";
-
 success.textContent="";
-
-if(!title && !content){
-
-error.textContent="عنوان یا متن پست را وارد کن.";
-
-return;
-}
-
 
 const response=await fetch(
 SUPABASE_URL+"/rest/v1/posts",
@@ -299,18 +275,14 @@ headers:{
 body:JSON.stringify({
 
 title:title,
-
 content:content,
-
 image_url:image_url
 
 })
 
 });
 
-
 const data=await response.json();
-
 
 if(!response.ok){
 
@@ -323,13 +295,10 @@ data.details ||
 return;
 }
 
-
 success.textContent="پست با موفقیت منتشر شد ☆";
 
 document.getElementById("title").value="";
-
 document.getElementById("content").value="";
-
 document.getElementById("image_url").value="";
 
 loadPosts();
@@ -350,7 +319,8 @@ headers:{
 "apikey":SUPABASE_KEY,
 "Authorization":"Bearer "+token
 }
-});
+}
+);
 
 const posts=await response.json();
 
@@ -358,13 +328,12 @@ const box=document.getElementById("posts");
 
 if(!Array.isArray(posts)||posts.length===0){
 
-box.innerHTML='<p class="small">هنوز پستی منتشر نشده.</p>';
+box.innerHTML="هنوز پستی منتشر نشده.";
 
 return;
 }
 
 box.innerHTML="";
-
 
 posts.forEach(post=>{
 
@@ -399,7 +368,6 @@ box.appendChild(div);
 function logout(){
 
 localStorage.removeItem("access_token");
-
 localStorage.removeItem("refresh_token");
 
 location.reload();
@@ -407,10 +375,10 @@ location.reload();
 }
 
 
-/* اگر قبلاً وارد شده */
+/* ورود خودکار */
 if(localStorage.getItem("access_token")){
 
-document.querySelector(".box").style.display="none";
+document.getElementById("loginBox").style.display="none";
 
 document.getElementById("adminPanel").style.display="block";
 
