@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>پنل مدیریت | Minuit côtier</title>
+<title>☆ Minuit côtier ☆</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -15,12 +14,11 @@ body{
   margin:0;
   min-height:100vh;
   font-family:Tahoma,Arial,sans-serif;
-  color:#fff;
+  color:white;
   background:
     radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
     radial-gradient(circle at 80% 80%,#182d67,transparent 35%),
     linear-gradient(135deg,#050716,#0d1230,#17104a);
-  overflow-x:hidden;
 }
 
 #stars{
@@ -33,23 +31,18 @@ body{
 
 .star{
   position:absolute;
-  color:#fff;
-  font-size:8px;
-  opacity:.75;
+  color:white;
+  opacity:.7;
   text-shadow:0 0 8px #fff;
   animation:fall linear infinite;
 }
 
 @keyframes fall{
-  0%{
-    transform:translateY(-10vh) rotate(0deg);
-    opacity:0;
+  from{
+    transform:translateY(-30px) rotate(0deg);
   }
-  15%{opacity:.8}
-  85%{opacity:.7}
-  100%{
-    transform:translateY(110vh) rotate(180deg);
-    opacity:0;
+  to{
+    transform:translateY(110vh) rotate(360deg);
   }
 }
 
@@ -58,22 +51,32 @@ body{
   z-index:2;
   width:min(94%,700px);
   margin:auto;
-  padding:25px 0 60px;
+  padding:30px 0 60px;
 }
 
-.header{
+.profile{
   text-align:center;
-  margin-bottom:20px;
+  padding:25px 15px;
 }
 
-.header h1{
-  margin:0;
+.profile img{
+  width:105px;
+  height:105px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid rgba(255,255,255,.7);
+  box-shadow:0 0 30px rgba(150,100,255,.5);
+}
+
+.profile h1{
+  margin:15px 0 5px;
   font-size:28px;
   font-style:italic;
 }
 
-.header p{
-  opacity:.75;
+.profile p{
+  color:#c9c5e8;
+  margin:8px 0;
 }
 
 .card{
@@ -86,75 +89,27 @@ body{
   backdrop-filter:blur(12px);
 }
 
-h2{
-  margin-top:0;
+.post-title{
   font-size:20px;
-}
-
-input,textarea{
-  width:100%;
-  padding:13px;
-  margin:7px 0;
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:13px;
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  outline:none;
-}
-
-textarea{
-  min-height:110px;
-  resize:vertical;
-}
-
-input::placeholder,
-textarea::placeholder{
-  color:#aaa;
-}
-
-button{
-  width:100%;
-  border:0;
-  border-radius:14px;
-  padding:13px;
-  margin-top:8px;
-  cursor:pointer;
-  color:#fff;
   font-weight:bold;
-  background:linear-gradient(135deg,#6d4aff,#a65cff);
+  margin-bottom:10px;
 }
 
-button:hover{opacity:.9}
-
-.danger{
-  background:linear-gradient(135deg,#9b254f,#d64265);
-}
-
-.post{
-  border-top:1px solid rgba(255,255,255,.1);
-  padding-top:15px;
-  margin-top:15px;
+.post-text{
+  color:#ddd;
+  line-height:2;
 }
 
 .post img{
   width:100%;
-  border-radius:15px;
-  margin-top:10px;
+  border-radius:16px;
+  margin-top:12px;
 }
 
-.post-title{
-  font-size:18px;
-  font-weight:bold;
-}
-
-.message{
+.empty{
   text-align:center;
-  margin:12px 0;
-  min-height:20px;
-}
-
-.hidden{
-  display:none;
+  color:#aaa;
+  padding:30px 10px;
 }
 </style>
 </head>
@@ -165,148 +120,19 @@ button:hover{opacity:.9}
 
 <div class="container">
 
-<div class="header">
-  <h1>☆ Minuit côtier ☆</h1>
-  <p>پنل مدیریت</p>
-</div>
-
-<!-- LOGIN -->
-
-<div class="card" id="loginBox">
-
-  <h2>🔐 ورود مدیر</h2>
-
-  <input
-    id="email"
-    type="email"
-    placeholder="ایمیل مدیر"
-  >
-
-  <input
-    id="password"
-    type="password"
-    placeholder="رمز عبور"
-  >
-
-  <button onclick="login()">
-    ورود
-  </button>
-
-  <div id="loginMessage" class="message"></div>
-
-</div>
-
-
-<!-- ADMIN -->
-
-<div id="adminPanel" class="hidden">
-
-  <!-- SETTINGS -->
-
-  <div class="card">
-
-    <h2>⚙️ تنظیمات سایت</h2>
-
-    <input
-      id="siteName"
-      placeholder="نام سایت"
-    >
-
-    <textarea
-      id="siteBio"
-      placeholder="توضیحات / بیو سایت"
-    ></textarea>
-
-    <input
-      id="profileImage"
-      placeholder="لینک عکس پروفایل"
-    >
-
-    <button onclick="saveSettings()">
-      ذخیره تنظیمات 💾
-    </button>
-
-    <div id="settingsMessage" class="message"></div>
-
+  <div class="profile">
+    <img id="profileImage" src="" alt="Minuit côtier">
+    <h1 id="siteName">☆ Minuit côtier ☆</h1>
+    <p id="siteBio">ساحلِ نیمه‌شب</p>
   </div>
 
-
-  <!-- NEW POST -->
-
-  <div class="card">
-
-    <h2>📝 انتشار پست</h2>
-
-    <input
-      id="title"
-      placeholder="عنوان پست"
-    >
-
-    <textarea
-      id="content"
-      placeholder="متن پست"
-    ></textarea>
-
-    <input
-      id="image"
-      placeholder="لینک عکس"
-    >
-
-    <input
-      id="video"
-      placeholder="لینک ویدیو"
-    >
-
-    <input
-      id="audio"
-      placeholder="لینک آهنگ"
-    >
-
-    <button onclick="publishPost()">
-      ⭐ انتشار پست
-    </button>
-
-    <div id="postMessage" class="message"></div>
-
-  </div>
-
-
-  <!-- POSTS -->
-
-  <div class="card">
-
-    <h2>📚 پست‌های منتشرشده</h2>
-
-    <div id="posts">
-      در حال دریافت پست‌ها...
-    </div>
-
-  </div>
-
-
-  <!-- LOGOUT -->
-
-  <div class="card">
-
-    <button
-      class="danger"
-      onclick="logout()"
-    >
-      خروج از پنل 🚪
-    </button>
-
+  <div id="posts">
+    <div class="empty">در حال دریافت پست‌ها... ☆</div>
   </div>
 
 </div>
-
-</div>
-
 
 <script>
-
-/* =========================
-   SUPABASE
-========================= */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -316,19 +142,11 @@ const SUPABASE_KEY =
 
 const db = supabase.createClient(
   SUPABASE_URL,
-  SUPABASE_KEY,
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true
-    }
-  }
+  SUPABASE_KEY
 );
 
 
-/* =========================
-   STARS
-========================= */
+/* ستاره‌ها */
 
 const starsBox =
 document.getElementById("stars");
@@ -339,7 +157,6 @@ for(let i=0;i<90;i++){
   document.createElement("span");
 
   star.className="star";
-
   star.innerText="☆";
 
   star.style.left =
@@ -349,7 +166,7 @@ for(let i=0;i<90;i++){
   Math.random()*100+"%";
 
   star.style.fontSize =
-  (Math.random()*6+5)+"px";
+  (Math.random()*7+5)+"px";
 
   star.style.animationDuration =
   (Math.random()*8+7)+"s";
@@ -361,351 +178,54 @@ for(let i=0;i<90;i++){
 }
 
 
-/* =========================
-   SHOW ADMIN
-========================= */
-
-function showAdmin(){
-
-  document.getElementById("loginBox")
-  .style.display="none";
-
-  document.getElementById("adminPanel")
-  .style.display="block";
-}
-
-
-/* =========================
-   LOGIN
-========================= */
-
-async function login(){
-
-  const email =
-  document.getElementById("email")
-  .value.trim();
-
-  const password =
-  document.getElementById("password")
-  .value;
-
-  const message =
-  document.getElementById("loginMessage");
-
-  if(!email || !password){
-
-    message.innerText =
-    "ایمیل و رمز را وارد کن ❌";
-
-    return;
-  }
-
-  message.innerText =
-  "در حال ورود...";
-
-  const {data,error} =
-  await db.auth.signInWithPassword({
-    email:email,
-    password:password
-  });
-
-  if(error){
-
-    message.innerText =
-    "خطا: "+error.message;
-
-    return;
-  }
-
-  message.innerText =
-  "ورود موفق شد ✅";
-
-  showAdmin();
-
-  await loadSettings();
-
-  await loadPosts();
-}
-
-
-/* =========================
-   CHECK SESSION
-========================= */
-
-async function checkSession(){
-
-  const {data,error} =
-  await db.auth.getSession();
-
-  if(error){
-
-    console.log(error);
-
-    return;
-  }
-
-  if(data.session){
-
-    showAdmin();
-
-    await loadSettings();
-
-    await loadPosts();
-
-  }else{
-
-    document.getElementById("loginBox")
-    .style.display="block";
-
-    document.getElementById("adminPanel")
-    .style.display="none";
-  }
-}
-
-
-/* =========================
-   SAVE SETTINGS
-========================= */
-
-async function saveSettings(){
-
-  const message =
-  document.getElementById("settingsMessage");
-
-  const siteName =
-  document.getElementById("siteName")
-  .value.trim();
-
-  const siteBio =
-  document.getElementById("siteBio")
-  .value.trim();
-
-  const profileImage =
-  document.getElementById("profileImage")
-  .value.trim();
-
-  const {data:sessionData} =
-  await db.auth.getSession();
-
-  if(!sessionData.session){
-
-    message.innerText =
-    "اول وارد شو ❌";
-
-    return;
-  }
-
-  const {data:oldSettings,error:readError} =
-  await db
-  .from("site_settings")
-  .select("id")
-  .limit(1);
-
-  if(readError){
-
-    message.innerText =
-    "خطا: "+readError.message;
-
-    return;
-  }
-
-  let result;
-
-  if(oldSettings && oldSettings.length){
-
-    result =
-    await db
-    .from("site_settings")
-    .update({
-      site_name:siteName,
-      bio:siteBio,
-      image_url:profileImage
-    })
-    .eq("id",oldSettings[0].id);
-
-  }else{
-
-    result =
-    await db
-    .from("site_settings")
-    .insert({
-      site_name:siteName,
-      bio:siteBio,
-      image_url:profileImage
-    });
-  }
-
-  if(result.error){
-
-    message.innerText =
-    "خطا: "+result.error.message;
-
-  }else{
-
-    message.innerText =
-    "تنظیمات ذخیره شد ✅❤️";
-  }
-}
-
-
-/* =========================
-   LOAD SETTINGS
-========================= */
+/* تنظیمات سایت */
 
 async function loadSettings(){
 
   const {data,error} =
   await db
   .from("site_settings")
-  .select("*")
+  .select("site_name,bio,image_url")
   .limit(1);
 
   if(error){
-
-    console.log("Settings:",error.message);
-
+    console.log(error.message);
     return;
   }
 
   if(!data || !data.length){
-
     return;
   }
 
   const settings =
   data[0];
 
-  document.getElementById("siteName")
-  .value =
-  settings.site_name || "";
+  if(settings.site_name){
+    document.getElementById("siteName")
+      .innerText =
+      "☆ "+settings.site_name+" ☆";
+  }
 
-  document.getElementById("siteBio")
-  .value =
-  settings.bio || "";
+  if(settings.bio){
+    document.getElementById("siteBio")
+      .innerText =
+      settings.bio;
+  }
 
-  document.getElementById("profileImage")
-  .value =
-  settings.image_url || "";
+  if(settings.image_url){
+    document.getElementById("profileImage")
+      .src =
+      settings.image_url;
+  }
 }
 
 
-/* =========================
-   PUBLISH POST
-========================= */
-
-async function publishPost(){
-
-  const message =
-  document.getElementById("postMessage");
-
-  const {data:sessionData} =
-  await db.auth.getSession();
-
-  if(!sessionData.session){
-
-    message.innerText =
-    "اول وارد شو ❌";
-
-    return;
-  }
-
-  const title =
-  document.getElementById("title")
-  .value.trim();
-
-  const content =
-  document.getElementById("content")
-  .value.trim();
-
-  const image =
-  document.getElementById("image")
-  .value.trim();
-
-  const video =
-  document.getElementById("video")
-  .value.trim();
-
-  const audio =
-  document.getElementById("audio")
-  .value.trim();
-
-  let finalContent =
-  content;
-
-
-  if(video){
-
-    finalContent +=
-    "\n\n🎬 VIDEO:\n"+video;
-  }
-
-
-  if(audio){
-
-    finalContent +=
-    "\n\n🎵 AUDIO:\n"+audio;
-  }
-
-
-  message.innerText =
-  "در حال انتشار...";
-
-
-  const {error} =
-  await db
-  .from("posts")
-  .insert({
-    title:title,
-    content:finalContent,
-    image_url:image || null
-  });
-
-
-  if(error){
-
-    message.innerText =
-    "خطا: "+error.message;
-
-    return;
-  }
-
-
-  message.innerText =
-  "پست منتشر شد ✅❤️";
-
-
-  document.getElementById("title")
-  .value="";
-
-  document.getElementById("content")
-  .value="";
-
-  document.getElementById("image")
-  .value="";
-
-  document.getElementById("video")
-  .value="";
-
-  document.getElementById("audio")
-  .value="";
-
-
-  await loadPosts();
-}
-
-
-/* =========================
-   LOAD POSTS
-========================= */
+/* پست‌ها */
 
 async function loadPosts(){
 
   const box =
   document.getElementById("posts");
-
-  box.innerHTML =
-  "در حال دریافت پست‌ها...";
-
 
   const {data,error} =
   await db
@@ -715,169 +235,79 @@ async function loadPosts(){
     ascending:false
   });
 
-
   if(error){
 
     box.innerHTML =
-    "خطا در دریافت پست‌ها ❌<br>"+
-    escapeHtml(error.message);
+      '<div class="empty">خطا در دریافت پست‌ها ❌</div>';
+
+    console.log(error.message);
 
     return;
   }
 
-
-  if(!data || data.length===0){
+  if(!data || !data.length){
 
     box.innerHTML =
-    "هنوز پستی منتشر نشده ☆";
+      '<div class="empty">هنوز پستی منتشر نشده ☆</div>';
 
     return;
   }
 
-
   box.innerHTML="";
-
 
   data.forEach(post=>{
 
     const div =
     document.createElement("div");
 
-    div.className="post";
-
+    div.className="card post";
 
     let html="";
 
-
     html +=
-    `<div class="post-title">
-      ${escapeHtml(
-        post.title || "بدون عنوان"
-      )}
-    </div>`;
-
+      '<div class="post-title">'+
+      escapeHtml(post.title || "بدون عنوان")+
+      '</div>';
 
     if(post.content){
 
       html +=
-      `<p>${escapeHtml(
-        post.content
-      ).replace(/\n/g,"<br>")}</p>`;
+        '<div class="post-text">'+
+        escapeHtml(post.content)
+          .replace(/\n/g,"<br>")+
+        '</div>';
     }
-
 
     if(post.image_url){
 
       html +=
-      `<img
-        src="${escapeAttr(
-          post.image_url
-        )}"
-        alt="post image"
-      >`;
+        '<img src="'+
+        escapeHtml(post.image_url)+
+        '" alt="post">';
     }
 
-
-    html +=
-    `<button
-      class="danger"
-      onclick="deletePost(${post.id})">
-      🗑 حذف این پست
-    </button>`;
-
-
-    div.innerHTML =
-    html;
+    div.innerHTML=html;
 
     box.appendChild(div);
   });
 }
 
 
-/* =========================
-   DELETE POST
-========================= */
-
-async function deletePost(id){
-
-  const ok =
-  confirm("این پست حذف شود؟");
-
-  if(!ok){
-    return;
-  }
-
-
-  const {error} =
-  await db
-  .from("posts")
-  .delete()
-  .eq("id",id);
-
-
-  if(error){
-
-    alert(
-      "حذف نشد ❌\n"+
-      error.message
-    );
-
-    return;
-  }
-
-
-  alert("پست حذف شد ✅");
-
-  await loadPosts();
-}
-
-
-/* =========================
-   ESCAPE
-========================= */
-
 function escapeHtml(text){
 
   return String(text)
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
 
-function escapeAttr(text){
+/* شروع */
 
-  return escapeHtml(text);
-}
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-async function logout(){
-
-  await db.auth.signOut();
-
-  document.getElementById("adminPanel")
-  .style.display="none";
-
-  document.getElementById("loginBox")
-  .style.display="block";
-
-  document.getElementById("loginMessage")
-  .innerText =
-  "از حساب خارج شدی 👋";
-}
-
-
-/* =========================
-   START
-========================= */
-
-checkSession();
+loadSettings();
+loadPosts();
 
 </script>
 
