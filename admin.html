@@ -23,10 +23,9 @@ body{
 .star{
   position:fixed;
   color:white;
-  font-size:8px;
   opacity:.7;
-  animation:fall linear infinite;
   pointer-events:none;
+  animation:fall linear infinite;
 }
 
 @keyframes fall{
@@ -90,10 +89,6 @@ button{
   cursor:pointer;
 }
 
-button:hover{
-  opacity:.9;
-}
-
 .logout{
   background:#a33b67;
 }
@@ -154,6 +149,7 @@ button:hover{
 
 </div>
 
+
 <div id="adminBox" class="hidden">
 
 <div class="box">
@@ -178,21 +174,22 @@ button:hover{
 >
 
 <button onclick="addPost()">
-  انتشار پست ☆
+انتشار پست ☆
 </button>
 
 </div>
+
 
 <div class="box">
 
 <h2>پست‌های منتشرشده</h2>
 
 <div id="posts">
-  در حال بارگذاری...
+در حال بارگذاری...
 </div>
 
 <button class="logout" onclick="logout()">
-  خروج از پنل
+خروج از پنل
 </button>
 
 </div>
@@ -203,13 +200,15 @@ button:hover{
 
 </div>
 
+
 <script>
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7
+"sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7";
+
 
 /* ستاره‌های ریز */
 
@@ -405,7 +404,7 @@ async function addPost(){
 
         body:JSON.stringify({
 
-          title:title,
+          Title:title,
 
           content:content,
 
@@ -514,7 +513,7 @@ async function loadPosts(){
 
 
       const title=
-        post.title || "";
+        post.Title || "";
 
       const content=
         post.content || "";
