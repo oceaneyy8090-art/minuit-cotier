@@ -4,38 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Test Session</title>
+<title>Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body{
-  background:#111;
-  color:white;
-  text-align:center;
-  font-family:Arial;
-  padding:30px;
+background:#111;
+color:white;
+font-family:Arial;
+text-align:center;
+padding:30px;
 }
-input,button{
-  width:90%;
-  padding:12px;
-  margin:8px;
-  border-radius:10px;
-  border:0;
+input,textarea,button{
+width:90%;
+padding:12px;
+margin:8px;
+border-radius:10px;
+border:0;
 }
 button{
-  background:#765cff;
-  color:white;
-}
-#out{
-  margin-top:20px;
-  background:#222;
-  padding:15px;
-  border-radius:10px;
-  word-break:break-word;
+background:#765cff;
+color:white;
 }
 </style>
-
 </head>
 
 <body>
@@ -43,23 +35,24 @@ button{
 <h2>☆ Minuit côtier ☆</h2>
 
 <input id="email" placeholder="ایمیل">
-
 <input id="password" type="password" placeholder="رمز">
 
 <button onclick="login()">ورود</button>
 
-<button onclick="check()">بررسی Session</button>
+<hr>
 
-<div id="out">
-آماده
-</div>
+<input id="title" placeholder="عنوان پست">
+<textarea id="content" placeholder="متن پست"></textarea>
+
+<button onclick="post()">انتشار پست ☆</button>
+
+<p id="out">آماده</p>
 
 
 <script>
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
-
 
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
@@ -75,75 +68,59 @@ SUPABASE_KEY
 
 async function login(){
 
-const email =
-document.getElementById("email").value;
+let {error}=await db.auth.signInWithPassword({
 
-const password =
-document.getElementById("password").value;
+email:
+document.getElementById("email").value,
 
+password:
+document.getElementById("password").value
 
-const {data,error} =
-await db.auth.signInWithPassword({
-email,
-password
 });
 
 
-if(error){
-
-document.getElementById("out").innerText =
-"خطای ورود:\n" + error.message;
-
-return;
-
-}
-
-
-document.getElementById("out").innerText =
-"ورود موفق شد ✅";
+out.innerText =
+error ? error.message : "وارد شدی ✅";
 
 }
 
 
 
-async function check(){
+async function post(){
 
-const {data,error} =
+const {data} =
 await db.auth.getSession();
-
-
-if(error){
-
-document.getElementById("out").innerText =
-error.message;
-
-return;
-
-}
 
 
 if(!data.session){
 
-document.getElementById("out").innerText =
-"Session وجود ندارد ❌";
-
+out.innerText="اول وارد شو ❌";
 return;
 
 }
 
 
-document.getElementById("out").innerText =
-"Session دارد ✅\n\n" +
-"User ID:\n" +
-data.session.user.id +
-"\n\nEmail:\n" +
-data.session.user.email;
+const {error}=await db
+.from("posts")
+.insert({
 
+title:
+document.getElementById("title").value,
+
+content:
+document.getElementById("content").value,
+
+image_url:null
+
+});
+
+
+out.innerText =
+error ? error.message : "پست منتشر شد ✅";
 
 }
 
 </script>
-
 
 </body>
 </html>
