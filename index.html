@@ -6,50 +6,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Minuit côtier</title>
+<title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
 *{
+margin:0;
+padding:0;
 box-sizing:border-box;
 }
 
-body{
-margin:0;
+
+html,body{
+
+width:100%;
+height:100%;
 overflow:hidden;
-background:#030313;
-font-family:tahoma;
+
 }
 
 
 #space{
+
 position:fixed;
 inset:0;
+
 overflow:hidden;
+
 background:
-radial-gradient(circle,#342060,#05051b 60%);
+
+radial-gradient(
+circle at center,
+#332060,
+#07071c 65%,
+#010107
+);
+
+touch-action:none;
+
 }
 
 
-#galaxy{
+
+#world{
 
 position:absolute;
 
-width:9000px;
-height:9000px;
+width:20000px;
+height:20000px;
 
 left:50%;
 top:50%;
 
-transform:translate(-50%,-50%);
+transform:
+translate(-50%,-50%);
 
 }
 
 
 
-/* ستاره */
+/* ستاره ها */
 
 .star{
 
@@ -58,7 +76,7 @@ position:absolute;
 font-size:10px;
 
 animation:
-starMove 6s infinite alternate ease-in-out;
+moveStar 6s infinite alternate;
 
 text-shadow:
 0 0 10px currentColor;
@@ -67,14 +85,23 @@ text-shadow:
 
 
 
-@keyframes starMove{
+@keyframes moveStar{
 
 from{
+
 transform:translate(0,0);
+
+opacity:.4;
+
 }
 
 to{
-transform:translate(20px,40px);
+
+transform:
+translate(30px,50px);
+
+opacity:1;
+
 }
 
 }
@@ -83,20 +110,19 @@ transform:translate(20px,40px);
 
 /* 💫 پست */
 
-
-.postStar{
+.post{
 
 position:absolute;
 
-font-size:35px;
+font-size:38px;
 
 cursor:pointer;
 
-filter:
-drop-shadow(0 0 15px #ffe36b);
-
 animation:
 pulse 2s infinite;
+
+filter:
+drop-shadow(0 0 15px #ffe96b);
 
 }
 
@@ -114,6 +140,7 @@ transform:scale(1.3);
 
 
 
+
 /* پروفایل */
 
 
@@ -121,13 +148,13 @@ transform:scale(1.3);
 
 position:absolute;
 
-top:4300px;
+left:9940px;
 
-left:4300px;
-
-text-align:center;
+top:9900px;
 
 color:white;
+
+text-align:center;
 
 }
 
@@ -135,16 +162,16 @@ color:white;
 
 .profile img{
 
-width:120px;
+width:140px;
 
-height:120px;
+height:140px;
 
 border-radius:50%;
 
 object-fit:cover;
 
 box-shadow:
-0 0 30px #8bdcff;
+0 0 40px #69dfff;
 
 }
 
@@ -152,7 +179,16 @@ box-shadow:
 
 .profile h1{
 
-font-size:20px;
+margin-top:10px;
+
+font-size:22px;
+
+}
+
+
+.profile p{
+
+opacity:.7;
 
 }
 
@@ -160,7 +196,8 @@ font-size:20px;
 
 
 
-/* پنجره */
+/* نمایش پست */
+
 
 #viewer{
 
@@ -172,11 +209,11 @@ inset:0;
 
 background:#000b;
 
+z-index:50;
+
 align-items:center;
 
 justify-content:center;
-
-z-index:20;
 
 }
 
@@ -196,17 +233,18 @@ width:90%;
 
 max-width:500px;
 
-background:#161638;
+background:#151535;
 
 color:white;
 
-padding:20px;
-
 border-radius:25px;
+
+padding:20px;
 
 text-align:center;
 
 }
+
 
 
 .box img,
@@ -219,6 +257,23 @@ border-radius:15px;
 }
 
 
+
+button{
+
+margin-top:15px;
+
+padding:12px 25px;
+
+border:0;
+
+border-radius:20px;
+
+background:#8265ff;
+
+color:white;
+
+}
+
 </style>
 
 </head>
@@ -229,19 +284,18 @@ border-radius:15px;
 
 <div id="space">
 
-<div id="galaxy">
+<div id="world">
 
 
 <div class="profile">
 
-<img id="profileImg">
+<img id="avatar">
 
-<h1 id="profileName">
-Minuit côtier
+<h1 id="name">
+𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓
 </h1>
 
-<p id="profileBio"></p>
-
+<p id="bio"></p>
 
 </div>
 
@@ -260,9 +314,11 @@ Minuit côtier
 
 <div id="content"></div>
 
+
 <button onclick="closePost()">
 بستن
 </button>
+
 
 </div>
 
@@ -272,128 +328,143 @@ Minuit côtier
 
 <script>
 // =======================
-// حرکت دنیا با انگشت
+// حرکت در دنیای بزرگ
 // =======================
 
-const space=document.getElementById("space");
-const galaxy=document.getElementById("galaxy");
+const space =
+document.getElementById("space");
 
-let x=0;
-let y=0;
-
-let down=false;
-let sx=0;
-let sy=0;
+const world =
+document.getElementById("world");
 
 
-space.onpointerdown=e=>{
+let posX=0;
+let posY=0;
 
-down=true;
+let startX=0;
+let startY=0;
 
-sx=e.clientX;
-sy=e.clientY;
-
-};
-
+let moving=false;
 
 
-space.onpointermove=e=>{
+space.addEventListener(
+"pointerdown",
+(e)=>{
 
-if(!down)return;
+moving=true;
 
+startX=e.clientX;
+startY=e.clientY;
 
-x+=e.clientX-sx;
-y+=e.clientY-sy;
-
-
-sx=e.clientX;
-sy=e.clientY;
+});
 
 
 
-galaxy.style.transform=
+space.addEventListener(
+"pointermove",
+(e)=>{
+
+if(!moving)return;
+
+
+posX += e.clientX-startX;
+posY += e.clientY-startY;
+
+
+startX=e.clientX;
+startY=e.clientY;
+
+
+
+world.style.transform=
 `
 translate(
-calc(-50% + ${x}px),
-calc(-50% + ${y}px)
+calc(-50% + ${posX}px),
+calc(-50% + ${posY}px)
 )
 `;
 
-};
+});
 
 
 
-space.onpointerup=()=>{
+space.addEventListener(
+"pointerup",
+()=>{
 
-down=false;
+moving=false;
 
-};
+});
+
 
 
 
 
 
 // =======================
-// ستاره های زیاد
+// ساخت ستاره ها
 // =======================
 
 
-const colors=[
+const starColors=[
 
 "#ffffff",
-"#9eeaff",
-"#ffc8eb",
-"#d8b7ff",
-"#fff29a",
-"#aaffdd"
+"#8eeaff",
+"#ffb9e8",
+"#d4b5ff",
+"#fff38a",
+"#a7ffdc"
 
 ];
 
 
-for(let i=0;i<900;i++){
+
+for(let i=0;i<1200;i++){
 
 
-let s=document.createElement("div");
+let star =
+document.createElement("div");
 
 
-s.className="star";
+star.className="star";
 
 
-s.innerHTML=
+star.innerHTML =
 Math.random()>0.4
 ?"☆"
 :"✦";
 
 
-s.style.left=
-Math.random()*8500+"px";
+
+star.style.left =
+Math.random()*19500+"px";
 
 
-s.style.top=
-Math.random()*8500+"px";
+star.style.top =
+Math.random()*19500+"px";
 
 
 
-s.style.color=
-colors[
+star.style.color =
+starColors[
 Math.floor(
-Math.random()*colors.length
+Math.random()*starColors.length
 )
 ];
 
 
 
-s.style.fontSize=
-(5+Math.random()*9)+"px";
+star.style.fontSize =
+(5+Math.random()*10)+"px";
 
 
 
-s.style.animationDuration=
-(3+Math.random()*7)+"s";
+star.style.animationDuration =
+(3+Math.random()*8)+"s";
 
 
 
-galaxy.appendChild(s);
+world.appendChild(star);
 
 
 }
@@ -402,31 +473,38 @@ galaxy.appendChild(s);
 
 
 
+
 // =======================
-// 💫 ساخت پست
+// ساخت 💫 پست ها
 // =======================
 
 
-function createPostStar(x,y,post){
+function addPostPoint(post,index){
 
 
-let star=document.createElement("div");
+let p =
+document.createElement("div");
 
 
-star.className="postStar";
+p.className="post";
 
-
-star.innerHTML="💫";
-
-
-star.style.left=x+"px";
-
-
-star.style.top=y+"px";
+p.innerHTML="💫";
 
 
 
-star.onclick=()=>{
+p.style.left =
+(1500+(index*900)%17000)
++"px";
+
+
+
+p.style.top =
+(1200+(index*1300)%17000)
++"px";
+
+
+
+p.onclick=()=>{
 
 openPost(post);
 
@@ -434,7 +512,7 @@ openPost(post);
 
 
 
-galaxy.appendChild(star);
+world.appendChild(p);
 
 
 }
@@ -443,21 +521,18 @@ galaxy.appendChild(star);
 
 
 
-// =======================
-// نمایش پست
-// =======================
-
-
 function openPost(post){
 
 
 document
 .getElementById("title")
-.innerText=
+.innerText =
 post.title || "💫";
 
 
+
 let html="";
+
 
 
 if(post.content){
@@ -468,10 +543,13 @@ html+=
 }
 
 
+
 if(post.image_url){
 
 html+=
-`<img src="${post.image_url}">`;
+`
+<img src="${post.image_url}">
+`;
 
 }
 
@@ -480,7 +558,10 @@ html+=
 if(post.video_url){
 
 html+=
-`<video controls src="${post.video_url}"></video>`;
+`
+<video controls src="${post.video_url}">
+</video>
+`;
 
 }
 
@@ -501,6 +582,8 @@ document
 
 
 
+
+
 function closePost(){
 
 document
@@ -508,75 +591,9 @@ document
 .classList.remove("show");
 
 }
-
-
-
-
 // =======================
-// شهاب کوچک
+// اتصال Supabase
 // =======================
-
-
-function comet(){
-
-
-let c=document.createElement("div");
-
-
-c.innerHTML="✦";
-
-c.style.position="absolute";
-
-c.style.color="white";
-
-c.style.fontSize="18px";
-
-
-let a=Math.random()*8000;
-
-c.style.left=a+"px";
-
-c.style.top="0px";
-
-
-galaxy.appendChild(c);
-
-
-
-let t=0;
-
-
-let move=setInterval(()=>{
-
-
-t+=15;
-
-
-c.style.transform=
-`translate(${t}px,${t}px)`;
-
-
-if(t>5000){
-
-c.remove();
-
-clearInterval(move);
-
-}
-
-
-},30);
-
-
-}
-
-
-
-setInterval(comet,6000);
-// =======================
-// SUPABASE
-// =======================
-
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -596,9 +613,8 @@ SUPABASE_KEY
 
 
 // =======================
-// آوردن پروفایل
+// گرفتن پروفایل
 // =======================
-
 
 async function loadProfile(){
 
@@ -628,52 +644,56 @@ return;
 
 
 
-if(!data[0])return;
-
-
-let p=data[0];
-
-
-
-if(p.image_url){
-
-document
-.getElementById("profileImg")
-.src=
-p.image_url;
-
-}
+if(!data || !data[0])
+return;
 
 
 
-if(p.site_name){
+let profile=data[0];
+
+
+
+if(profile.image_url){
 
 document
-.getElementById("profileName")
-.innerText=
-p.site_name;
+.getElementById("avatar")
+.src =
+profile.image_url;
 
 }
 
 
 
-if(p.bio){
+if(profile.site_name){
 
 document
-.getElementById("profileBio")
-.innerText=
-p.bio;
+.getElementById("name")
+.innerText =
+profile.site_name;
+
+}
+
+
+
+if(profile.bio){
+
+document
+.getElementById("bio")
+.innerText =
+profile.bio;
 
 }
 
 
 }
+
+
 
 
 
 
 // =======================
-// آوردن پست ها
+// گرفتن پست ها
 // =======================
 
 
@@ -704,33 +724,21 @@ return;
 
 
 
-data.forEach((post,index)=>{
+data.forEach(
+(post,index)=>{
 
 
-
-let x =
-900+(index*650);
-
-
-let y =
-700+
-((index%6)*850);
-
-
-
-createPostStar(
-x,
-y,
-post
+addPostPoint(
+post,
+index
 );
-
 
 
 });
 
 
-
 }
+
 
 
 
@@ -741,7 +749,7 @@ post
 loadProfile();
 
 loadPosts();
-</script>
 
+</script>
 </body>
 </html>
