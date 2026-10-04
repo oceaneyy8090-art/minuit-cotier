@@ -2,355 +2,465 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <style>
 *{
   box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
-html,body{
-  margin:0;
-  min-height:100%;
+html{
+  scroll-behavior:smooth;
 }
 
 body{
-  font-family:Tahoma,Arial,sans-serif;
-  color:#fff;
-  background:
-    radial-gradient(circle at 15% 20%,rgba(103,75,180,.35),transparent 28%),
-    radial-gradient(circle at 85% 70%,rgba(48,105,170,.3),transparent 30%),
-    radial-gradient(circle at 50% 100%,rgba(82,42,130,.3),transparent 35%),
-    linear-gradient(135deg,#02030d,#080d25,#130d2e,#050817);
+  min-height:100vh;
   overflow-x:hidden;
+  background:#02030b;
+  color:white;
+  font-family:Arial,sans-serif;
 }
 
-/* کهکشان */
+/* =========================
+   SPACE
+========================= */
 
 #space{
   position:fixed;
   inset:0;
-  overflow:hidden;
-  pointer-events:none;
   z-index:0;
+  overflow:hidden;
+  background:
+    radial-gradient(
+      ellipse at center,
+      #101735 0%,
+      #050817 50%,
+      #010208 100%
+    );
+}
+
+#space canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+/* =========================
+   STARS
+========================= */
+
+.starfield{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:hidden;
 }
 
 .star{
   position:absolute;
-  font-size:6px;
-  opacity:.75;
-  animation:fall linear infinite;
+  color:white;
+  font-size:7px;
   text-shadow:0 0 8px currentColor;
+  animation:flyStar linear infinite;
 }
 
-@keyframes fall{
+@keyframes flyStar{
   0%{
-    transform:translateY(-30px);
+    transform:
+      translate3d(
+        calc(var(--sx) * 1vw),
+        110vh,
+        0
+      )
+      rotate(0deg);
     opacity:0;
   }
 
-  15%{
-    opacity:.8;
+  10%{
+    opacity:1;
   }
 
-  85%{
-    opacity:.7;
+  90%{
+    opacity:1;
   }
 
   100%{
-    transform:translateY(110vh);
+    transform:
+      translate3d(
+        calc(var(--ex) * 1vw),
+        -120vh,
+        0
+      )
+      rotate(360deg);
     opacity:0;
   }
 }
 
-/* سیاره‌ها */
+/* =========================
+   CONTENT
+========================= */
 
-.planet{
-  position:absolute;
-  border-radius:50%;
-  opacity:.45;
-  filter:blur(.5px);
-}
-
-.planet.one{
-  width:110px;
-  height:110px;
-  top:15%;
-  left:-45px;
-  background:radial-gradient(circle at 30% 30%,#9dbfff,#354e91,#121b48);
-  box-shadow:0 0 45px #526db5;
-}
-
-.planet.two{
-  width:75px;
-  height:75px;
-  right:-25px;
-  top:48%;
-  background:radial-gradient(circle at 35% 30%,#ffc2e2,#854d85,#28163d);
-  box-shadow:0 0 40px #9a579b;
-}
-
-.planet.three{
-  width:45px;
-  height:45px;
-  left:18%;
-  bottom:8%;
-  background:radial-gradient(circle at 30% 25%,#b8ddff,#315d85,#101d35);
-  box-shadow:0 0 30px #4d83aa;
-}
-
-/* صفحه */
-
-.container{
+main{
   position:relative;
-  z-index:2;
-  width:min(94%,680px);
+  z-index:5;
+  width:min(850px,94%);
   margin:auto;
-  padding:25px 0 80px;
+  padding:30px 0 100px;
 }
 
-/* پروفایل */
+/* =========================
+   PROFILE
+========================= */
 
 .profile{
   text-align:center;
-  padding:28px 18px;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:30px;
-  background:rgba(7,10,32,.65);
-  backdrop-filter:blur(14px);
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
+  padding:30px 10px 0;
 }
 
-.avatar{
+#profileImage{
   width:120px;
   height:120px;
   border-radius:50%;
   object-fit:cover;
-  border:2px solid rgba(255,255,255,.35);
-  box-shadow:0 0 35px rgba(145,120,255,.5);
-}
+  display:none;
+  margin:auto;
 
-.profile h1{
-  margin:15px 0 7px;
-  font-size:27px;
-  font-style:italic;
-}
+  border:2px solid rgba(255,255,255,.9);
 
-#bio{
-  margin:0;
-  opacity:.78;
-  line-height:1.8;
-}
-
-/* ستاره دنبال کردن */
-
-.follow-area{
-  text-align:center;
-  margin:22px 0;
-}
-
-.follow-star{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:75px;
-  height:75px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  font-size:38px;
-  cursor:pointer;
-  box-shadow:0 0 30px rgba(255,255,255,.12);
-}
-
-.follow-star.followed{
-  background:rgba(255,190,225,.16);
   box-shadow:
-    0 0 20px #ff9dca,
-    0 0 50px rgba(150,190,255,.3);
+    0 0 15px #ffffff,
+    0 0 35px #7b63ff,
+    0 0 80px rgba(90,70,255,.5);
 }
 
-.follow-text{
-  margin-top:8px;
-  opacity:.75;
+#siteName{
+  margin-top:18px;
+  font-size:30px;
+
+  text-shadow:
+    0 0 8px #fff,
+    0 0 25px #8f72ff;
 }
 
-/* پست */
+#siteBio{
+  margin:12px auto 0;
+  max-width:600px;
+  line-height:1.9;
+  color:#d5d6ed;
+}
+
+/* =========================
+   YELLOW FOLLOW STAR
+========================= */
+
+#followStar{
+  position:relative;
+
+  width:52px;
+  height:52px;
+
+  margin:30px auto 8px;
+
+  display:block;
+
+  border:0;
+  background:transparent;
+
+  color:#ffd83d;
+
+  font-size:30px;
+
+  cursor:pointer;
+
+  filter:
+    drop-shadow(0 0 5px #ffd83d)
+    drop-shadow(0 0 16px #ff9d00);
+
+  animation:
+    followMove 3.5s ease-in-out infinite,
+    followGlow 1.3s ease-in-out infinite alternate;
+}
+
+@keyframes followMove{
+  0%,100%{
+    transform:translateX(-45px) translateY(0) rotate(-10deg);
+  }
+
+  50%{
+    transform:translateX(45px) translateY(-18px) rotate(10deg);
+  }
+}
+
+@keyframes followGlow{
+  from{
+    filter:
+      drop-shadow(0 0 4px #ffd83d)
+      drop-shadow(0 0 10px #ff9d00);
+  }
+
+  to{
+    filter:
+      drop-shadow(0 0 12px #fff)
+      drop-shadow(0 0 28px #ffb000);
+  }
+}
+
+.followText{
+  text-align:center;
+  color:#aaaed0;
+  font-size:12px;
+}
+
+/* =========================
+   POSTS
+========================= */
+
+#posts{
+  margin-top:100px;
+
+  display:flex;
+  flex-direction:column;
+
+  gap:30px;
+}
 
 .post{
-  margin-top:20px;
+  position:relative;
+
   padding:20px;
-  border-radius:25px;
-  background:rgba(8,11,35,.72);
-  border:1px solid rgba(255,255,255,.1);
-  backdrop-filter:blur(14px);
-  box-shadow:0 15px 45px rgba(0,0,0,.3);
+
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20,24,62,.82),
+      rgba(5,7,24,.82)
+    );
+
+  border:1px solid rgba(160,150,255,.2);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.5),
+    inset 0 0 30px rgba(120,100,255,.04);
+
+  backdrop-filter:blur(12px);
 }
 
-.post-title{
+.post h2{
   font-size:20px;
-  font-weight:bold;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
-.post-content{
+.postText{
+  color:#d8d8e9;
   line-height:1.9;
-  opacity:.9;
+  margin-bottom:15px;
   white-space:pre-wrap;
 }
 
-.post-image,
-.post-video{
-  display:block;
+.post img,
+.post video{
   width:100%;
-  max-height:500px;
+  max-height:650px;
+
+  display:block;
+
   object-fit:contain;
+
   border-radius:18px;
-  margin-top:15px;
+
   background:#000;
 }
 
 .post audio{
   width:100%;
+  margin-top:12px;
+}
+
+/* =========================
+   LIKE
+========================= */
+
+.postBottom{
   margin-top:15px;
 }
 
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
-}
-
-.like-btn{
+.like{
   border:0;
-  padding:10px 18px;
-  border-radius:16px;
-  background:rgba(255,255,255,.09);
+  background:transparent;
+
   color:white;
+
+  font-size:32px;
+
   cursor:pointer;
-  font-size:15px;
+
+  transition:.2s;
+
+  padding:3px 7px;
 }
 
-.like-btn.liked{
-  background:rgba(255,80,145,.2);
+.like:hover{
+  transform:scale(1.18);
 }
 
-/* قلب‌ها */
+.like.liked{
+  color:#ff5b9c;
 
-.floating-heart{
+  text-shadow:
+    0 0 8px #ff5b9c,
+    0 0 20px #ff2f80;
+}
+
+/* =========================
+   HEARTS
+========================= */
+
+.heart{
   position:fixed;
-  z-index:20;
+
+  z-index:99999;
+
   pointer-events:none;
-  font-size:20px;
-  animation:heartUp 1.2s ease-out forwards;
+
+  font-size:14px;
+
+  animation:
+    heartFly 1.3s ease-out forwards;
 }
 
-@keyframes heartUp{
+@keyframes heartFly{
+
   0%{
-    transform:translateY(0) scale(.7);
     opacity:1;
+    transform:
+      translate(0,0)
+      scale(.4)
+      rotate(0);
   }
 
   100%{
-    transform:translateY(-160px) translateX(var(--x)) scale(1.3);
     opacity:0;
+
+    transform:
+      translate(
+        calc(var(--x) * 1px),
+        calc(var(--y) * 1px)
+      )
+      scale(1.4)
+      rotate(var(--r));
   }
 }
 
-/* پیام */
+/* =========================
+   STATUS
+========================= */
 
-.message{
+.status{
   text-align:center;
-  padding:25px 10px;
-  opacity:.7;
+
+  color:#bfc1dc;
+
+  padding:40px 10px;
 }
 
 .error{
-  color:#ff9ebf;
-  line-height:1.8;
+  color:#ff91ad;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+  main{
+    width:94%;
+  }
+
+  #siteName{
+    font-size:25px;
+  }
+
+  #profileImage{
+    width:105px;
+    height:105px;
+  }
+
+  .post{
+    padding:15px;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- THREE.JS SPACE -->
 <div id="space"></div>
 
-<div class="planet one"></div>
-<div class="planet two"></div>
-<div class="planet three"></div>
+<!-- MOVING STARS -->
+<div class="starfield" id="starfield"></div>
 
-<div class="container">
+<main>
 
-  <section class="profile">
+<section class="profile">
 
-    <img
-      id="avatar"
-      class="avatar"
-      src=""
-      alt="Minuit côtier"
-    >
+  <img
+    id="profileImage"
+    alt="Minuit côtier">
 
-    <h1 id="siteName">☆ Minuit côtier ☆</h1>
+  <h1 id="siteName">
+    Minuit côtier
+  </h1>
 
-    <p id="bio"></p>
+  <p id="siteBio">
+    ...
+  </p>
 
-  </section>
+  <button
+    id="followStar"
+    aria-label="دنبال کردن ستاره">
+    ⭐️
+  </button>
 
-
-  <div class="follow-area">
-
-    <button
-      id="followStar"
-      class="follow-star"
-      onclick="toggleFollow()"
-    >
-      ⭐️
-    </button>
-
-    <div
-      id="followText"
-      class="follow-text"
-    >
-      برای دنبال کردن بزن
-    </div>
-
+  <div class="followText">
+    دنبال ستاره برو ✨
   </div>
 
+</section>
 
-  <section id="posts">
+<section id="posts">
 
-    <div class="message">
-      در حال دریافت پست‌ها...
-    </div>
+  <div class="status">
+    در حال کشف کهکشان...
+  </div>
 
-  </section>
+</section>
 
-</div>
+</main>
 
 
 <script>
 
-/* =========================
+/* ======================================================
    SUPABASE
-========================= */
+====================================================== */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
-/*
-  اینجا کلید واقعی Supabase را بگذار
-  باید با sb_publishable_ شروع شود
-*/
-
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
-
 
 const db =
 supabase.createClient(
@@ -359,452 +469,898 @@ supabase.createClient(
 );
 
 
-/* =========================
-   ستاره‌های کهکشان
-========================= */
+/* ======================================================
+   MOVING STARS
+====================================================== */
 
-const space =
-document.getElementById("space");
+const starfield =
+document.getElementById("starfield");
 
-const starColors = [
-  "#ffd1e8",
-  "#b8ddff",
-  "#91aaff",
-  "#c8cfff"
+const starColors=[
+  "#ffffff",
+  "#ff8fc8",
+  "#ffb4dd",
+  "#79c8ff",
+  "#8aa5ff",
+  "#b98cff",
+  "#d8d8ff"
 ];
 
-for(let i=0;i<140;i++){
+for(let i=0;i<180;i++){
 
-  const star =
+  const star=
   document.createElement("span");
 
   star.className="star";
 
   star.textContent="☆";
 
-  star.style.left =
-  Math.random()*100+"%";
-
-  star.style.top =
-  Math.random()*100+"%";
-
-  star.style.color =
-  starColors[
-    Math.floor(
-      Math.random()*starColors.length
-    )
-  ];
-
-  star.style.fontSize =
-  (Math.random()*4+4)+"px";
-
-  star.style.animationDuration =
-  (Math.random()*12+8)+"s";
-
-  star.style.animationDelay =
-  (Math.random()*10)+"s";
-
-  space.appendChild(star);
-}
-
-
-/* =========================
-   تنظیمات سایت
-========================= */
-
-async function loadSettings(){
-
-  const result =
-  await db
-  .from("site_settings")
-  .select("*")
-  .limit(1);
-
-  if(result.error){
-
-    showError(
-      "خطا در دریافت تنظیمات: "+
-      result.error.message
-    );
-
-    return;
-  }
-
-  if(!result.data || !result.data.length){
-
-    return;
-  }
-
-  const settings =
-  result.data[0];
-
-  if(settings.site_name){
-
-    document
-    .getElementById("siteName")
-    .textContent =
-    "☆ "+settings.site_name+" ☆";
-
-  }
-
-  if(settings.bio){
-
-    document
-    .getElementById("bio")
-    .textContent =
-    settings.bio;
-
-  }
-
-  if(settings.image_url){
-
-    document
-    .getElementById("avatar")
-    .src =
-    settings.image_url;
-
-  }
-}
-
-
-/* =========================
-   پست‌ها
-========================= */
-
-async function loadPosts(){
-
-  const box =
-  document.getElementById("posts");
-
-  box.innerHTML =
-  `<div class="message">
-    در حال دریافت پست‌ها...
-  </div>`;
-
-
-  const result =
-  await db
-  .from("posts")
-  .select(
-    "id,created_at,title,content,image_url,video_url,audio_url"
-  )
-  .order(
-    "created_at",
-    {ascending:false}
-  );
-
-
-  if(result.error){
-
-    box.innerHTML =
-    `<div class="message error">
-      دریافت پست‌ها انجام نشد ❌<br><br>
-      ${escapeHtml(result.error.message)}
-    </div>`;
-
-    return;
-  }
-
-
-  const posts =
-  result.data || [];
-
-
-  if(posts.length===0){
-
-    box.innerHTML =
-    `<div class="message">
-      هنوز پستی منتشر نشده ☆
-    </div>`;
-
-    return;
-  }
-
-
-  box.innerHTML="";
-
-
-  posts.forEach(post=>{
-
-    const article =
-    document.createElement("article");
-
-    article.className="post";
-
-
-    let html="";
-
-
-    if(post.title){
-
-      html +=
-      `<div class="post-title">
-        ${escapeHtml(post.title)}
-      </div>`;
-
-    }
-
-
-    if(post.content){
-
-      html +=
-      `<div class="post-content">
-        ${escapeHtml(post.content)}
-      </div>`;
-
-    }
-
-
-    if(post.image_url){
-
-      html +=
-      `<img
-        class="post-image"
-        src="${escapeAttr(post.image_url)}"
-        alt="تصویر پست"
-      >`;
-
-    }
-
-
-    if(post.video_url){
-
-      html +=
-      `<video
-        class="post-video media-file"
-        controls
-        preload="metadata"
-        src="${escapeAttr(post.video_url)}"
-      ></video>`;
-
-    }
-
-
-    if(post.audio_url){
-
-      html +=
-      `<audio
-        class="media-file"
-        controls
-        preload="metadata"
-        src="${escapeAttr(post.audio_url)}"
-      ></audio>`;
-
-    }
-
-
-    html +=
-    `<div class="actions">
-
-      <button
-        class="like-btn"
-        onclick="likePost(this)"
-      >
-        ❤️ لایک
-      </button>
-
-    </div>`;
-
-
-    article.innerHTML=html;
-
-    box.appendChild(article);
-
-  });
-
-
-  setupMediaControl();
-}
-
-
-/* =========================
-   وقتی ویدیو یا آهنگ پخش شد
-   سایر صداها متوقف شوند
-========================= */
-
-function setupMediaControl(){
-
-  const media =
-  document.querySelectorAll(
-    "audio,video"
-  );
-
-
-  media.forEach(item=>{
-
-    item.addEventListener(
-      "play",
-      function(){
-
-        media.forEach(other=>{
-
-          if(other !== item){
-
-            other.pause();
-
-          }
-
-        });
-
-      }
-    );
-
-  });
-
-}
-
-
-/* =========================
-   لایک + قلب رنگی
-========================= */
-
-function likePost(button){
-
-  if(
-    button.classList.contains("liked")
-  ){
-
-    return;
-
-  }
-
-
-  button.classList.add("liked");
-
-  button.textContent =
-  "❤️ لایک شد";
-
-
-  const colors = [
-    "❤️",
-    "💗",
-    "💖",
-    "💙",
-    "💜",
-    "🩷"
-  ];
-
-
-  for(let i=0;i<12;i++){
-
-    const heart =
-    document.createElement("span");
-
-    heart.className =
-    "floating-heart";
-
-    heart.textContent =
-    colors[
+  star.style.color=
+    starColors[
       Math.floor(
-        Math.random()*colors.length
+        Math.random()*starColors.length
       )
     ];
 
+  star.style.fontSize=
+    (Math.random()*7+3)+"px";
 
-    heart.style.left =
-    (40+Math.random()*20)+"%";
+  star.style.left=
+    Math.random()*100+"vw";
 
-    heart.style.bottom =
-    "90px";
+  star.style.top=
+    Math.random()*100+"vh";
+
+  star.style.setProperty(
+    "--sx",
+    Math.random()*100-50
+  );
+
+  star.style.setProperty(
+    "--ex",
+    Math.random()*100-50
+  );
+
+  star.style.animationDuration=
+    (Math.random()*18+12)+"s";
+
+  star.style.animationDelay=
+    (-Math.random()*25)+"s";
+
+  starfield.appendChild(star);
+}
+
+
+/* ======================================================
+   THREE.JS
+====================================================== */
+
+const scene =
+new THREE.Scene();
+
+const camera =
+new THREE.PerspectiveCamera(
+  55,
+  window.innerWidth/window.innerHeight,
+  .1,
+  1000
+);
+
+camera.position.z=12;
+
+const renderer =
+new THREE.WebGLRenderer({
+  antialias:true,
+  alpha:true
+});
+
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio,2)
+);
+
+renderer.setSize(
+  window.innerWidth,
+  window.innerHeight
+);
+
+document
+  .getElementById("space")
+  .appendChild(renderer.domElement);
+
+
+/* ======================================================
+   LIGHT
+====================================================== */
+
+const ambient =
+new THREE.AmbientLight(
+  0x777799,
+  .55
+);
+
+scene.add(ambient);
+
+const light =
+new THREE.DirectionalLight(
+  0xffffff,
+  2.2
+);
+
+light.position.set(
+  5,
+  3,
+  6
+);
+
+scene.add(light);
+
+
+/* ======================================================
+   TEXTURE LOADER
+====================================================== */
+
+const loader =
+new THREE.TextureLoader();
+
+
+/* ======================================================
+   EARTH
+====================================================== */
+
+const earthTexture =
+loader.load(
+  "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
+);
+
+const earthNormal =
+loader.load(
+  "https://threejs.org/examples/textures/planets/earth_normal_2048.jpg"
+);
+
+const earthSpecular =
+loader.load(
+  "https://threejs.org/examples/textures/planets/earth_specular_2048.jpg"
+);
+
+const earthGeometry =
+new THREE.SphereGeometry(
+  1.45,
+  64,
+  64
+);
+
+const earthMaterial =
+new THREE.MeshPhongMaterial({
+
+  map:earthTexture,
+
+  normalMap:earthNormal,
+
+  specularMap:earthSpecular,
+
+  specular:
+    new THREE.Color(0x444444),
+
+  shininess:18
+});
+
+const earth =
+new THREE.Mesh(
+  earthGeometry,
+  earthMaterial
+);
+
+earth.position.set(
+  -4.5,
+  -1.7,
+  -2
+);
+
+earth.scale.set(
+  1.1,
+  1.1,
+  1.1
+);
+
+scene.add(earth);
+
+
+/* ======================================================
+   MOON
+====================================================== */
+
+const moonTexture =
+loader.load(
+  "https://threejs.org/examples/textures/planets/moon_1024.jpg"
+);
+
+const moonGeometry =
+new THREE.SphereGeometry(
+  .75,
+  48,
+  48
+);
+
+const moonMaterial =
+new THREE.MeshPhongMaterial({
+  map:moonTexture,
+  shininess:3
+});
+
+const moon =
+new THREE.Mesh(
+  moonGeometry,
+  moonMaterial
+);
+
+moon.position.set(
+  3.7,
+  2.8,
+  -2
+);
+
+scene.add(moon);
+
+
+/* ======================================================
+   MARS
+====================================================== */
+
+const marsTexture =
+loader.load(
+  "https://threejs.org/examples/textures/planets/mars_1k_color.jpg"
+);
+
+const marsGeometry =
+new THREE.SphereGeometry(
+  .75,
+  48,
+  48
+);
+
+const marsMaterial =
+new THREE.MeshPhongMaterial({
+  map:marsTexture,
+  shininess:5
+});
+
+const mars =
+new THREE.Mesh(
+  marsGeometry,
+  marsMaterial
+);
+
+mars.position.set(
+  4.7,
+  -2.2,
+  -3
+);
+
+scene.add(mars);
+
+
+/* ======================================================
+   JUPITER
+====================================================== */
+
+const jupiterTexture =
+loader.load(
+  "https://threejs.org/examples/textures/planets/jupiter2_1k.jpg"
+);
+
+const jupiterGeometry =
+new THREE.SphereGeometry(
+  1.65,
+  64,
+  64
+);
+
+const jupiterMaterial =
+new THREE.MeshPhongMaterial({
+  map:jupiterTexture
+});
+
+const jupiter =
+new THREE.Mesh(
+  jupiterGeometry,
+  jupiterMaterial
+);
+
+jupiter.position.set(
+  4.8,
+  3.8,
+  -5
+);
+
+scene.add(jupiter);
+
+
+/* ======================================================
+   SATURN
+====================================================== */
+
+const saturnTexture =
+loader.load(
+  "https://threejs.org/examples/textures/planets/saturn_1k.jpg"
+);
+
+const saturnGeometry =
+new THREE.SphereGeometry(
+  1.25,
+  64,
+  64
+);
+
+const saturnMaterial =
+new THREE.MeshPhongMaterial({
+  map:saturnTexture
+});
+
+const saturn =
+new THREE.Mesh(
+  saturnGeometry,
+  saturnMaterial
+);
+
+saturn.position.set(
+  -4.5,
+  4,
+  -6
+);
+
+scene.add(saturn);
+
+
+/* ======================================================
+   SATURN RING
+====================================================== */
+
+const ringTexture =
+loader.load(
+  "https://threejs.org/examples/textures/planets/saturnringcolor.jpg"
+);
+
+const ringGeometry =
+new THREE.RingGeometry(
+  1.6,
+  2.55,
+  96
+);
+
+const ringMaterial =
+new THREE.MeshBasicMaterial({
+  map:ringTexture,
+  side:THREE.DoubleSide,
+  transparent:true
+});
+
+const ring =
+new THREE.Mesh(
+  ringGeometry,
+  ringMaterial
+);
+
+ring.rotation.x=
+Math.PI/2.4;
+
+saturn.add(ring);
+
+
+/* ======================================================
+   SUN
+====================================================== */
+
+const sunTexture =
+loader.load(
+  "https://threejs.org/examples/textures/planets/sun.jpg"
+);
+
+const sunGeometry =
+new THREE.SphereGeometry(
+  1.35,
+  64,
+  64
+);
+
+const sunMaterial =
+new THREE.MeshBasicMaterial({
+  map:sunTexture
+});
+
+const sun =
+new THREE.Mesh(
+  sunGeometry,
+  sunMaterial
+);
+
+sun.position.set(
+  0,
+  7,
+  -9
+);
+
+scene.add(sun);
+
+
+/* ======================================================
+   ANIMATION
+====================================================== */
+
+function animate(){
+
+  requestAnimationFrame(
+    animate
+  );
+
+  earth.rotation.y += .0018;
+
+  moon.rotation.y += .0012;
+
+  mars.rotation.y += .0016;
+
+  jupiter.rotation.y += .001;
+
+  saturn.rotation.y += .0009;
+
+  sun.rotation.y += .0005;
+
+  renderer.render(
+    scene,
+    camera
+  );
+}
+
+animate();
+
+
+/* ======================================================
+   RESIZE
+====================================================== */
+
+window.addEventListener(
+  "resize",
+  ()=>{
+
+    camera.aspect=
+      window.innerWidth/
+      window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    );
+
+  }
+);
+
+
+/* ======================================================
+   SETTINGS
+====================================================== */
+
+async function loadSettings(){
+
+  const result=
+    await db
+      .from("site_settings")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      )
+      .limit(1)
+      .maybeSingle();
+
+  if(result.error){
+
+    console.error(
+      result.error
+    );
+
+    return;
+  }
+
+  const data=result.data;
+
+  if(!data)
+    return;
+
+  if(data.site_name){
+
+    document
+      .getElementById("siteName")
+      .textContent=
+      data.site_name;
+  }
+
+  if(data.bio){
+
+    document
+      .getElementById("siteBio")
+      .textContent=
+      data.bio;
+  }
+
+  if(data.image_url){
+
+    const image=
+      document.getElementById(
+        "profileImage"
+      );
+
+    image.src=
+      data.image_url;
+
+    image.style.display=
+      "block";
+  }
+}
+
+
+/* ======================================================
+   POSTS
+====================================================== */
+
+async function loadPosts(){
+
+  const box=
+    document.getElementById(
+      "posts"
+    );
+
+  box.innerHTML=
+    `<div class="status">
+      در حال کشف پست‌ها...
+    </div>`;
+
+  const result=
+    await db
+      .from("posts")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+  if(result.error){
+
+    console.error(
+      result.error
+    );
+
+    box.innerHTML=
+      `<div class="status error">
+        خطا در دریافت پست‌ها<br><br>
+        ${escapeHtml(
+          result.error.message
+        )}
+      </div>`;
+
+    return;
+  }
+
+  const data=result.data;
+
+  if(!data || data.length===0){
+
+    box.innerHTML=
+      `<div class="status">
+        هنوز پستی در این کهکشان نیست ✨
+      </div>`;
+
+    return;
+  }
+
+  box.innerHTML="";
+
+  data.forEach(
+    post=>{
+
+      const article=
+        document.createElement(
+          "article"
+        );
+
+      article.className="post";
+
+      let html="";
+
+      if(post.title){
+
+        html+=
+          `<h2>
+            ${escapeHtml(
+              post.title
+            )}
+          </h2>`;
+      }
+
+      if(post.content){
+
+        html+=
+          `<div class="postText">
+            ${escapeHtml(
+              post.content
+            )}
+          </div>`;
+      }
+
+      if(post.image_url){
+
+        html+=
+          `<img
+            src="${safeUrl(
+              post.image_url
+            )}"
+            loading="lazy"
+            alt="post">`;
+      }
+
+      if(post.video_url){
+
+        html+=
+          `<video
+            controls
+            preload="metadata"
+            src="${safeUrl(
+              post.video_url
+            )}">
+          </video>`;
+      }
+
+      if(post.audio_url){
+
+        html+=
+          `<audio
+            controls
+            preload="metadata"
+            src="${safeUrl(
+              post.audio_url
+            )}">
+          </audio>`;
+      }
+
+      html+=
+        `<div class="postBottom">
+          <button
+            class="like"
+            aria-label="like">
+            ♡
+          </button>
+        </div>`;
+
+      article.innerHTML=
+        html;
+
+      const like=
+        article.querySelector(
+          ".like"
+        );
+
+      like.addEventListener(
+        "click",
+        function(){
+
+          this.classList.toggle(
+            "liked"
+          );
+
+          createHearts(
+            this
+          );
+
+        }
+      );
+
+      box.appendChild(
+        article
+      );
+    }
+  );
+
+  controlMedia();
+}
+
+
+/* ======================================================
+   MEDIA
+====================================================== */
+
+function controlMedia(){
+
+  const media=
+    document.querySelectorAll(
+      "audio,video"
+    );
+
+  media.forEach(
+    item=>{
+
+      item.addEventListener(
+        "play",
+        ()=>{
+
+          media.forEach(
+            other=>{
+
+              if(
+                other!==item
+              ){
+                other.pause();
+              }
+
+            }
+          );
+
+        }
+      );
+
+    }
+  );
+}
+
+
+/* ======================================================
+   HEART EFFECT
+====================================================== */
+
+function createHearts(button){
+
+  const rect=
+    button.getBoundingClientRect();
+
+  const hearts=[
+    "❤️",
+    "🩷",
+    "💗",
+    "💜",
+    "💙",
+    "🩵",
+    "💖"
+  ];
+
+  for(
+    let i=0;
+    i<20;
+    i++
+  ){
+
+    const heart=
+      document.createElement(
+        "span"
+      );
+
+    heart.className=
+      "heart";
+
+    heart.textContent=
+      hearts[
+        Math.floor(
+          Math.random()*
+          hearts.length
+        )
+      ];
+
+    heart.style.left=
+      (
+        rect.left+
+        rect.width/2
+      )+"px";
+
+    heart.style.top=
+      (
+        rect.top+
+        rect.height/2
+      )+"px";
 
     heart.style.setProperty(
       "--x",
-      (Math.random()*120-60)+"px"
+      Math.random()*220-110
     );
 
+    heart.style.setProperty(
+      "--y",
+      -(Math.random()*200+50)
+    );
+
+    heart.style.setProperty(
+      "--r",
+      Math.random()*120-60
+    );
 
     document.body.appendChild(
       heart
     );
 
-
     setTimeout(
-      ()=>heart.remove(),
-      1300
+      ()=>{
+        heart.remove();
+      },
+      1400
     );
+  }
+}
 
+
+/* ======================================================
+   YELLOW STAR
+====================================================== */
+
+document
+  .getElementById("followStar")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      document
+        .getElementById("posts")
+        .scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+
+    }
+  );
+
+
+/* ======================================================
+   HELPERS
+====================================================== */
+
+function escapeHtml(value){
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+
+function safeUrl(value){
+
+  const url=
+    String(value || "");
+
+  if(
+    url.startsWith(
+      "https://"
+    ) ||
+    url.startsWith(
+      "http://"
+    )
+  ){
+    return url;
   }
 
+  return "";
 }
 
 
-/* =========================
-   دنبال کردن ⭐️
-========================= */
-
-function toggleFollow(){
-
-  const button =
-  document.getElementById(
-    "followStar"
-  );
-
-  const text =
-  document.getElementById(
-    "followText"
-  );
-
-
-  const followed =
-  button.classList.toggle(
-    "followed"
-  );
-
-
-  if(followed){
-
-    text.textContent =
-    "دنبال شد ⭐️";
-
-  }else{
-
-    text.textContent =
-    "دنبال کردن";
-
-  }
-
-}
-
-
-/* =========================
-   HTML امنیتی
-========================= */
-
-function escapeHtml(text){
-
-  return String(text ?? "")
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
-
-}
-
-
-function escapeAttr(text){
-
-  return escapeHtml(text);
-
-}
-
-
-function showError(message){
-
-  document.getElementById("posts")
-  .innerHTML =
-  `<div class="message error">
-    ${escapeHtml(message)}
-  </div>`;
-
-}
-
-
-/* =========================
-   شروع
-========================= */
+/* ======================================================
+   START
+====================================================== */
 
 loadSettings();
+
 loadPosts();
 
 </script>
