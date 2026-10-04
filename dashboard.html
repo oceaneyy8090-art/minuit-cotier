@@ -2,163 +2,405 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>پنل مدیریت</title>
+<title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓 | پنل مدیریت</title>
 
 <style>
 
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  min-height:100%;
+}
+
 body{
+  font-family:tahoma,Arial,sans-serif;
+  color:#fff;
+  overflow-x:hidden;
 
-margin:0;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(96,75,255,.35),transparent 30%),
+    radial-gradient(circle at 85% 80%,rgba(0,205,255,.20),transparent 30%),
+    linear-gradient(135deg,#03030d,#09082a,#17104a);
+}
 
-font-family:tahoma;
+/* ستاره‌ها */
 
-height:100vh;
+.stars{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0;
+}
 
-background:
-linear-gradient(135deg,#080820,#34205e);
+.star{
+  position:absolute;
+  color:#fff;
+  font-size:8px;
+  opacity:.8;
+  animation:float linear infinite;
+  text-shadow:
+    0 0 5px currentColor,
+    0 0 10px currentColor;
+}
 
-color:white;
+@keyframes float{
 
-display:flex;
+  0%{
+    transform:translateY(110vh) translateX(0) scale(.5);
+    opacity:0;
+  }
 
-justify-content:center;
+  15%{
+    opacity:.9;
+  }
 
-align-items:center;
+  85%{
+    opacity:.9;
+  }
+
+  100%{
+    transform:translateY(-10vh) translateX(30px) scale(1);
+    opacity:0;
+  }
 
 }
 
+/* صفحه */
 
-.box{
-
-width:90%;
-
-max-width:400px;
-
-background:#ffffff15;
-
-padding:25px;
-
-border-radius:25px;
-
-text-align:center;
-
+.page{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:700px;
+  margin:auto;
+  padding:22px 16px 40px;
 }
 
+/* هدر */
 
-
-a{
-
-display:block;
-
-margin:15px 0;
-
-padding:15px;
-
-border-radius:18px;
-
-background:#8265ff;
-
-color:white;
-
-text-decoration:none;
-
+.header{
+  text-align:center;
+  padding:25px 10px 18px;
 }
 
+.logo{
+  font-size:28px;
+  font-weight:bold;
 
-.logout{
-
-background:#ff4160;
-
+  text-shadow:
+    0 0 10px #8c7cff,
+    0 0 25px #604cff;
 }
 
+.subtitle{
+  margin-top:8px;
+  color:#bbb7df;
+  font-size:13px;
+}
+
+/* کارت خوش آمد */
+
+.welcome{
+  padding:22px;
+  border-radius:28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.13),
+      rgba(255,255,255,.045)
+    );
+
+  border:1px solid rgba(255,255,255,.12);
+
+  box-shadow:
+    0 15px 45px rgba(0,0,0,.3),
+    inset 0 1px rgba(255,255,255,.08);
+}
+
+.welcome h2{
+  margin:0 0 8px;
+  font-size:20px;
+}
+
+.welcome p{
+  margin:0;
+  color:#bdb9d8;
+  font-size:13px;
+}
+
+/* منوی اصلی */
+
+.menu{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:18px;
+}
+
+.menu-card{
+  position:relative;
+  min-height:145px;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  text-decoration:none;
+  color:white;
+
+  border-radius:25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.12),
+      rgba(255,255,255,.045)
+    );
+
+  border:1px solid rgba(255,255,255,.12);
+
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.28);
+
+  transition:
+    transform .2s,
+    border-color .2s,
+    box-shadow .2s;
+
+  overflow:hidden;
+}
+
+.menu-card::before{
+  content:"";
+  position:absolute;
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:rgba(125,95,255,.16);
+  filter:blur(20px);
+}
+
+.menu-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(160,145,255,.55);
+
+  box-shadow:
+    0 15px 45px rgba(92,72,255,.22);
+}
+
+.icon{
+  position:relative;
+  font-size:36px;
+  margin-bottom:12px;
+}
+
+.title{
+  position:relative;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.desc{
+  position:relative;
+  margin-top:6px;
+  color:#aaa6c7;
+  font-size:11px;
+}
+
+/* رنگ آیکون‌ها */
+
+.profile .icon{
+  text-shadow:0 0 18px #ff6fcf;
+}
+
+.settings .icon{
+  text-shadow:0 0 18px #8e7cff;
+}
+
+.posts .icon{
+  text-shadow:0 0 18px #5ecbff;
+}
+
+.dashboard .icon{
+  text-shadow:0 0 18px #a77cff;
+}
+
+/* پایین */
+
+.footer{
+  text-align:center;
+  margin-top:28px;
+  color:#777392;
+  font-size:11px;
+}
+
+@media(max-width:380px){
+
+  .menu{
+    gap:10px;
+  }
+
+  .menu-card{
+    min-height:130px;
+  }
+
+  .logo{
+    font-size:23px;
+  }
+
+}
 
 </style>
-
 </head>
-
 
 <body>
 
+<!-- ستاره‌های سبک -->
 
-<div class="box">
+<div class="stars">
 
-
-<h2>
-🌙 Minuit côtier
-</h2>
-
-
-<p>
-پنل مدیریت
-</p>
-
-
-
-<a href="posts.html">
-💫 مدیریت پست‌ها
-</a>
-
-
-
-<a href="settings.html">
-⚙️ تنظیمات کانال
-</a>
-
-
-
-<a href="media.html">
-🎵 مدیریت رسانه
-</a>
-
-
-
-<a class="logout" onclick="logout()">
-خروج
-</a>
-
+<span class="star" style="left:4%;animation-duration:11s;animation-delay:0s;color:#9bdcff;">☆</span>
+<span class="star" style="left:10%;animation-duration:15s;animation-delay:2s;color:#ff9de2;">☆</span>
+<span class="star" style="left:17%;animation-duration:12s;animation-delay:5s;color:#b8a7ff;">☆</span>
+<span class="star" style="left:24%;animation-duration:18s;animation-delay:1s;color:#ffffff;">☆</span>
+<span class="star" style="left:31%;animation-duration:13s;animation-delay:7s;color:#72dfff;">☆</span>
+<span class="star" style="left:38%;animation-duration:16s;animation-delay:3s;color:#ffb5ef;">☆</span>
+<span class="star" style="left:45%;animation-duration:11s;animation-delay:6s;color:#c5b5ff;">☆</span>
+<span class="star" style="left:52%;animation-duration:17s;animation-delay:2s;color:#80eaff;">☆</span>
+<span class="star" style="left:59%;animation-duration:14s;animation-delay:8s;color:#ff91dc;">☆</span>
+<span class="star" style="left:66%;animation-duration:19s;animation-delay:4s;color:#a99aff;">☆</span>
+<span class="star" style="left:73%;animation-duration:12s;animation-delay:1s;color:#ffffff;">☆</span>
+<span class="star" style="left:80%;animation-duration:16s;animation-delay:5s;color:#75dfff;">☆</span>
+<span class="star" style="left:87%;animation-duration:13s;animation-delay:3s;color:#ff9cdb;">☆</span>
+<span class="star" style="left:94%;animation-duration:18s;animation-delay:7s;color:#b9a7ff;">☆</span>
 
 </div>
 
 
+<main class="page">
+
+<header class="header">
+
+  <div class="logo">
+    𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓
+  </div>
+
+  <div class="subtitle">
+    پنل مدیریت
+  </div>
+
+</header>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<section class="welcome">
 
-<script>
+  <h2>
+    خوش اومدی 🌙
+  </h2>
 
+  <p>
+    همه چیز مربوط به سایتت از اینجا مدیریت میشه.
+  </p>
 
-const SUPABASE_URL =
-"https://oyowhuyzgjvpoeupoegh.supabase.co";
-
-
-const SUPABASE_KEY =
-"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
-
-
-const db =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+</section>
 
 
-
-async function logout(){
-
-await db.auth.signOut();
-
-location.href="login.html";
-
-}
+<section class="menu">
 
 
-</script>
+  <a
+    class="menu-card profile"
+    href="settings.html">
 
+    <div class="icon">
+      👤
+    </div>
+
+    <div class="title">
+      پروفایل
+    </div>
+
+    <div class="desc">
+      عکس و نام کانال
+    </div>
+
+  </a>
+
+
+  <a
+    class="menu-card settings"
+    href="settings.html">
+
+    <div class="icon">
+      ⚙️
+    </div>
+
+    <div class="title">
+      تنظیمات
+    </div>
+
+    <div class="desc">
+      مدیریت سایت
+    </div>
+
+  </a>
+
+
+  <a
+    class="menu-card posts"
+    href="posts.html">
+
+    <div class="icon">
+      💫
+    </div>
+
+    <div class="title">
+      پست‌ها
+    </div>
+
+    <div class="desc">
+      عکس، فیلم و آهنگ
+    </div>
+
+  </a>
+
+
+  <a
+    class="menu-card dashboard"
+    href="dashboard.html">
+
+    <div class="icon">
+      📊
+    </div>
+
+    <div class="title">
+      داشبورد
+    </div>
+
+    <div class="desc">
+      آمار و مدیریت
+    </div>
+
+  </a>
+
+
+</section>
+
+
+<div class="footer">
+  ☆ Minuit côtier ☆
+</div>
+
+</main>
 
 </body>
-
 </html>
