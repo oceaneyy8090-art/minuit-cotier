@@ -1,71 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
+
 <style>
 
 html,body{
+
 margin:0;
+
 height:100%;
+
 overflow:hidden;
+
 touch-action:none;
+
 background:#020617;
+
 }
+
+
 
 canvas{
+
 display:block;
-}
-
-
-#postBox{
-
-display:none;
-
-position:fixed;
-
-top:50%;
-
-left:50%;
-
-transform:translate(-50%,-50%);
-
-background:#071a3d;
-
-color:white;
-
-width:80%;
-
-padding:20px;
-
-border-radius:20px;
-
-text-align:center;
-
-z-index:10;
 
 }
 
-
-#postImage{
-
-max-width:100%;
-
-border-radius:15px;
-
-}
-
-
-#like{
-
-font-size:40px;
-
-cursor:pointer;
-
-}
 
 
 #musicBtn{
@@ -94,7 +60,58 @@ z-index:20;
 
 }
 
+
+
+#postBox{
+
+display:none;
+
+position:fixed;
+
+top:50%;
+
+left:50%;
+
+transform:translate(-50%,-50%);
+
+width:80%;
+
+background:#071a3d;
+
+color:white;
+
+padding:20px;
+
+border-radius:20px;
+
+text-align:center;
+
+z-index:10;
+
+}
+
+
+
+#postImage{
+
+width:100%;
+
+border-radius:15px;
+
+}
+
+
+
+#like{
+
+font-size:40px;
+
+cursor:pointer;
+
+}
+
 </style>
+
 
 </head>
 
@@ -102,35 +119,60 @@ z-index:20;
 <body>
 
 
+
 <canvas id="sky"></canvas>
+
 
 
 <audio id="music" loop>
 
-<source src="music.mp3">
+<source src="music.mp3" type="audio/mpeg">
 
 </audio>
 
 
-<button id="musicBtn" onclick="toggleMusic()">🎵</button>
+
+<button id="musicBtn" onclick="toggleMusic()">
+
+🎵
+
+</button>
+
+
 
 
 <div id="postBox">
 
-<button onclick="closePost()">بستن</button>
+
+<button onclick="closePost()">
+
+بستن
+
+</button>
+
 
 <h2 id="postTitle"></h2>
 
+
 <img id="postImage">
+
 
 <p id="postContent"></p>
 
-<div id="like">♡</div>
+
+<div id="like">
+
+♡
+
+</div>
+
+
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -153,6 +195,7 @@ const canvas=document.getElementById("sky");
 const ctx=canvas.getContext("2d");
 
 
+
 let W,H;
 
 
@@ -170,9 +213,12 @@ onresize=resize;
 
 
 
+
+
 let camX=0;
 
 let camY=0;
+
 
 
 
@@ -186,12 +232,17 @@ let activePost=null;
 
 
 
+
 const colors=[
 
-"#fff",
+"#ffffff",
+
 "#7dd3fc",
+
 "#a78bfa",
+
 "#f9a8d4",
+
 "#c7d2fe"
 
 ];
@@ -199,28 +250,34 @@ const colors=[
 
 
 
-// ساخت ستاره در هر جای نقشه
+
+
+
+// ساخت ستاره در هر نقطه از فضا
 
 function addStar(x,y){
 
 
 stars.push({
 
-x:x ?? camX+(Math.random()-0.5)*W*4,
 
-y:y ?? camY+(Math.random()-0.5)*H*4,
+x:x ?? camX+(Math.random()-0.5)*W*5,
 
-
-vx:(Math.random()-.5)*0.2,
-
-vy:(Math.random()-.5)*0.2,
+y:y ?? camY+(Math.random()-0.5)*H*5,
 
 
-size:2+Math.random()*6,
+vx:(Math.random()-0.5)*0.2,
+
+vy:(Math.random()-0.5)*0.2,
+
+
+size:2+Math.random()*7,
 
 
 color:
-colors[Math.floor(Math.random()*colors.length)]
+colors[
+Math.floor(Math.random()*colors.length)
+]
 
 
 });
@@ -231,25 +288,23 @@ colors[Math.floor(Math.random()*colors.length)]
 
 
 
-// ستاره های اولیه خیلی زیاد
+
+
+// پر کردن کهکشان اولیه
 
 for(let i=0;i<3000;i++){
 
 
 addStar(
 
-(Math.random()-0.5)*10000,
+(Math.random()-0.5)*12000,
 
-(Math.random()-0.5)*10000
+(Math.random()-0.5)*12000
 
 );
 
 
 }
-
-
-
-
 // گرفتن پست ها از Supabase
 
 async function loadPosts(){
@@ -281,14 +336,16 @@ x:i*600-500,
 y:i*400-300,
 
 
-title:p.title || "پست",
+icon:"🌛",
+
+
+title:p.title || "پست جدید",
+
 
 content:p.content || "",
 
-image:p.image_url || "",
 
-
-icon:"🌛"
+image:p.image_url || ""
 
 
 }));
@@ -297,11 +354,17 @@ icon:"🌛"
 }
 
 
-
 loadPosts();
-// رسم فضا
+
+
+
+
+
+
+
 
 function draw(){
+
 
 
 let bg=ctx.createLinearGradient(0,0,0,H);
@@ -314,6 +377,7 @@ bg.addColorStop(.5,"#071a3d");
 bg.addColorStop(1,"#312e81");
 
 
+
 ctx.fillStyle=bg;
 
 ctx.fillRect(0,0,W,H);
@@ -322,7 +386,9 @@ ctx.fillRect(0,0,W,H);
 
 
 
-// حرکت آرام ستاره ها
+
+
+// حرکت ستاره ها
 
 stars.forEach(s=>{
 
@@ -353,7 +419,9 @@ ctx.fillText("☆",x,y);
 
 
 
-// نمایش پست ها
+
+
+// نمایش ماه پست ها 🌛
 
 posts.forEach(p=>{
 
@@ -368,7 +436,7 @@ ctx.font="35px Arial";
 
 
 ctx.fillText(
-"🌛",
+p.icon,
 x,
 y
 );
@@ -380,7 +448,8 @@ y
 
 
 
-// افکت لایک
+
+// افکت 💫
 
 effects.forEach((e,i)=>{
 
@@ -394,7 +463,6 @@ e.y+=e.vy;
 ctx.font="20px Arial";
 
 ctx.fillStyle=e.color;
-
 
 
 ctx.fillText(
@@ -431,14 +499,7 @@ requestAnimationFrame(draw);
 
 
 draw();
-
-
-
-
-
-
-
-// باز شدن پست
+// باز کردن پست با 🌛
 
 canvas.onclick=e=>{
 
@@ -459,7 +520,6 @@ activePost=p;
 
 
 document.getElementById("postTitle").innerHTML=p.title;
-
 
 document.getElementById("postContent").innerHTML=p.content;
 
@@ -498,12 +558,21 @@ document.getElementById("postBox").style.display="block";
 
 
 
+
+
 function closePost(){
 
 document.getElementById("postBox").style.display="none";
 
 }
-// لایک و انفجار ستاره
+
+
+
+
+
+
+
+// لایک 💫
 
 document.getElementById("like").onclick=()=>{
 
@@ -519,6 +588,7 @@ for(let i=0;i<200;i++){
 
 
 effects.push({
+
 
 x:activePost.x,
 
@@ -536,6 +606,7 @@ life:80,
 color:
 colors[Math.floor(Math.random()*colors.length)]
 
+
 });
 
 
@@ -550,7 +621,8 @@ colors[Math.floor(Math.random()*colors.length)]
 
 
 
-// حرکت در فضای بی نهایت
+
+// حرکت در فضا ⭐
 
 let sx=null;
 
@@ -559,6 +631,7 @@ let sy=null;
 let ox=0;
 
 let oy=0;
+
 
 
 
@@ -576,6 +649,7 @@ oy=camY;
 
 
 };
+
 
 
 
@@ -612,9 +686,6 @@ camY+(Math.random()-0.5)*H*4
 
 
 
-
-// جلوگیری از سنگین شدن
-
 if(stars.length>6000){
 
 stars.splice(0,1500);
@@ -622,8 +693,8 @@ stars.splice(0,1500);
 }
 
 
-
 };
+
 
 
 
@@ -641,7 +712,7 @@ sx=null;
 
 
 
-// موزیک
+// موزیک 🎵
 
 const music=document.getElementById("music");
 
@@ -659,7 +730,6 @@ music.pause();
 
 document.getElementById("musicBtn").innerHTML="🔇";
 
-
 playing=false;
 
 
@@ -670,10 +740,8 @@ else{
 
 music.play().catch(()=>{});
 
-
 document.getElementById("musicBtn").innerHTML="🎵";
 
-
 playing=true;
 
 
@@ -682,27 +750,6 @@ playing=true;
 
 }
 
-
-
-
-
-
-document.body.addEventListener("pointerdown",()=>{
-
-
-if(!playing){
-
-
-music.play().catch(()=>{});
-
-
-playing=true;
-
-
-}
-
-
-},{once:true});
 
 
 
@@ -712,4 +759,3 @@ playing=true;
 </body>
 
 </html>
-
