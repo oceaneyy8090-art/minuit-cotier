@@ -4,163 +4,179 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
+<title>Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
 <style>
 
 *{
-margin:0;
-padding:0;
 box-sizing:border-box;
 }
 
-html,body{
-
-width:100%;
-height:100%;
+body{
+margin:0;
 overflow:hidden;
+background:#030313;
 font-family:tahoma;
-
-background:#02020d;
-
 }
 
-
-/* فضای اصلی */
 
 #space{
-
 position:fixed;
 inset:0;
-
 overflow:hidden;
-
-touch-action:none;
-
 background:
-
-radial-gradient(
-circle at 30% 30%,
-#38205f,
-transparent 35%
-),
-
-radial-gradient(
-circle at 80% 70%,
-#251052,
-transparent 40%
-),
-
-linear-gradient(
-135deg,
-#02020d,
-#080827
-);
-
+radial-gradient(circle,#342060,#05051b 60%);
 }
 
-
-
-/* جهان */
 
 #galaxy{
 
 position:absolute;
 
-width:10000px;
-height:10000px;
+width:9000px;
+height:9000px;
 
 left:50%;
 top:50%;
 
-transform:
-translate(-50%,-50%);
+transform:translate(-50%,-50%);
 
 }
 
 
 
-/* نورهای کهکشان */
+/* ستاره */
 
-.cloud{
+.star{
 
 position:absolute;
 
+font-size:10px;
+
+animation:
+starMove 6s infinite alternate ease-in-out;
+
+text-shadow:
+0 0 10px currentColor;
+
+}
+
+
+
+@keyframes starMove{
+
+from{
+transform:translate(0,0);
+}
+
+to{
+transform:translate(20px,40px);
+}
+
+}
+
+
+
+/* 💫 پست */
+
+
+.postStar{
+
+position:absolute;
+
+font-size:35px;
+
+cursor:pointer;
+
+filter:
+drop-shadow(0 0 15px #ffe36b);
+
+animation:
+pulse 2s infinite;
+
+}
+
+
+
+@keyframes pulse{
+
+50%{
+
+transform:scale(1.3);
+
+}
+
+}
+
+
+
+/* پروفایل */
+
+
+.profile{
+
+position:absolute;
+
+top:4300px;
+
+left:4300px;
+
+text-align:center;
+
+color:white;
+
+}
+
+
+
+.profile img{
+
+width:120px;
+
+height:120px;
+
 border-radius:50%;
 
-filter:blur(100px);
+object-fit:cover;
 
-opacity:.2;
-
-}
-
-
-.cloud.one{
-
-width:2000px;
-height:1200px;
-
-left:500px;
-top:600px;
-
-background:#7b3cff;
+box-shadow:
+0 0 30px #8bdcff;
 
 }
 
 
-.cloud.two{
 
-width:1800px;
-height:1200px;
+.profile h1{
 
-left:5000px;
-top:4000px;
-
-background:#ff63c8;
-
-}
-
-
-.cloud.three{
-
-width:1600px;
-height:1000px;
-
-left:2500px;
-top:7000px;
-
-background:#47dfff;
+font-size:20px;
 
 }
 
 
 
 
-/* پنجره پست */
 
+/* پنجره */
 
 #viewer{
+
+display:none;
 
 position:fixed;
 
 inset:0;
 
-display:none;
+background:#000b;
 
 align-items:center;
 
 justify-content:center;
 
-background:
-
-rgba(0,0,20,.85);
-
-z-index:1000;
+z-index:20;
 
 }
 
@@ -174,81 +190,33 @@ display:flex;
 
 
 
-.card{
+.box{
 
 width:90%;
 
 max-width:500px;
 
-background:#151538;
-
-padding:25px;
-
-border-radius:25px;
+background:#161638;
 
 color:white;
+
+padding:20px;
+
+border-radius:25px;
 
 text-align:center;
 
 }
 
 
-
-.card img,
-.card video{
+.box img,
+.box video{
 
 width:100%;
 
 border-radius:15px;
 
-margin-top:15px;
-
 }
-
-
-.card audio{
-
-width:100%;
-
-margin-top:15px;
-
-}
-
-
-.close{
-
-position:absolute;
-
-top:20px;
-
-right:20px;
-
-font-size:30px;
-
-color:white;
-
-background:none;
-
-border:0;
-
-}
-
-
-
-.like{
-
-background:none;
-
-border:0;
-
-font-size:40px;
-
-color:white;
-
-margin-top:15px;
-
-}
-
 
 
 </style>
@@ -261,19 +229,24 @@ margin-top:15px;
 
 <div id="space">
 
-
 <div id="galaxy">
 
 
-<div class="cloud one"></div>
+<div class="profile">
 
-<div class="cloud two"></div>
+<img id="profileImg">
 
-<div class="cloud three"></div>
+<h1 id="profileName">
+Minuit côtier
+</h1>
+
+<p id="profileBio"></p>
 
 
 </div>
 
+
+</div>
 
 </div>
 
@@ -281,148 +254,184 @@ margin-top:15px;
 
 <div id="viewer">
 
+<div class="box">
 
-<div class="card">
+<h2 id="title"></h2>
 
+<div id="content"></div>
 
-<button class="close">
-×
+<button onclick="closePost()">
+بستن
 </button>
-
-
-<h2 id="postTitle">
-💫
-</h2>
-
-
-<div id="postContent"></div>
-
-
-<button class="like">
-♡
-</button>
-
 
 </div>
-
 
 </div>
 
 
 
 <script>
-// ===== حرکت داخل دنیا =====
+// =======================
+// حرکت دنیا با انگشت
+// =======================
 
-const space = document.getElementById("space");
-const galaxy = document.getElementById("galaxy");
+const space=document.getElementById("space");
+const galaxy=document.getElementById("galaxy");
 
-let camX = 0;
-let camY = 0;
+let x=0;
+let y=0;
 
-let move = false;
-let startX = 0;
-let startY = 0;
-
-
-space.addEventListener("pointerdown", e=>{
-
-move = true;
-
-startX = e.clientX;
-startY = e.clientY;
-
-});
+let down=false;
+let sx=0;
+let sy=0;
 
 
+space.onpointerdown=e=>{
 
-space.addEventListener("pointermove", e=>{
+down=true;
 
-if(!move) return;
+sx=e.clientX;
+sy=e.clientY;
 
-
-camX += e.clientX - startX;
-camY += e.clientY - startY;
-
-
-startX = e.clientX;
-startY = e.clientY;
+};
 
 
 
-galaxy.style.transform =
+space.onpointermove=e=>{
 
-`translate(
-calc(-50% + ${camX}px),
-calc(-50% + ${camY}px)
-)`;
-
-});
+if(!down)return;
 
 
+x+=e.clientX-sx;
+y+=e.clientY-sy;
 
-space.addEventListener("pointerup",()=>{
 
-move=false;
-
-});
+sx=e.clientX;
+sy=e.clientY;
 
 
 
+galaxy.style.transform=
+`
+translate(
+calc(-50% + ${x}px),
+calc(-50% + ${y}px)
+)
+`;
+
+};
 
 
-// ===== ستاره های رنگی =====
 
-const starColors=[
+space.onpointerup=()=>{
 
-"#bcecff",
-"#ffd1ea",
-"#d9c5ff",
-"#fff0a5",
-"#baffdd"
+down=false;
+
+};
+
+
+
+
+
+// =======================
+// ستاره های زیاد
+// =======================
+
+
+const colors=[
+
+"#ffffff",
+"#9eeaff",
+"#ffc8eb",
+"#d8b7ff",
+"#fff29a",
+"#aaffdd"
 
 ];
 
 
-for(let i=0;i<1200;i++){
+for(let i=0;i<900;i++){
+
+
+let s=document.createElement("div");
+
+
+s.className="star";
+
+
+s.innerHTML=
+Math.random()>0.4
+?"☆"
+:"✦";
+
+
+s.style.left=
+Math.random()*8500+"px";
+
+
+s.style.top=
+Math.random()*8500+"px";
+
+
+
+s.style.color=
+colors[
+Math.floor(
+Math.random()*colors.length
+)
+];
+
+
+
+s.style.fontSize=
+(5+Math.random()*9)+"px";
+
+
+
+s.style.animationDuration=
+(3+Math.random()*7)+"s";
+
+
+
+galaxy.appendChild(s);
+
+
+}
+
+
+
+
+
+// =======================
+// 💫 ساخت پست
+// =======================
+
+
+function createPostStar(x,y,post){
 
 
 let star=document.createElement("div");
 
 
-star.innerText =
-Math.random()>0.5
-?"☆"
-:"✦";
+star.className="postStar";
 
 
-star.style.position="absolute";
-
-star.style.left =
-Math.random()*9500+"px";
+star.innerHTML="💫";
 
 
-star.style.top =
-Math.random()*9500+"px";
+star.style.left=x+"px";
 
 
-star.style.color =
-starColors[
-Math.floor(
-Math.random()*starColors.length
-)
-];
+star.style.top=y+"px";
 
 
-star.style.fontSize =
-(4+Math.random()*10)+"px";
 
+star.onclick=()=>{
 
-star.style.textShadow =
-"0 0 12px currentColor";
+openPost(post);
 
+};
 
-star.style.animation =
-"blink "+(2+Math.random()*4)+"s infinite alternate";
 
 
 galaxy.appendChild(star);
@@ -434,66 +443,124 @@ galaxy.appendChild(star);
 
 
 
-// ===== شهاب کوچک =====
+// =======================
+// نمایش پست
+// =======================
 
 
-function createComet(){
+function openPost(post){
+
+
+document
+.getElementById("title")
+.innerText=
+post.title || "💫";
+
+
+let html="";
+
+
+if(post.content){
+
+html+=
+`<p>${post.content}</p>`;
+
+}
+
+
+if(post.image_url){
+
+html+=
+`<img src="${post.image_url}">`;
+
+}
+
+
+
+if(post.video_url){
+
+html+=
+`<video controls src="${post.video_url}"></video>`;
+
+}
+
+
+
+document
+.getElementById("content")
+.innerHTML=html;
+
+
+
+document
+.getElementById("viewer")
+.classList.add("show");
+
+
+}
+
+
+
+function closePost(){
+
+document
+.getElementById("viewer")
+.classList.remove("show");
+
+}
+
+
+
+
+// =======================
+// شهاب کوچک
+// =======================
+
+
+function comet(){
 
 
 let c=document.createElement("div");
 
 
+c.innerHTML="✦";
+
 c.style.position="absolute";
 
-c.style.width="8px";
+c.style.color="white";
 
-c.style.height="8px";
-
-c.style.borderRadius="50%";
-
-c.style.background="white";
+c.style.fontSize="18px";
 
 
-c.style.boxShadow=
-"0 0 20px white,0 0 50px #5eeaff";
+let a=Math.random()*8000;
 
+c.style.left=a+"px";
 
-
-let x =
-Math.random()*8000;
-
-
-let y =
-Math.random()*8000;
-
-
-c.style.left=x+"px";
-
-c.style.top=y+"px";
+c.style.top="0px";
 
 
 galaxy.appendChild(c);
 
 
 
-let n=0;
+let t=0;
 
 
-let timer=setInterval(()=>{
+let move=setInterval(()=>{
 
 
-n+=12;
+t+=15;
 
 
 c.style.transform=
-`translate(${n}px,${n/2}px)`;
+`translate(${t}px,${t}px)`;
 
 
-if(n>2500){
-
-clearInterval(timer);
+if(t>5000){
 
 c.remove();
+
+clearInterval(move);
 
 }
 
@@ -505,61 +572,11 @@ c.remove();
 
 
 
-setInterval(
-createComet,
-5000
-);
+setInterval(comet,6000);
+// =======================
+// SUPABASE
+// =======================
 
-
-
-
-
-// ===== ظاهر شدن 💫 پست ها =====
-
-function createPostStar(x,y,data){
-
-
-let p=document.createElement("div");
-
-
-p.innerHTML="💫";
-
-
-p.style.position="absolute";
-
-p.style.left=x+"px";
-
-p.style.top=y+"px";
-
-p.style.fontSize="30px";
-
-p.style.cursor="pointer";
-
-
-p.style.filter=
-"drop-shadow(0 0 15px #ffe600)";
-
-
-
-p.onclick=()=>{
-
-showPost(data);
-
-};
-
-
-
-galaxy.appendChild(p);
-
-
-}
-
-
-
-
-// فعلاً تستی
-// قسمت ۳ این را به Supabase وصل می‌کند
-// ===== SUPABASE =====
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -578,96 +595,87 @@ SUPABASE_KEY
 
 
 
-// ===== نمایش پست =====
-
-function showPost(post){
-
-
-document.getElementById("postTitle")
-.innerText =
-post.title || "💫";
+// =======================
+// آوردن پروفایل
+// =======================
 
 
+async function loadProfile(){
 
-let html="";
+
+const {data,error}=
+
+await db
+.from("site_settings")
+.select("*")
+.order(
+"created_at",
+{
+ascending:false
+}
+)
+.limit(1);
 
 
-if(post.content){
 
-html +=
-`<p>${post.content}</p>`;
+if(error){
+
+console.log(error);
+
+return;
 
 }
 
 
 
-if(post.image_url){
+if(!data[0])return;
 
-html +=
-`
-<img src="${post.image_url}">
-`;
 
-}
+let p=data[0];
 
 
 
-if(post.video_url){
-
-html +=
-`
-<video controls src="${post.video_url}">
-</video>
-`;
-
-}
-
-
-
-if(post.audio_url){
-
-html +=
-`
-<audio controls src="${post.audio_url}">
-</audio>
-`;
-
-}
-
-
-
-document.getElementById("postContent")
-.innerHTML =
-html;
-
-
+if(p.image_url){
 
 document
-.getElementById("viewer")
-.classList.add("show");
+.getElementById("profileImg")
+.src=
+p.image_url;
+
+}
+
+
+
+if(p.site_name){
+
+document
+.getElementById("profileName")
+.innerText=
+p.site_name;
+
+}
+
+
+
+if(p.bio){
+
+document
+.getElementById("profileBio")
+.innerText=
+p.bio;
+
+}
 
 
 }
 
 
 
-// بستن پست
 
-document
-.querySelector(".close")
-.onclick=()=>{
+// =======================
+// آوردن پست ها
+// =======================
 
-document
-.getElementById("viewer")
-.classList.remove("show");
-
-};
-
-
-
-
-
-// ===== گرفتن پست ها =====
 
 async function loadPosts(){
 
@@ -699,16 +707,14 @@ return;
 data.forEach((post,index)=>{
 
 
-// جای هر 💫 در دنیا
 
 let x =
-1000 +
-(index*650);
+900+(index*650);
 
 
 let y =
-900 +
-((index%5)*900);
+700+
+((index%6)*850);
 
 
 
@@ -723,84 +729,18 @@ post
 });
 
 
+
 }
 
 
+
+
+
+// شروع
+
+loadProfile();
 
 loadPosts();
-
-
-
-// ===== افکت قلب =====
-
-document
-.querySelector(".like")
-.onclick=()=>{
-
-
-for(let i=0;i<100;i++){
-
-
-let h=document.createElement("span");
-
-
-h.innerText="♥";
-
-
-h.className="heart";
-
-
-h.style.position="fixed";
-
-h.style.left="50%";
-
-h.style.top="50%";
-
-
-h.style.color=
-[
-"#ff8fcf",
-"#ffd36a",
-"#8fe9ff",
-"#c7a0ff"
-]
-[
-Math.floor(Math.random()*4)
-];
-
-
-
-h.style.fontSize=
-(8+Math.random()*15)+"px";
-
-
-h.style.setProperty(
-"--x",
-(-200+Math.random()*400)+"px"
-);
-
-
-h.style.setProperty(
-"--y",
-(-200+Math.random()*400)+"px"
-);
-
-
-document.body.appendChild(h);
-
-
-setTimeout(()=>{
-
-h.remove();
-
-},1500);
-
-
-
-}
-
-
-};
 </script>
 
 </body>
