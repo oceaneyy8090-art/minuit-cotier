@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>مدیریت پست‌ها</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+body{
+
+margin:0;
+font-family:tahoma;
+
+background:
+linear-gradient(135deg,#080820,#34205e);
+
+color:white;
+
+}
+
+
+.box{
+
+width:90%;
+max-width:600px;
+
+margin:20px auto;
+
+background:#ffffff15;
+
+padding:20px;
+
+border-radius:25px;
+
+}
+
+
+
+input,textarea,button{
+
+width:100%;
+
+padding:13px;
+
+margin-top:10px;
+
+border:0;
+
+border-radius:15px;
+
+}
+
+
+input,textarea{
+
+background:#ffffff20;
+
+color:white;
+
+}
+
+
+button{
+
+background:#8265ff;
+
+color:white;
+
+}
+
+
+.card{
+
+background:#ffffff15;
+
+padding:15px;
+
+margin-top:20px;
+
+border-radius:20px;
+
+}
+
+
+
+.card img,
+.card video{
+
+width:100%;
+
+border-radius:15px;
+
+}
+
+
+
+.delete{
+
+background:#ff3d5a;
+
+}
+
+
+
+.edit{
+
+background:#00bfff;
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h2>
+💫 مدیریت پست‌ها
+</h2>
+
+
+<input id="title"
+placeholder="عنوان">
+
+
+<textarea id="content"
+placeholder="متن پست"></textarea>
+
+
+<input id="image"
+placeholder="لینک عکس">
+
+
+<input id="video"
+placeholder="لینک فیلم">
+
+
+
+<button onclick="savePost()">
+
+💫 انتشار
+
+</button>
+
+
+
+<div id="posts"></div>
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+let editId=null;
+
+
+
+
+async function savePost(){
+
+
+let post={
+
+title:
+title.value,
+
+content:
+content.value,
+
+image_url:
+image.value,
+
+video_url:
+video.value
+
+};
+
+
+
+let result;
+
+
+
+if(editId){
+
+
+result =
+await db
+.from("posts")
+.update(post)
+.eq("id",editId);
+
+
+
+editId=null;
+
+
+}else{
+
+
+result =
+await db
+.from("posts")
+.insert(post);
+
+
+}
+
+
+
+if(result.error){
+
+alert(result.error.message);
+
+return;
+
+}
+
+
+alert("ذخیره شد ✅");
+
+
+clearForm();
+
+loadPosts();
+
+
+}
+
+
+
+
+
+async function loadPosts(){
+
+
+const {data,error}=
+
+await db
+.from("posts")
+.select("*")
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+
+
+if(error){
+
+console.log(error);
+
+return;
+
+}
+
+
+
+let html="";
+
+
+
+data.forEach(p=>{
+
+
+html+=`
+
+<div class="card">
+
+
+<h3>
+${p.title || "بدون عنوان"}
+</h3>
+
+
+<p>
+${p.content || ""}
+</p>
+
+
+${p.image_url ?
+`<img src="${p.image_url}">`
+:""}
+
+
+
+${p.video_url ?
+`<video controls src="${p.video_url}"></video>`
+:""}
+
+
+
+<button class="edit"
+onclick="editPost('${p.id}',
+'${p.title}',
+'${p.content}',
+'${p.image_url}',
+'${p.video_url}')">
+
+ویرایش ✏️
+
+</button>
+
+
+
+<button class="delete"
+onclick="deletePost('${p.id}')">
+
+حذف 🗑️
+
+</button>
+
+
+
+</div>
+
+`;
+
+});
+
+
+posts.innerHTML=html;
+
+
+}
+
+
+
+
+
+function editPost(
+id,t,c,i,v
+){
+
+editId=id;
+
+title.value=t;
+
+content.value=c;
+
+image.value=i;
+
+video.value=v;
+
+
+window.scrollTo(0,0);
+
+}
+
+
+
+
+
+async function deletePost(id){
+
+
+if(!confirm("حذف شود؟"))
+return;
+
+
+
+const {error}=
+
+await db
+.from("posts")
+.delete()
+.eq(
+"id",
+id
+);
+
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+loadPosts();
+
+
+}
+
+
+
+
+
+function clearForm(){
+
+title.value="";
+content.value="";
+image.value="";
+video.value="";
+
+}
+
+
+
+
+loadPosts();
+
+
+</script>
+
+
+</body>
+
+</html>
