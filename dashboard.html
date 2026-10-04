@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>پنل مدیریت</title>
+
+<style>
+
+body{
+
+margin:0;
+
+font-family:tahoma;
+
+height:100vh;
+
+background:
+linear-gradient(135deg,#080820,#34205e);
+
+color:white;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+
+.box{
+
+width:90%;
+
+max-width:400px;
+
+background:#ffffff15;
+
+padding:25px;
+
+border-radius:25px;
+
+text-align:center;
+
+}
+
+
+
+a{
+
+display:block;
+
+margin:15px 0;
+
+padding:15px;
+
+border-radius:18px;
+
+background:#8265ff;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+
+.logout{
+
+background:#ff4160;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h2>
+🌙 Minuit côtier
+</h2>
+
+
+<p>
+پنل مدیریت
+</p>
+
+
+
+<a href="posts.html">
+💫 مدیریت پست‌ها
+</a>
+
+
+
+<a href="settings.html">
+⚙️ تنظیمات کانال
+</a>
+
+
+
+<a href="media.html">
+🎵 مدیریت رسانه
+</a>
+
+
+
+<a class="logout" onclick="logout()">
+خروج
+</a>
+
+
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+async function logout(){
+
+await db.auth.signOut();
+
+location.href="login.html";
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
