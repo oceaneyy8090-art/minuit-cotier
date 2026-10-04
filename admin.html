@@ -1,55 +1,312 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Admin</title>
+<title>پنل مدیریت | Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+*{box-sizing:border-box}
+
 body{
-background:#111;
-color:white;
-font-family:Arial;
-text-align:center;
-padding:30px;
+  margin:0;
+  min-height:100vh;
+  font-family:Tahoma,Arial,sans-serif;
+  color:#fff;
+  background:
+    radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
+    radial-gradient(circle at 80% 80%,#182d67,transparent 35%),
+    linear-gradient(135deg,#050716,#0d1230,#17104a);
+  overflow-x:hidden;
 }
-input,textarea,button{
-width:90%;
-padding:12px;
-margin:8px;
-border-radius:10px;
-border:0;
+
+#stars{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:0;
 }
+
+.star{
+  position:absolute;
+  color:#fff;
+  font-size:8px;
+  opacity:.75;
+  text-shadow:0 0 8px #fff;
+  animation:fall linear infinite;
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-10vh) rotate(0deg);
+    opacity:0;
+  }
+  15%{opacity:.8}
+  85%{opacity:.7}
+  100%{
+    transform:translateY(110vh) rotate(180deg);
+    opacity:0;
+  }
+}
+
+.container{
+  position:relative;
+  z-index:2;
+  width:min(94%,700px);
+  margin:auto;
+  padding:25px 0 60px;
+}
+
+.header{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.header h1{
+  margin:0;
+  font-size:28px;
+  font-style:italic;
+}
+
+.header p{
+  opacity:.75;
+}
+
+.card{
+  background:rgba(12,15,45,.78);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 15px 40px rgba(0,0,0,.3);
+  backdrop-filter:blur(12px);
+}
+
+h2{
+  margin-top:0;
+  font-size:20px;
+}
+
+input,textarea{
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:13px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  outline:none;
+}
+
+textarea{
+  min-height:110px;
+  resize:vertical;
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:#aaa;
+}
+
 button{
-background:#765cff;
-color:white;
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:13px;
+  margin-top:8px;
+  cursor:pointer;
+  color:#fff;
+  font-weight:bold;
+  background:linear-gradient(135deg,#6d4aff,#a65cff);
+}
+
+button:hover{opacity:.9}
+
+.danger{
+  background:linear-gradient(135deg,#9b254f,#d64265);
+}
+
+.post{
+  border-top:1px solid rgba(255,255,255,.1);
+  padding-top:15px;
+  margin-top:15px;
+}
+
+.post img{
+  width:100%;
+  border-radius:15px;
+  margin-top:10px;
+}
+
+.post-title{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.message{
+  text-align:center;
+  margin:12px 0;
+  min-height:20px;
+}
+
+.hidden{
+  display:none;
 }
 </style>
 </head>
 
 <body>
 
-<h2>☆ Minuit côtier ☆</h2>
+<div id="stars"></div>
 
-<input id="email" placeholder="ایمیل">
-<input id="password" type="password" placeholder="رمز">
+<div class="container">
 
-<button onclick="login()">ورود</button>
+<div class="header">
+  <h1>☆ Minuit côtier ☆</h1>
+  <p>پنل مدیریت</p>
+</div>
 
-<hr>
+<!-- LOGIN -->
 
-<input id="title" placeholder="عنوان پست">
-<textarea id="content" placeholder="متن پست"></textarea>
+<div class="card" id="loginBox">
 
-<button onclick="post()">انتشار پست ☆</button>
+  <h2>🔐 ورود مدیر</h2>
 
-<p id="out">آماده</p>
+  <input
+    id="email"
+    type="email"
+    placeholder="ایمیل مدیر"
+  >
+
+  <input
+    id="password"
+    type="password"
+    placeholder="رمز عبور"
+  >
+
+  <button onclick="login()">
+    ورود
+  </button>
+
+  <div id="loginMessage" class="message"></div>
+
+</div>
+
+
+<!-- ADMIN -->
+
+<div id="adminPanel" class="hidden">
+
+  <!-- SETTINGS -->
+
+  <div class="card">
+
+    <h2>⚙️ تنظیمات سایت</h2>
+
+    <input
+      id="siteName"
+      placeholder="نام سایت"
+    >
+
+    <textarea
+      id="siteBio"
+      placeholder="توضیحات / بیو سایت"
+    ></textarea>
+
+    <input
+      id="profileImage"
+      placeholder="لینک عکس پروفایل"
+    >
+
+    <button onclick="saveSettings()">
+      ذخیره تنظیمات 💾
+    </button>
+
+    <div id="settingsMessage" class="message"></div>
+
+  </div>
+
+
+  <!-- NEW POST -->
+
+  <div class="card">
+
+    <h2>📝 انتشار پست</h2>
+
+    <input
+      id="title"
+      placeholder="عنوان پست"
+    >
+
+    <textarea
+      id="content"
+      placeholder="متن پست"
+    ></textarea>
+
+    <input
+      id="image"
+      placeholder="لینک عکس"
+    >
+
+    <input
+      id="video"
+      placeholder="لینک ویدیو"
+    >
+
+    <input
+      id="audio"
+      placeholder="لینک آهنگ"
+    >
+
+    <button onclick="publishPost()">
+      ⭐ انتشار پست
+    </button>
+
+    <div id="postMessage" class="message"></div>
+
+  </div>
+
+
+  <!-- POSTS -->
+
+  <div class="card">
+
+    <h2>📚 پست‌های منتشرشده</h2>
+
+    <div id="posts">
+      در حال دریافت پست‌ها...
+    </div>
+
+  </div>
+
+
+  <!-- LOGOUT -->
+
+  <div class="card">
+
+    <button
+      class="danger"
+      onclick="logout()"
+    >
+      خروج از پنل 🚪
+    </button>
+
+  </div>
+
+</div>
+
+</div>
 
 
 <script>
+
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -57,68 +314,570 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-
-const db =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+const db = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY,
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true
+    }
+  }
 );
 
 
+/* =========================
+   STARS
+========================= */
+
+const starsBox =
+document.getElementById("stars");
+
+for(let i=0;i<90;i++){
+
+  const star =
+  document.createElement("span");
+
+  star.className="star";
+
+  star.innerText="☆";
+
+  star.style.left =
+  Math.random()*100+"%";
+
+  star.style.top =
+  Math.random()*100+"%";
+
+  star.style.fontSize =
+  (Math.random()*6+5)+"px";
+
+  star.style.animationDuration =
+  (Math.random()*8+7)+"s";
+
+  star.style.animationDelay =
+  Math.random()*8+"s";
+
+  starsBox.appendChild(star);
+}
+
+
+/* =========================
+   SHOW ADMIN
+========================= */
+
+function showAdmin(){
+
+  document.getElementById("loginBox")
+  .style.display="none";
+
+  document.getElementById("adminPanel")
+  .style.display="block";
+}
+
+
+/* =========================
+   LOGIN
+========================= */
 
 async function login(){
 
-let {error}=await db.auth.signInWithPassword({
+  const email =
+  document.getElementById("email")
+  .value.trim();
 
-email:
-document.getElementById("email").value,
+  const password =
+  document.getElementById("password")
+  .value;
 
-password:
-document.getElementById("password").value
+  const message =
+  document.getElementById("loginMessage");
 
-});
+  if(!email || !password){
 
+    message.innerText =
+    "ایمیل و رمز را وارد کن ❌";
 
-out.innerText =
-error ? error.message : "وارد شدی ✅";
+    return;
+  }
 
+  message.innerText =
+  "در حال ورود...";
+
+  const {data,error} =
+  await db.auth.signInWithPassword({
+    email:email,
+    password:password
+  });
+
+  if(error){
+
+    message.innerText =
+    "خطا: "+error.message;
+
+    return;
+  }
+
+  message.innerText =
+  "ورود موفق شد ✅";
+
+  showAdmin();
+
+  await loadSettings();
+
+  await loadPosts();
 }
 
 
+/* =========================
+   CHECK SESSION
+========================= */
 
-async function post(){
+async function checkSession(){
 
-const {data} =
-await db.auth.getSession();
+  const {data,error} =
+  await db.auth.getSession();
 
+  if(error){
 
-if(!data.session){
+    console.log(error);
 
-out.innerText="اول وارد شو ❌";
-return;
+    return;
+  }
 
+  if(data.session){
+
+    showAdmin();
+
+    await loadSettings();
+
+    await loadPosts();
+
+  }else{
+
+    document.getElementById("loginBox")
+    .style.display="block";
+
+    document.getElementById("adminPanel")
+    .style.display="none";
+  }
 }
 
 
-const {error}=await db
-.from("posts")
-.insert({
+/* =========================
+   SAVE SETTINGS
+========================= */
 
-title:
-document.getElementById("title").value,
+async function saveSettings(){
 
-content:
-document.getElementById("content").value,
+  const message =
+  document.getElementById("settingsMessage");
 
-image_url:null
+  const siteName =
+  document.getElementById("siteName")
+  .value.trim();
 
-});
+  const siteBio =
+  document.getElementById("siteBio")
+  .value.trim();
 
+  const profileImage =
+  document.getElementById("profileImage")
+  .value.trim();
 
-out.innerText =
-error ? error.message : "پست منتشر شد ✅";
+  const {data:sessionData} =
+  await db.auth.getSession();
 
+  if(!sessionData.session){
+
+    message.innerText =
+    "اول وارد شو ❌";
+
+    return;
+  }
+
+  const {data:oldSettings,error:readError} =
+  await db
+  .from("site_settings")
+  .select("id")
+  .limit(1);
+
+  if(readError){
+
+    message.innerText =
+    "خطا: "+readError.message;
+
+    return;
+  }
+
+  let result;
+
+  if(oldSettings && oldSettings.length){
+
+    result =
+    await db
+    .from("site_settings")
+    .update({
+      site_name:siteName,
+      bio:siteBio,
+      image_url:profileImage
+    })
+    .eq("id",oldSettings[0].id);
+
+  }else{
+
+    result =
+    await db
+    .from("site_settings")
+    .insert({
+      site_name:siteName,
+      bio:siteBio,
+      image_url:profileImage
+    });
+  }
+
+  if(result.error){
+
+    message.innerText =
+    "خطا: "+result.error.message;
+
+  }else{
+
+    message.innerText =
+    "تنظیمات ذخیره شد ✅❤️";
+  }
 }
+
+
+/* =========================
+   LOAD SETTINGS
+========================= */
+
+async function loadSettings(){
+
+  const {data,error} =
+  await db
+  .from("site_settings")
+  .select("*")
+  .limit(1);
+
+  if(error){
+
+    console.log("Settings:",error.message);
+
+    return;
+  }
+
+  if(!data || !data.length){
+
+    return;
+  }
+
+  const settings =
+  data[0];
+
+  document.getElementById("siteName")
+  .value =
+  settings.site_name || "";
+
+  document.getElementById("siteBio")
+  .value =
+  settings.bio || "";
+
+  document.getElementById("profileImage")
+  .value =
+  settings.image_url || "";
+}
+
+
+/* =========================
+   PUBLISH POST
+========================= */
+
+async function publishPost(){
+
+  const message =
+  document.getElementById("postMessage");
+
+  const {data:sessionData} =
+  await db.auth.getSession();
+
+  if(!sessionData.session){
+
+    message.innerText =
+    "اول وارد شو ❌";
+
+    return;
+  }
+
+  const title =
+  document.getElementById("title")
+  .value.trim();
+
+  const content =
+  document.getElementById("content")
+  .value.trim();
+
+  const image =
+  document.getElementById("image")
+  .value.trim();
+
+  const video =
+  document.getElementById("video")
+  .value.trim();
+
+  const audio =
+  document.getElementById("audio")
+  .value.trim();
+
+  let finalContent =
+  content;
+
+
+  if(video){
+
+    finalContent +=
+    "\n\n🎬 VIDEO:\n"+video;
+  }
+
+
+  if(audio){
+
+    finalContent +=
+    "\n\n🎵 AUDIO:\n"+audio;
+  }
+
+
+  message.innerText =
+  "در حال انتشار...";
+
+
+  const {error} =
+  await db
+  .from("posts")
+  .insert({
+    title:title,
+    content:finalContent,
+    image_url:image || null
+  });
+
+
+  if(error){
+
+    message.innerText =
+    "خطا: "+error.message;
+
+    return;
+  }
+
+
+  message.innerText =
+  "پست منتشر شد ✅❤️";
+
+
+  document.getElementById("title")
+  .value="";
+
+  document.getElementById("content")
+  .value="";
+
+  document.getElementById("image")
+  .value="";
+
+  document.getElementById("video")
+  .value="";
+
+  document.getElementById("audio")
+  .value="";
+
+
+  await loadPosts();
+}
+
+
+/* =========================
+   LOAD POSTS
+========================= */
+
+async function loadPosts(){
+
+  const box =
+  document.getElementById("posts");
+
+  box.innerHTML =
+  "در حال دریافت پست‌ها...";
+
+
+  const {data,error} =
+  await db
+  .from("posts")
+  .select("*")
+  .order("created_at",{
+    ascending:false
+  });
+
+
+  if(error){
+
+    box.innerHTML =
+    "خطا در دریافت پست‌ها ❌<br>"+
+    escapeHtml(error.message);
+
+    return;
+  }
+
+
+  if(!data || data.length===0){
+
+    box.innerHTML =
+    "هنوز پستی منتشر نشده ☆";
+
+    return;
+  }
+
+
+  box.innerHTML="";
+
+
+  data.forEach(post=>{
+
+    const div =
+    document.createElement("div");
+
+    div.className="post";
+
+
+    let html="";
+
+
+    html +=
+    `<div class="post-title">
+      ${escapeHtml(
+        post.title || "بدون عنوان"
+      )}
+    </div>`;
+
+
+    if(post.content){
+
+      html +=
+      `<p>${escapeHtml(
+        post.content
+      ).replace(/\n/g,"<br>")}</p>`;
+    }
+
+
+    if(post.image_url){
+
+      html +=
+      `<img
+        src="${escapeAttr(
+          post.image_url
+        )}"
+        alt="post image"
+      >`;
+    }
+
+
+    html +=
+    `<button
+      class="danger"
+      onclick="deletePost(${post.id})">
+      🗑 حذف این پست
+    </button>`;
+
+
+    div.innerHTML =
+    html;
+
+    box.appendChild(div);
+  });
+}
+
+
+/* =========================
+   DELETE POST
+========================= */
+
+async function deletePost(id){
+
+  const ok =
+  confirm("این پست حذف شود؟");
+
+  if(!ok){
+    return;
+  }
+
+
+  const {error} =
+  await db
+  .from("posts")
+  .delete()
+  .eq("id",id);
+
+
+  if(error){
+
+    alert(
+      "حذف نشد ❌\n"+
+      error.message
+    );
+
+    return;
+  }
+
+
+  alert("پست حذف شد ✅");
+
+  await loadPosts();
+}
+
+
+/* =========================
+   ESCAPE
+========================= */
+
+function escapeHtml(text){
+
+  return String(text)
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+}
+
+
+function escapeAttr(text){
+
+  return escapeHtml(text);
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+
+  await db.auth.signOut();
+
+  document.getElementById("adminPanel")
+  .style.display="none";
+
+  document.getElementById("loginBox")
+  .style.display="block";
+
+  document.getElementById("loginMessage")
+  .innerText =
+  "از حساب خارج شدی 👋";
+}
+
+
+/* =========================
+   START
+========================= */
+
+checkSession();
 
 </script>
 
