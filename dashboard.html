@@ -20,7 +20,7 @@ html,body{
 
 body{
   font-family:tahoma,Arial,sans-serif;
-  color:#fff;
+  color:white;
   overflow-x:hidden;
 
   background:
@@ -42,9 +42,8 @@ body{
 
 .star{
   position:absolute;
-  color:white;
   font-size:8px;
-  opacity:.8;
+  opacity:0;
 
   animation:float linear infinite;
 
@@ -95,7 +94,6 @@ body{
 
 .header{
   text-align:center;
-
   padding:25px 10px 18px;
 }
 
@@ -110,17 +108,14 @@ body{
 
 .subtitle{
   margin-top:8px;
-
   color:#bbb7df;
-
   font-size:13px;
 }
 
 
-/* خوش آمد */
+/* کارت خوش‌آمد */
 
 .welcome{
-
   padding:22px;
 
   border-radius:28px;
@@ -141,51 +136,39 @@ body{
 
 .welcome h2{
   margin:0 0 8px;
-
   font-size:20px;
 }
 
 .welcome p{
   margin:0;
-
   color:#bdb9d8;
-
   font-size:13px;
 }
 
 
-/* منو */
+/* منوی اصلی */
 
 .menu{
-
   display:grid;
-
   grid-template-columns:1fr 1fr;
-
   gap:14px;
-
   margin-top:18px;
 }
 
 
-/* کارت */
+/* کارت‌های منو */
 
 .menu-card{
-
   position:relative;
 
   min-height:145px;
 
   display:flex;
-
   flex-direction:column;
-
   justify-content:center;
-
   align-items:center;
 
   text-decoration:none;
-
   color:white;
 
   border-radius:25px;
@@ -210,9 +193,7 @@ body{
   overflow:hidden;
 }
 
-
 .menu-card::before{
-
   content:"";
 
   position:absolute;
@@ -227,9 +208,7 @@ body{
   filter:blur(20px);
 }
 
-
 .menu-card:hover{
-
   transform:translateY(-4px);
 
   border-color:rgba(160,145,255,.55);
@@ -242,7 +221,6 @@ body{
 /* آیکون */
 
 .icon{
-
   position:relative;
 
   font-size:36px;
@@ -254,7 +232,6 @@ body{
 /* عنوان */
 
 .title{
-
   position:relative;
 
   font-size:16px;
@@ -266,7 +243,6 @@ body{
 /* توضیح */
 
 .desc{
-
   position:relative;
 
   margin-top:6px;
@@ -277,7 +253,7 @@ body{
 }
 
 
-/* رنگ آیکون‌ها */
+/* نور آیکون‌ها */
 
 .profile .icon{
   text-shadow:0 0 18px #ff6fcf;
@@ -303,7 +279,6 @@ body{
 /* پایین */
 
 .footer{
-
   text-align:center;
 
   margin-top:28px;
@@ -313,6 +288,8 @@ body{
   font-size:11px;
 }
 
+
+/* موبایل */
 
 @media(max-width:380px){
 
@@ -394,7 +371,9 @@ body{
 
 <!-- پروفایل -->
 
-<a class="menu-card profile" href="settings.html">
+<a
+class="menu-card profile"
+href="settings.html">
 
 <div class="icon">
 👤
@@ -413,7 +392,9 @@ body{
 
 <!-- تنظیمات -->
 
-<a class="menu-card settings" href="settings.html">
+<a
+class="menu-card settings"
+href="settings.html">
 
 <div class="icon">
 ⚙️
@@ -432,7 +413,9 @@ body{
 
 <!-- پست‌ها -->
 
-<a class="menu-card posts" href="posts.html">
+<a
+class="menu-card posts"
+href="posts.html">
 
 <div class="icon">
 💫
@@ -451,7 +434,9 @@ body{
 
 <!-- داشبورد -->
 
-<a class="menu-card dashboard" href="dashboard.html">
+<a
+class="menu-card dashboard"
+href="dashboard.html">
 
 <div class="icon">
 📊
@@ -468,10 +453,11 @@ body{
 </a>
 
 
-<!-- مشاهده سایت -->
+<!-- سایت اصلی -->
 
-<a class="menu-card website"
-   href="index.html">
+<a
+class="menu-card website"
+href="https://oceaneyy8090-art.github.io/minuit-cotier/">
 
 <div class="icon">
 🌐
@@ -482,7 +468,7 @@ body{
 </div>
 
 <div class="desc">
-رفتن به صفحه اصلی
+ورود به سایت اصلی
 </div>
 
 </a>
