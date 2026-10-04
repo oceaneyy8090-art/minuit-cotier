@@ -4,455 +4,90 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1.0"
->
-
-<title>پنل مدیریت | Minuit côtier</title>
+<title>پنل مدیریت Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
-*{
-box-sizing:border-box;
-}
-
 body{
-
 margin:0;
-
-min-height:100vh;
-
-font-family:
-Tahoma,
-Arial,
-sans-serif;
-
-color:white;
-
+font-family:tahoma;
 background:
-
-radial-gradient(
-circle at 15% 20%,
-#392878,
-transparent 35%
-),
-
-radial-gradient(
-circle at 85% 70%,
-#3a145f,
-transparent 35%
-),
-
-linear-gradient(
-135deg,
-#040511,
-#17104a,
-#24145c
-);
-
-padding:18px;
-
+linear-gradient(135deg,#080820,#30205f);
+color:white;
 }
 
-.container{
+.box{
 
-width:100%;
-
-max-width:900px;
-
-margin:auto;
-
-}
-
-
-/* HEADER */
-
-.header{
-
-background:#ffffff10;
-
-border:1px solid #ffffff18;
-
+width:90%;
+max-width:600px;
+margin:30px auto;
+background:#ffffff15;
+padding:20px;
 border-radius:25px;
 
-padding:20px;
-
-backdrop-filter:blur(15px);
-
-box-shadow:
-0 15px 50px #0005;
-
-margin-bottom:15px;
-
 }
 
-.logo{
-
-text-align:center;
-
-font-size:25px;
-
-font-weight:bold;
-
-margin-bottom:18px;
-
-}
-
-.headerButtons{
-
-display:grid;
-
-grid-template-columns:
-repeat(2,1fr);
-
-gap:10px;
-
-}
-
-.headerButtons button{
-
-border:0;
-
-border-radius:15px;
-
-padding:13px;
-
-font-size:14px;
-
-font-weight:bold;
-
-color:white;
-
-background:#7650ff;
-
-}
-
-.headerButtons button:active{
-
-transform:scale(.97);
-
-}
-
-
-/* STATS */
-
-.stats{
-
-display:grid;
-
-grid-template-columns:
-repeat(2,1fr);
-
-gap:12px;
-
-margin-bottom:15px;
-
-}
-
-.stat{
-
-background:#ffffff10;
-
-border:1px solid #ffffff15;
-
-border-radius:20px;
-
-padding:18px;
-
-text-align:center;
-
-backdrop-filter:blur(12px);
-
-}
-
-.statNumber{
-
-font-size:28px;
-
-font-weight:bold;
-
-margin-bottom:5px;
-
-}
-
-.statText{
-
-color:#bbb;
-
-font-size:13px;
-
-}
-
-
-/* SEARCH */
-
-.searchBox{
-
-background:#ffffff10;
-
-border:1px solid #ffffff15;
-
-border-radius:20px;
-
-padding:15px;
-
-margin-bottom:18px;
-
-}
-
-.searchBox input{
+input,textarea,button{
 
 width:100%;
-
+margin-top:12px;
 padding:14px;
-
 border:0;
+border-radius:15px;
 
-outline:none;
+}
 
-border-radius:14px;
 
-background:#ffffff12;
+input,textarea{
 
+background:#ffffff20;
 color:white;
 
-font-size:15px;
-
-}
-
-.searchBox input::placeholder{
-
-color:#aaa;
-
 }
 
 
-/* POSTS */
+textarea{
+height:100px;
+}
 
-.posts{
 
-display:flex;
+button{
 
-flex-direction:column;
-
-gap:18px;
+background:#8265ff;
+color:white;
+font-weight:bold;
 
 }
+
 
 .post{
 
-background:#ffffff10;
-
-border:
-1px solid #ffffff18;
-
-border-radius:23px;
-
-padding:18px;
-
-backdrop-filter:blur(14px);
-
-box-shadow:
-0 10px 35px #0004;
+margin-top:20px;
+background:#ffffff15;
+padding:15px;
+border-radius:20px;
 
 }
 
-.postHeader{
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-gap:10px;
-
-margin-bottom:10px;
-
-}
-
-.postNumber{
-
-font-size:13px;
-
-color:#cfc5ff;
-
-}
-
-.postDate{
-
-font-size:11px;
-
-color:#888;
-
-}
-
-.title{
-
-font-size:20px;
-
-font-weight:bold;
-
-margin-bottom:10px;
-
-}
-
-.content{
-
-color:#ddd;
-
-line-height:1.9;
-
-white-space:pre-wrap;
-
-}
 
 .post img{
 
-display:block;
-
 width:100%;
-
-max-height:400px;
-
-object-fit:cover;
-
-border-radius:18px;
-
-margin-top:14px;
+border-radius:15px;
 
 }
 
-.post video{
-
-display:block;
-
-width:100%;
-
-max-height:400px;
-
-margin-top:14px;
-
-border-radius:18px;
-
-background:#000;
-
-}
-
-.post audio{
-
-width:100%;
-
-margin-top:14px;
-
-}
-
-.media{
-
-margin-top:12px;
-
-color:#cfc5ff;
-
-font-size:13px;
-
-}
-
-
-/* DELETE */
 
 .delete{
 
-width:100%;
-
-margin-top:16px;
-
-padding:14px;
-
-border:0;
-
-border-radius:15px;
-
-background:#c9365b;
-
-color:white;
-
-font-size:15px;
-
-font-weight:bold;
+background:#ff3b5c;
 
 }
 
-.delete:active{
-
-transform:scale(.97);
-
-}
-
-
-/* EMPTY */
-
-.loading,
-.empty{
-
-text-align:center;
-
-padding:40px;
-
-background:#ffffff0d;
-
-border-radius:22px;
-
-color:#bbb;
-
-}
-
-
-/* ERROR */
-
-.error{
-
-padding:25px;
-
-background:#ff000018;
-
-border-radius:20px;
-
-color:#ffb0b0;
-
-line-height:2;
-
-text-align:center;
-
-}
-
-
-/* MOBILE */
-
-@media(max-width:500px){
-
-.headerButtons{
-
-grid-template-columns:1fr 1fr;
-
-}
-
-.stats{
-
-grid-template-columns:1fr 1fr;
-
-}
-
-.logo{
-
-font-size:21px;
-
-}
-
-}
 
 </style>
 
@@ -462,151 +97,46 @@ font-size:21px;
 <body>
 
 
-<div class="container">
+<div class="box">
 
 
-<!-- HEADER -->
-
-<div class="header">
-
-
-<div class="logo">
-
-☆ Minuit côtier ☆
-
-<br>
-
-<span style="
-font-size:14px;
-color:#aaa;
-">
-
-پنل مدیریت
-
-</span>
-
-</div>
+<h2>
+⚙️ پنل مدیریت
+</h2>
 
 
-<div class="headerButtons">
+<input id="title"
+placeholder="عنوان پست">
 
 
-<button onclick="goHome()">
+<textarea id="content"
+placeholder="متن پست"></textarea>
 
-🏠 سایت
+
+<input id="image_url"
+placeholder="لینک عکس">
+
+
+<input id="video_url"
+placeholder="لینک فیلم">
+
+
+<button onclick="addPost()">
+
+💫 انتشار پست
 
 </button>
 
 
-<button onclick="goSettings()">
-
-⚙️ تنظیمات
-
-</button>
+<hr>
 
 
-<button onclick="goPublish()">
-
-➕ پست جدید
-
-</button>
+<h3>
+پست‌های من
+</h3>
 
 
-<button onclick="loadPosts()">
-
-🔄 بروزرسانی
-
-</button>
-
-
-</div>
-
-
-</div>
-
-
-
-<!-- STATS -->
-
-<div class="stats">
-
-
-<div class="stat">
-
-<div
-id="postCount"
-class="statNumber"
->
-
-0
-
-</div>
-
-<div class="statText">
-
-📚 تعداد پست‌ها
-
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div
-id="mediaCount"
-class="statNumber"
->
-
-0
-
-</div>
-
-<div class="statText">
-
-🎨 فایل‌های رسانه‌ای
-
-</div>
-
-</div>
-
-
-</div>
-
-
-
-<!-- SEARCH -->
-
-<div class="searchBox">
-
-<input
-
-id="search"
-
-placeholder="🔎 جست‌وجوی پست..."
-
-oninput="searchPosts()"
-
->
-
-</div>
-
-
-
-<!-- POSTS -->
-
-<div
-id="posts"
-class="posts"
->
-
-<div class="loading">
-
-در حال دریافت پست‌ها... ⏳
-
-</div>
-
-</div>
+<div id="list"></div>
 
 
 </div>
@@ -616,612 +146,164 @@ class="posts"
 <script>
 
 
-/* =========================
-SUPABASE
-========================= */
-
-
 const SUPABASE_URL =
-
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
 
 const SUPABASE_KEY =
-
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
 
 const db =
-
 supabase.createClient(
-
 SUPABASE_URL,
-
 SUPABASE_KEY
-
 );
 
 
 
-/* =========================
-VARIABLES
-========================= */
 
 
-let allPosts=[];
+async function addPost(){
+
+
+const {error}=
+
+await db
+.from("posts")
+.insert({
+
+title:
+document.getElementById("title").value,
+
+content:
+document.getElementById("content").value,
+
+image_url:
+document.getElementById("image_url").value,
+
+video_url:
+document.getElementById("video_url").value
+
+});
 
 
 
-/* =========================
-NAVIGATION
-========================= */
+if(error){
 
+alert(error.message);
 
-function goHome(){
-
-location.href="index.html";
+return;
 
 }
 
 
-function goSettings(){
-
-location.href="settings.html";
-
-}
+alert("💫 پست اضافه شد");
 
 
-function goPublish(){
+loadPosts();
 
-location.href="publish.html";
 
 }
 
 
 
-/* =========================
-LOAD POSTS
-========================= */
+
 
 
 async function loadPosts(){
 
 
-const box=
-
-document.getElementById("posts");
-
-
-box.innerHTML=
-
-`
-
-<div class="loading">
-
-در حال دریافت پست‌ها... ⏳
-
-</div>
-
-`;
-
-
 const {data,error}=
 
 await db
-
 .from("posts")
-
 .select("*")
-
 .order(
-
 "created_at",
-
 {
-
 ascending:false
-
 }
-
 );
 
 
 
 if(error){
 
+console.log(error);
 
-box.innerHTML=
+return;
 
-`
+}
 
-<div class="error">
 
-❌ خطا در دریافت پست‌ها
 
-<br>
+let html="";
 
-${escapeHtml(error.message)}
+
+
+data.forEach(p=>{
+
+
+html+=`
+
+<div class="post">
+
+
+<h3>
+${p.title || "بدون عنوان"}
+</h3>
+
+
+<p>
+${p.content || ""}
+</p>
+
+
+${p.image_url ?
+`<img src="${p.image_url}">`
+:""}
+
+
+
+<button class="delete"
+onclick="deletePost('${p.id}')">
+
+🗑 حذف پست
+
+</button>
+
 
 </div>
 
 `;
 
-return;
-
-}
-
-
-
-allPosts=data || [];
-
-
-updateStats();
-
-
-renderPosts(allPosts);
-
-
-}
-
-
-
-/* =========================
-STATS
-========================= */
-
-
-function updateStats(){
-
-
-document
-
-.getElementById("postCount")
-
-.innerText=
-
-allPosts.length;
-
-
-let media=0;
-
-
-allPosts.forEach(post=>{
-
-if(post.image_url)
-media++;
-
-if(post.video_url)
-media++;
-
-if(post.audio_url)
-media++;
-
 });
 
 
-document
+document.getElementById("list")
+.innerHTML=html;
 
-.getElementById("mediaCount")
-
-.innerText=
-
-media;
 
 }
 
 
 
-/* =========================
-RENDER
-========================= */
 
 
-function renderPosts(posts){
-
-
-const box=
-
-document.getElementById("posts");
-
-
-if(!posts.length){
-
-box.innerHTML=
-
-`
-
-<div class="empty">
-
-چیزی پیدا نشد 🌙
-
-</div>
-
-`;
-
-return;
-
-}
-
-
-box.innerHTML="";
-
-
-posts.forEach(
-
-(post,index)=>{
-
-
-const div=
-
-document.createElement("div");
-
-
-div.className="post";
-
-
-
-/* HEADER */
-
-
-const postHeader=
-
-document.createElement("div");
-
-
-postHeader.className=
-
-"postHeader";
-
-
-const number=
-
-document.createElement("div");
-
-
-number.className=
-
-"postNumber";
-
-
-number.innerText=
-
-"پست شماره "+
-
-(index+1);
-
-
-const date=
-
-document.createElement("div");
-
-
-date.className=
-
-"postDate";
-
-
-if(post.created_at){
-
-date.innerText=
-
-new Date(
-
-post.created_at
-
-).toLocaleString(
-
-"fa-IR"
-
-);
-
-}
-
-
-postHeader.appendChild(number);
-
-postHeader.appendChild(date);
-
-div.appendChild(postHeader);
-
-
-
-/* TITLE */
-
-
-if(post.title){
-
-const title=
-
-document.createElement("div");
-
-
-title.className="title";
-
-
-title.innerText=
-
-post.title;
-
-
-div.appendChild(title);
-
-}
-
-
-
-/* CONTENT */
-
-
-if(post.content){
-
-const content=
-
-document.createElement("div");
-
-
-content.className=
-
-"content";
-
-
-content.innerText=
-
-post.content;
-
-
-div.appendChild(content);
-
-}
-
-
-
-/* IMAGE */
-
-
-if(post.image_url){
-
-const img=
-
-document.createElement("img");
-
-
-img.src=
-
-post.image_url;
-
-
-img.alt=
-
-"تصویر پست";
-
-
-img.loading="lazy";
-
-
-div.appendChild(img);
-
-}
-
-
-
-/* VIDEO */
-
-
-if(post.video_url){
-
-const video=
-
-document.createElement("video");
-
-
-video.src=
-
-post.video_url;
-
-
-video.controls=true;
-
-
-video.playsInline=true;
-
-
-div.appendChild(video);
-
-}
-
-
-
-/* AUDIO */
-
-
-if(post.audio_url){
-
-const audio=
-
-document.createElement("audio");
-
-
-audio.src=
-
-post.audio_url;
-
-
-audio.controls=true;
-
-
-div.appendChild(audio);
-
-}
-
-
-
-/* MEDIA TYPES */
-
-
-let types=[];
-
-
-if(post.image_url)
-
-types.push("🖼️ عکس");
-
-
-if(post.video_url)
-
-types.push("🎬 ویدیو");
-
-
-if(post.audio_url)
-
-types.push("🎵 صدا");
-
-
-if(types.length){
-
-const media=
-
-document.createElement("div");
-
-
-media.className="media";
-
-
-media.innerText=
-
-types.join("  •  ");
-
-
-div.appendChild(media);
-
-}
-
-
-
-/* DELETE */
-
-
-const deleteButton=
-
-document.createElement("button");
-
-
-deleteButton.className=
-
-"delete";
-
-
-deleteButton.innerText=
-
-"🗑️ حذف این پست";
-
-
-deleteButton.onclick=
-
-()=>deletePost(post.id);
-
-
-div.appendChild(deleteButton);
-
-
-
-box.appendChild(div);
-
-
-}
-
-);
-
-}
-
-
-
-/* =========================
-SEARCH
-========================= */
-
-
-function searchPosts(){
-
-
-const value=
-
-document
-
-.getElementById("search")
-
-.value
-
-.trim()
-
-.toLowerCase();
-
-
-if(!value){
-
-renderPosts(allPosts);
-
-return;
-
-}
-
-
-const filtered=
-
-allPosts.filter(post=>{
-
-
-const title=
-
-(post.title || "")
-
-.toLowerCase();
-
-
-const content=
-
-(post.content || "")
-
-.toLowerCase();
-
-
-return (
-
-title.includes(value)
-
-||
-
-content.includes(value)
-
-);
-
-});
-
-
-renderPosts(filtered);
-
-}
-
-
-
-/* =========================
-DELETE
-========================= */
 
 
 async function deletePost(id){
 
 
-const answer=
-
+let confirmDelete =
 confirm(
-
-"مطمئنی می‌خوای این پست حذف بشه؟\n\nاین کار قابل برگشت نیست."
-
+"این پست حذف شود؟"
 );
 
 
-if(!answer)
 
+if(!confirmDelete)
 return;
 
 
@@ -1229,69 +311,30 @@ return;
 const {error}=
 
 await db
-
 .from("posts")
-
 .delete()
-
-.eq("id",id);
+.eq(
+"id",
+id
+);
 
 
 
 if(error){
 
-alert(
+alert(error.message);
 
-"❌ حذف نشد:\n\n"+
+}else{
 
-error.message
-
-);
-
-return;
-
-}
-
-
-
-alert(
-
-"پست حذف شد ✅"
-
-);
-
+alert("حذف شد 🗑️");
 
 loadPosts();
 
 }
 
 
-
-/* =========================
-ESCAPE
-========================= */
-
-
-function escapeHtml(text){
-
-
-const div=
-
-document.createElement("div");
-
-
-div.innerText=text;
-
-
-return div.innerHTML;
-
 }
 
-
-
-/* =========================
-START
-========================= */
 
 
 loadPosts();
