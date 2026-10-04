@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>انتشار پست | Minuit côtier</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+min-height:100vh;
+font-family:Tahoma;
+color:white;
+background:
+radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
+linear-gradient(135deg,#050716,#17104a);
+}
+
+#stars{
+position:fixed;
+inset:0;
+pointer-events:none;
+}
+
+.star{
+position:absolute;
+color:white;
+font-size:8px;
+animation:fall linear infinite;
+}
+
+@keyframes fall{
+from{
+transform:translateY(-20px);
+}
+to{
+transform:translateY(110vh);
+}
+}
+
+
+.container{
+width:90%;
+max-width:600px;
+margin:auto;
+padding:30px 0;
+position:relative;
+z-index:2;
+}
+
+
+.card{
+background:#ffffff12;
+border-radius:22px;
+padding:20px;
+backdrop-filter:blur(10px);
+}
+
+
+input,textarea,button{
+
+width:100%;
+padding:14px;
+margin-top:12px;
+border-radius:15px;
+border:0;
+
+}
+
+
+input,textarea{
+
+background:#ffffff18;
+color:white;
+
+}
+
+
+textarea{
+height:130px;
+}
+
+
+button{
+
+background:#7650ff;
+color:white;
+font-weight:bold;
+
+}
+
+
+#preview{
+
+width:100%;
+border-radius:15px;
+margin-top:15px;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="stars"></div>
+
+
+<div class="container">
+
+
+<div class="card">
+
+
+<h2>📝 انتشار پست</h2>
+
+
+<input id="title" placeholder="عنوان پست">
+
+
+<textarea id="content" placeholder="متن پست"></textarea>
+
+
+<input type="file" id="imageFile" accept="image/*">
+
+
+<img id="preview">
+
+
+<input id="video" placeholder="لینک ویدیو (اختیاری)">
+
+
+<input id="audio" placeholder="لینک آهنگ (اختیاری)">
+
+
+<button onclick="publishPost()">
+⭐ انتشار پست
+</button>
+
+
+<p id="msg"></p>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+/* ستاره‌ها */
+
+for(let i=0;i<80;i++){
+
+let s=document.createElement("span");
+
+s.className="star";
+
+s.innerText="☆";
+
+s.style.left=Math.random()*100+"%";
+
+s.style.animationDuration=
+(Math.random()*8+7)+"s";
+
+document
+.getElementById("stars")
+.appendChild(s);
+
+}
+
+
+
+document
+.getElementById("imageFile")
+.onchange=function(){
+
+let file=this.files[0];
+
+if(file){
+
+document.getElementById("preview").src=
+URL.createObjectURL(file);
+
+}
+
+};
+
+
+
+
+
+async function uploadPostImage(){
+
+
+let file =
+document.getElementById("imageFile")
+.files[0];
+
+
+if(!file)
+return null;
+
+
+
+let filename =
+"post-"+Date.now();
+
+
+
+const {error}=
+
+await db.storage
+.from("Minuit cotier")
+.upload(filename,file);
+
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+const {data}=
+
+db.storage
+.from("Minuit cotier")
+.getPublicUrl(filename);
+
+
+
+return data.publicUrl;
+
+
+}
+
+
+
+
+
+
+
+async function publishPost(){
+
+
+let msg =
+document.getElementById("msg");
+
+
+msg.innerText="در حال انتشار...";
+
+
+
+try{
+
+
+let image =
+await uploadPostImage();
+
+
+
+let content =
+document.getElementById("content").value;
+
+
+
+let video =
+document.getElementById("video").value;
+
+
+let audio =
+document.getElementById("audio").value;
+
+
+
+if(video)
+content += "\n🎬 "+video;
+
+
+if(audio)
+content += "\n🎵 "+audio;
+
+
+
+const {error}=
+
+await db
+.from("posts")
+.insert({
+
+title:
+document.getElementById("title").value,
+
+content:content,
+
+image_url:image
+
+});
+
+
+
+if(error)
+throw error;
+
+
+
+msg.innerText=
+"پست منتشر شد ✅❤️";
+
+
+
+}catch(e){
+
+msg.innerText=
+"خطا: "+e.message;
+
+}
+
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
