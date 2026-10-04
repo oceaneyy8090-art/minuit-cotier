@@ -20,28 +20,6 @@ canvas{
 display:block;
 }
 
-
-#postBox{
-display:none;
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:#071a3d;
-color:white;
-padding:20px;
-width:80%;
-border-radius:20px;
-text-align:center;
-z-index:10;
-}
-
-
-#like{
-font-size:35px;
-color:white;
-}
-
 </style>
 
 </head>
@@ -51,19 +29,6 @@ color:white;
 <canvas id="sky"></canvas>
 
 
-<div id="postBox">
-
-<button onclick="closePost()">بستن</button>
-
-<h2 id="postTitle">🌛</h2>
-
-<p id="postText"></p>
-
-<div id="like">♡</div>
-
-</div>
-
-
 <script>
 
 const canvas=document.getElementById("sky");
@@ -71,7 +36,6 @@ const ctx=canvas.getContext("2d");
 
 
 let W,H;
-
 
 function resize(){
 
@@ -90,74 +54,76 @@ let camY=0;
 
 
 let stars=[];
-let effects=[];
+
 
 
 const colors=[
 "#ffffff",
-"#7dd3fc",
+"#bae6fd",
 "#c4b5fd",
-"#f9a8d4",
-"#fde68a"
+"#f9a8d4"
 ];
 
 
 
-// ساخت جهان ستاره‌ها
 
-for(let i=0;i<3000;i++){
+// ساخت ستاره‌های جهان
 
-stars.push({
+function newStar(){
 
-x:(Math.random()-0.5)*20000,
+return {
 
-y:(Math.random()-0.5)*20000,
+x:(Math.random()-0.5)*12000,
 
-size:2.5+Math.random()*5,
+y:(Math.random()-0.5)*12000,
+
+size:3+Math.random()*5,
 
 color:colors[Math.floor(Math.random()*colors.length)],
 
-twinkle:Math.random()*10
+alpha:Math.random()*10
 
-});
+};
 
 }
 
 
-let posts=[
 
-{
-x:300,
-y:200,
-title:"پست اول 🌛",
-text:"سلام از Minuit côtier"
+for(let i=0;i<1800;i++){
+
+stars.push(newStar());
+
 }
 
-];
 
 
-let activePost=null;
-// رسم آسمان
 
-function draw(){
+
+function loop(){
+
 
 
 let bg=ctx.createLinearGradient(0,0,0,H);
 
 bg.addColorStop(0,"#010314");
+
 bg.addColorStop(.5,"#071a3d");
+
 bg.addColorStop(1,"#312e81");
 
 
 ctx.fillStyle=bg;
+
 ctx.fillRect(0,0,W,H);
 
 
 
 
-// ستاره‌ها
 
-stars.forEach(s=>{
+for(let i=0;i<stars.length;i++){
+
+
+let s=stars[i];
 
 
 let x=s.x-camX+W/2;
@@ -165,360 +131,96 @@ let x=s.x-camX+W/2;
 let y=s.y-camY+H/2;
 
 
+
 if(
-x>-100 &&
-x<W+100 &&
-y>-100 &&
-y<H+100
+x>-30 &&
+x<W+30 &&
+y>-30 &&
+y<H+30
 ){
 
 
-s.twinkle+=0.03;
+s.alpha+=0.03;
 
 
-ctx.font=
-(s.size+Math.sin(s.twinkle)*0.5)
-+"px Arial";
+ctx.globalAlpha=
+0.6+Math.sin(s.alpha)*0.3;
 
+
+ctx.font=s.size+"px Arial";
 
 ctx.fillStyle=s.color;
 
-
-ctx.fillText(
-"☆",
-x,
-y
-);
+ctx.fillText("☆",x,y);
 
 
 }
 
 
-});
+}
 
 
+ctx.globalAlpha=1;
 
 
-
-// 🌛 پست‌ها
-
-posts.forEach(p=>{
-
-
-let x=p.x-camX+W/2;
-
-let y=p.y-camY+H/2;
-
-
-ctx.font="25px Arial";
-
-
-ctx.fillText(
-"🌛",
-x,
-y
-);
-
-
-});
-
-
-
-
-
-// افکت لایک
-
-effects.forEach((e,i)=>{
-
-
-e.x+=e.vx;
-
-e.y+=e.vy;
-
-
-ctx.font=e.size+"px Arial";
-
-ctx.fillStyle=e.color;
-
-
-ctx.fillText(
-"☆",
-e.x-camX+W/2,
-e.y-camY+H/2
-);
-
-
-
-e.life--;
-
-
-
-if(e.life<=0){
-
-effects.splice(i,1);
+requestAnimationFrame(loop);
 
 }
 
 
-});
+loop();
 
 
 
-requestAnimationFrame(draw);
 
 
-}
-
-
-draw();
-
-
-
-
-
-// باز کردن پست با 🌛
-
-
-canvas.onclick=e=>{
-
-
-posts.forEach(p=>{
-
-
-let x=p.x-camX+W/2;
-
-let y=p.y-camY+H/2;
-
-
-
-if(
-Math.hypot(
-e.clientX-x,
-e.clientY-y
-)<45
-){
-
-
-activePost=p;
-
-
-document.getElementById("postTitle").innerHTML=p.title;
-
-
-document.getElementById("postText").innerHTML=p.text;
-
-
-document.getElementById("postBox").style.display="block";
-
-
-}
-
-
-});
-
-
-};
-
-
-
-
-
-function closePost(){
-
-document.getElementById("postBox").style.display="none";
-
-}
-// لایک ♡ و پرتاب ستاره‌ها
-
-
-document.getElementById("like").onclick=()=>{
-
-
-if(!activePost) return;
-
-
-document.getElementById("like").style.color="red";
-
-
-
-for(let i=0;i<200;i++){
-
-
-effects.push({
-
-x:activePost.x,
-
-y:activePost.y,
-
-
-vx:(Math.random()-0.5)*14,
-
-vy:(Math.random()-0.5)*14,
-
-
-life:100,
-
-
-size:2+Math.random()*5,
-
-
-color:
-colors[
-Math.floor(Math.random()*colors.length)
-]
-
-
-});
-
-
-}
-
-
-
-};
-
-
-
-
-
-
-// حرکت داخل آسمان
-
+// حرکت آسمان
 
 let sx=null;
 let sy=null;
 
-let startX=0;
-let startY=0;
+let oldX=0;
+let oldY=0;
 
 
 
 canvas.onpointerdown=e=>{
 
-
 sx=e.clientX;
-
 sy=e.clientY;
 
-
-startX=camX;
-
-startY=camY;
-
+oldX=camX;
+oldY=camY;
 
 };
-
-
 
 
 
 canvas.onpointermove=e=>{
 
-
 if(sx===null)return;
 
 
+camX=oldX-(e.clientX-sx);
 
-camX=startX-(e.clientX-sx);
-
-
-camY=startY-(e.clientY-sy);
-
+camY=oldY-(e.clientY-sy);
 
 
 };
-
-
 
 
 
 canvas.onpointerup=()=>{
 
-
 sx=null;
-
 sy=null;
 
-
-};
-// اتصال Supabase
-
-const SUPABASE_URL =
-"https://oyowhuyzgjvpoeupoegh.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
-
-
-
-async function loadPosts(){
-
-
-try{
-
-
-let res=await fetch(
-
-SUPABASE_URL+
-"/rest/v1/posts?select=*",
-
-{
-
-headers:{
-
-"apikey":SUPABASE_KEY,
-
-"Authorization":
-"Bearer "+SUPABASE_KEY
-
-}
-
-}
-
-);
-
-
-
-let data=await res.json();
-
-
-
-posts=data.map((p)=>{
-
-
-return{
-
-
-x:(Math.random()-0.5)*8000,
-
-y:(Math.random()-0.5)*8000,
-
-
-title:p.title || "پست 🌛",
-
-
-text:p.content || ""
-
 };
 
 
-});
 
-
-
-}catch(e){
-
-console.log(e);
-
-}
-
-
-}
-
-
-
-loadPosts();
 </script>
+
 
 </body>
 </html>
