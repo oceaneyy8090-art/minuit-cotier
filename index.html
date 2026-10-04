@@ -26,7 +26,6 @@ display:block;
 
 <canvas id="sky"></canvas>
 
-
 <audio id="lightMusic" loop>
 <source src="light.mp3" type="audio/mpeg">
 </audio>
@@ -34,29 +33,18 @@ display:block;
 
 <script>
 
-
 const lightMusic=document.getElementById("lightMusic");
 lightMusic.volume=0.25;
 
 
-// 🎵 موزیک لایت پست‌ها
+// شروع موزیک با اولین لمس
+document.body.addEventListener("pointerdown",()=>{
 
-function playPostMusic(){
-
-lightMusic.currentTime=0;
 lightMusic.play();
 
-}
+},{once:true});
 
 
-function stopPostMusic(){
-
-lightMusic.pause();
-lightMusic.currentTime=0;
-
-}
-
-const SUPABASE_KEY = "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
 const canvas=document.getElementById("sky");
 const ctx=canvas.getContext("2d");
@@ -65,8 +53,10 @@ const ctx=canvas.getContext("2d");
 let W,H;
 
 function resize(){
+
 W=canvas.width=innerWidth;
 H=canvas.height=innerHeight;
+
 }
 
 resize();
@@ -82,7 +72,7 @@ let stars=[];
 
 
 const colors=[
-"#fff",
+"#ffffff",
 "#7dd3fc",
 "#a78bfa",
 "#f9a8d4",
@@ -91,19 +81,22 @@ const colors=[
 
 
 
-// ساخت ستاره در هر قسمت جدید
-
 function addStar(){
 
 stars.push({
 
-x:camX+(Math.random()-0.5)*W*3,
-y:camY+(Math.random()-0.5)*H*3,
+x:camX+(Math.random()-0.5)*W*5,
 
-vx:(Math.random()-.5)*0.2,
-vy:(Math.random()-.5)*0.2,
+y:camY+(Math.random()-0.5)*H*5,
+
+
+vx:(Math.random()-.5)*0.25,
+
+vy:(Math.random()-.5)*0.25,
+
 
 size:2+Math.random()*7,
+
 
 color:
 colors[
@@ -116,18 +109,38 @@ Math.floor(Math.random()*colors.length)
 
 
 
-// شروع اولیه
+// ستاره زیاد
 
-for(let i=0;i<600;i++)
+for(let i=0;i<1200;i++){
+
 addStar();
 
+}
 
 
 
-function loop(){
 
-while(stars.length<900)
+function animate(){
+
+
+
+while(stars.length<1500){
+
 addStar();
+
+}
+
+
+
+stars=stars.filter(s=>{
+
+return(
+Math.abs(s.x-camX)<W*5 &&
+Math.abs(s.y-camY)<H*5
+);
+
+});
+
 
 
 
@@ -136,24 +149,31 @@ ctx.createLinearGradient(
 0,0,0,H
 );
 
+
 bg.addColorStop(0,"#010314");
-bg.addColorStop(.6,"#071a3d");
+bg.addColorStop(.5,"#071a3d");
 bg.addColorStop(1,"#31486d");
 
 
 ctx.fillStyle=bg;
+
 ctx.fillRect(0,0,W,H);
+
 
 
 
 stars.forEach(s=>{
 
+
 s.x+=s.vx;
 s.y+=s.vy;
 
 
+
 let x=s.x-camX+W/2;
+
 let y=s.y-camY+H/2;
+
 
 
 if(
@@ -166,8 +186,11 @@ y>H+100
 
 
 ctx.font=s.size+"px Arial";
+
 ctx.fillStyle=s.color;
+
 ctx.textAlign="center";
+
 
 ctx.fillText(
 "☆",
@@ -176,22 +199,30 @@ y
 );
 
 
+
 });
 
 
 
-requestAnimationFrame(loop);
+requestAnimationFrame(animate);
 
 }
 
-loop();
+
+animate();
 
 
 
 
-// کشیدن صفحه
 
-let sx,sy,ox,oy;
+// حرکت صفحه
+
+let sx=null;
+let sy=null;
+
+let ox=0;
+let oy=0;
+
 
 
 canvas.onpointerdown=e=>{
@@ -205,24 +236,31 @@ oy=camY;
 };
 
 
+
 canvas.onpointermove=e=>{
 
-if(sx==null)return;
+if(sx===null)return;
+
 
 camX=
 ox-(e.clientX-sx);
 
+
 camY=
 oy-(e.clientY-sy);
 
+
 };
+
 
 
 canvas.onpointerup=()=>{
 
 sx=null;
+sy=null;
 
 };
+
 
 
 </script>
