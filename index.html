@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
 <style>
@@ -23,8 +22,6 @@ canvas{
     height:100%;
     background:#000;
 }
-
-/* پنجره پست */
 
 #postWindow{
     display:none;
@@ -83,9 +80,7 @@ canvas{
 
 #likeButton.liked{
     color:#ff4fa3;
-    text-shadow:
-        0 0 12px #ff4fa3,
-        0 0 25px #ff4fa3;
+    text-shadow:0 0 12px #ff4fa3,0 0 25px #ff4fa3;
 }
 </style>
 </head>
@@ -95,15 +90,10 @@ canvas{
 <canvas id="sky"></canvas>
 
 <div id="postWindow">
-
     <button id="closePost">×</button>
-
     <h2 id="postTitle"></h2>
-
     <div id="postText"></div>
-
     <button id="likeButton">♡</button>
-
 </div>
 
 <script>
@@ -114,20 +104,11 @@ const ctx=canvas.getContext("2d");
 let W=innerWidth;
 let H=innerHeight;
 
-
-/* =========================
-   اندازه صفحه
-========================= */
-
 function resize(){
-
     W=innerWidth;
     H=innerHeight;
 
-    const dpr=Math.min(
-        devicePixelRatio||1,
-        1.5
-    );
+    const dpr=Math.min(devicePixelRatio||1,1.5);
 
     canvas.width=W*dpr;
     canvas.height=H*dpr;
@@ -135,9 +116,7 @@ function resize(){
     canvas.style.width=W+"px";
     canvas.style.height=H+"px";
 
-    ctx.setTransform(
-        dpr,0,0,dpr,0,0
-    );
+    ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 
 addEventListener("resize",resize);
@@ -164,7 +143,7 @@ let startCamY=0;
 
 
 /* =========================
-   رنگ ستاره‌ها
+   رنگ‌ها
 ========================= */
 
 const colors=[
@@ -184,26 +163,17 @@ const colors=[
 
 
 /* =========================
-   جهان
+   آسمان
 ========================= */
 
 const WORLD=24000;
-
-
-/* =========================
-   3000 ستاره
-========================= */
-
 const stars=[];
 
 for(let i=0;i<3000;i++){
 
     stars.push({
-
         x:(Math.random()-.5)*WORLD,
-
         y:(Math.random()-.5)*WORLD,
-
         size:13+Math.random()*4,
 
         color:
@@ -214,7 +184,6 @@ for(let i=0;i<3000;i++){
             ],
 
         vx:(Math.random()-.5)*.8,
-
         vy:(Math.random()-.5)*.8,
 
         phase:
@@ -250,17 +219,16 @@ const butterflies=[];
 
 
 /*
-      شکل دسته:
+        🦋
 
-             🦋
+     🦋     🦋
 
-          🦋     🦋
-
-       🦋    🦋    🦋    🦋
+  🦋   🦋   🦋   🦋
 
 
-   فاصله‌ها عمداً زیاد هستند.
-   هیچ پروانه‌ای روی دیگری قرار نمی‌گیرد.
+   فاصله زیاد
+   حرکت بسیار آهسته
+   دور ماه
 */
 
 
@@ -269,10 +237,6 @@ function createButterflies(){
     butterflies.length=0;
 
     for(const post of posts){
-
-        /*
-           برای هر ماه 7 پروانه
-        */
 
         const formation=[
 
@@ -288,7 +252,6 @@ function createButterflies(){
 
         ];
 
-
         for(let i=0;i<formation.length;i++){
 
             butterflies.push({
@@ -298,12 +261,7 @@ function createButterflies(){
                 index:i,
 
                 baseX:formation[i].x,
-
                 baseY:formation[i].y,
-
-                /*
-                   هر پروانه حرکت متفاوتی دارد
-                */
 
                 phase:
                     Math.random()*Math.PI*2,
@@ -311,9 +269,13 @@ function createButterflies(){
                 phase2:
                     Math.random()*Math.PI*2,
 
+                /*
+                   خیلی آهسته
+                */
+
                 speed:
-                    .0007+
-                    Math.random()*.0006,
+                    0.00009+
+                    Math.random()*0.00007,
 
                 size:
                     17+
@@ -335,7 +297,7 @@ function createButterflies(){
 
 
 /* ==================================================
-   رسم پروانه‌ها
+   پروانه‌ها
 ================================================== */
 
 function drawButterflies(time){
@@ -353,24 +315,23 @@ function drawButterflies(time){
 
 
         /*
-           حرکت کلی دسته
-           دور ماه می‌چرخد
+           چرخش بسیار آهسته
         */
 
-        const orbit =
+        const orbit=
             time*b.speed+
             b.phase;
 
 
         /*
-           شعاع اصلی دسته
+           فاصله از ماه
         */
 
         const radius=115;
 
 
         /*
-           مرکز دسته دور ماه حرکت می‌کند
+           مرکز دسته
         */
 
         let centerX=
@@ -381,31 +342,31 @@ function drawButterflies(time){
 
 
         /*
-           حرکت نرم و نامنظم
+           حرکت طبیعی خیلی کم
         */
 
-        centerX +=
+        centerX+=
             Math.sin(
-                time*.0017+
+                time*0.00045+
                 b.phase2
-            )*22;
+            )*15;
 
-        centerY +=
+        centerY+=
             Math.cos(
-                time*.0014+
+                time*0.0004+
                 b.phase
-            )*22;
+            )*15;
 
 
         /*
-           چرخش خیلی نرم فرم دسته
+           چرخش خیلی کم فرم
         */
 
         const rotation=
             Math.sin(
-                time*.0008+
+                time*0.00025+
                 b.phase
-            )*.35;
+            )*0.18;
 
 
         const cosR=Math.cos(rotation);
@@ -413,27 +374,23 @@ function drawButterflies(time){
 
 
         /*
-           حرکت مستقل هر پروانه
+           حرکت مستقل بسیار نرم
         */
 
-        let localX=
+        const localX=
             b.baseX+
             Math.sin(
-                time*.002+
+                time*0.0007+
                 b.phase
-            )*15;
+            )*9;
 
-        let localY=
+        const localY=
             b.baseY+
             Math.cos(
-                time*.0018+
+                time*0.0006+
                 b.phase2
-            )*13;
+            )*8;
 
-
-        /*
-           چرخاندن مختصات
-        */
 
         const rotatedX=
             localX*cosR-
@@ -443,10 +400,6 @@ function drawButterflies(time){
             localX*sinR+
             localY*cosR;
 
-
-        /*
-           موقعیت نهایی در جهان
-        */
 
         const worldX=
             post.x+
@@ -458,10 +411,6 @@ function drawButterflies(time){
             centerY+
             rotatedY;
 
-
-        /*
-           تبدیل به صفحه
-        */
 
         const x=
             worldX-
@@ -485,19 +434,19 @@ function drawButterflies(time){
 
 
         /*
-           بال‌زدن
+           بال زدن خیلی آرام
         */
 
         const flap=
             Math.sin(
-                time*.014+
+                time*0.006+
                 b.phase
             );
 
 
         const size=
             b.size+
-            flap*2;
+            flap*1.2;
 
 
         ctx.globalAlpha=.9;
@@ -506,7 +455,7 @@ function drawButterflies(time){
 
         ctx.shadowColor=b.color;
 
-        ctx.shadowBlur=8;
+        ctx.shadowBlur=7;
 
         ctx.font=
             `${size}px Arial`;
@@ -525,7 +474,7 @@ function drawButterflies(time){
 
 
 /* ==================================================
-   ماه پست‌ها
+   ماه
 ================================================== */
 
 function drawPosts(){
@@ -559,7 +508,6 @@ function drawPosts(){
         ctx.font="34px Arial";
 
         ctx.shadowColor="#fff";
-
         ctx.shadowBlur=9;
 
         ctx.fillText(
@@ -574,16 +522,14 @@ function drawPosts(){
 
 
 /* ==================================================
-   ستاره‌های لایک
+   ستاره‌های لایک — دقیقاً 100 عدد
 ================================================== */
 
 const likeStars=[];
 
-
 function createLikeStars(){
 
     if(!activePost) return;
-
 
     const startX=
         activePost.x-
@@ -595,10 +541,6 @@ function createLikeStars(){
         camY+
         H/2;
 
-
-    /*
-       دقیقاً 100 ستاره
-    */
 
     for(let i=0;i<100;i++){
 
@@ -613,7 +555,6 @@ function createLikeStars(){
         likeStars.push({
 
             x:startX,
-
             y:startY,
 
             vx:
@@ -646,7 +587,6 @@ function drawLikeStars(){
     ctx.textAlign="center";
     ctx.textBaseline="middle";
 
-
     for(
         let i=likeStars.length-1;
         i>=0;
@@ -655,17 +595,13 @@ function drawLikeStars(){
 
         const s=likeStars[i];
 
-
         s.x+=s.vx;
         s.y+=s.vy;
-
 
         s.vx*=.998;
         s.vy*=.998;
 
-
         s.life--;
-
 
         if(s.life<=0){
 
@@ -676,21 +612,15 @@ function drawLikeStars(){
 
 
         ctx.globalAlpha=
-            Math.min(
-                1,
-                s.life/35
-            );
-
+            Math.min(1,s.life/35);
 
         ctx.fillStyle=s.color;
 
         ctx.shadowColor=s.color;
-
         ctx.shadowBlur=5;
 
         ctx.font=
             `normal ${s.size}px Arial`;
-
 
         ctx.fillText(
             "☆",
@@ -698,10 +628,8 @@ function drawLikeStars(){
             s.y
         );
 
-
         ctx.shadowBlur=0;
     }
-
 
     ctx.globalAlpha=1;
 }
@@ -725,14 +653,13 @@ function drawBackground(){
 
 
 /* ==================================================
-   ستاره‌های آسمان
+   ستاره‌ها
 ================================================== */
 
 function drawStars(time){
 
     ctx.textAlign="center";
     ctx.textBaseline="middle";
-
 
     for(const s of stars){
 
@@ -787,12 +714,10 @@ function drawStars(time){
         ctx.fillStyle=s.color;
 
         ctx.shadowColor=s.color;
-
         ctx.shadowBlur=5;
 
         ctx.font=
             `normal ${s.size}px Arial`;
-
 
         ctx.fillText(
             "☆",
@@ -800,10 +725,8 @@ function drawStars(time){
             y
         );
 
-
         ctx.shadowBlur=0;
     }
-
 
     ctx.globalAlpha=1;
 }
@@ -815,7 +738,6 @@ function drawStars(time){
 
 let activePost=null;
 
-
 function findPost(x,y){
 
     for(
@@ -825,7 +747,6 @@ function findPost(x,y){
     ){
 
         const post=posts[i];
-
 
         const px=
             post.x-
@@ -844,11 +765,9 @@ function findPost(x,y){
                 y-py
             )<52
         ){
-
             return post;
         }
     }
-
 
     return null;
 }
@@ -860,7 +779,6 @@ function findPost(x,y){
 
 let downX=0;
 let downY=0;
-
 
 canvas.addEventListener(
     "pointerdown",
@@ -888,9 +806,7 @@ canvas.addEventListener(
     "pointermove",
     e=>{
 
-        if(!dragging)
-            return;
-
+        if(!dragging) return;
 
         const dx=
             e.clientX-startX;
@@ -933,19 +849,15 @@ canvas.addEventListener(
                 );
 
 
-            if(post){
-
+            if(post)
                 openPost(post);
-            }
         }
 
 
         try{
-
             canvas.releasePointerCapture(
                 e.pointerId
             );
-
         }catch(err){}
     }
 );
@@ -959,17 +871,13 @@ function openPost(post){
 
     activePost=post;
 
-
     document.getElementById(
         "postTitle"
-    ).textContent=
-        post.title;
-
+    ).textContent=post.title;
 
     document.getElementById(
         "postText"
-    ).textContent=
-        post.text;
+    ).textContent=post.text;
 
 
     const like=
@@ -979,7 +887,6 @@ function openPost(post){
 
 
     like.classList.remove("liked");
-
     like.textContent="♡";
 
 
@@ -990,7 +897,7 @@ function openPost(post){
 
 
 /* ==================================================
-   بستن پست
+   بستن
 ================================================== */
 
 document.getElementById(
@@ -1018,9 +925,7 @@ document.getElementById(
     "click",
     function(){
 
-        if(!activePost)
-            return;
-
+        if(!activePost) return;
 
         this.classList.add("liked");
 
@@ -1062,12 +967,12 @@ function animate(time){
 
     drawStars(time);
 
-    /*
-       پروانه‌ها قبل از ماه رسم می‌شوند
-       تا خود 🌛 همیشه روی آن‌ها دیده شود.
-    */
-
     drawButterflies(time);
+
+    /*
+       ماه بعد از پروانه‌ها رسم می‌شود
+       تا همیشه واضح دیده شود.
+    */
 
     drawPosts();
 
@@ -1080,9 +985,7 @@ function animate(time){
 }
 
 
-requestAnimationFrame(
-    animate
-);
+requestAnimationFrame(animate);
 
 </script>
 
