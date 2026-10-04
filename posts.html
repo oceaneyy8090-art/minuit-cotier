@@ -2,7 +2,6 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -11,316 +10,488 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+*{
+  box-sizing:border-box;
+}
 
 body{
-margin:0;
-font-family:tahoma;
-background:linear-gradient(135deg,#080820,#34205e);
-color:white;
+  margin:0;
+  font-family:tahoma;
+  color:white;
+  background:
+    radial-gradient(circle at 20% 10%,#3c2778,transparent 35%),
+    linear-gradient(135deg,#050515,#171344,#08081d);
 }
 
 .box{
-width:90%;
-max-width:600px;
-margin:20px auto;
-background:#ffffff15;
-padding:20px;
-border-radius:25px;
+  width:92%;
+  max-width:600px;
+  margin:20px auto;
+  padding:20px;
+  border-radius:25px;
+  background:rgba(255,255,255,.08);
 }
 
-input,textarea,button{
-width:100%;
-padding:13px;
-margin-top:10px;
-border:0;
-border-radius:15px;
+h2{
+  text-align:center;
 }
 
-input,textarea{
-background:#ffffff20;
-color:white;
+input,
+textarea,
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:0;
+  border-radius:15px;
+  font-family:tahoma;
+}
+
+input,
+textarea{
+  background:rgba(255,255,255,.1);
+  color:white;
+}
+
+textarea{
+  min-height:100px;
 }
 
 button{
-background:#8265ff;
-color:white;
+  color:white;
+  background:linear-gradient(135deg,#8065ff,#4e9cff);
+  font-size:16px;
+}
+
+.file{
+  margin-top:15px;
+  padding:15px;
+  border-radius:15px;
+  background:rgba(255,255,255,.08);
 }
 
 .card{
-background:#ffffff15;
-padding:15px;
-margin-top:20px;
-border-radius:20px;
+  margin-top:20px;
+  padding:15px;
+  border-radius:20px;
+  background:rgba(255,255,255,.08);
 }
 
-.card img{
-width:100%;
-border-radius:15px;
+.card img,
+.card video{
+  width:100%;
+  max-height:400px;
+  object-fit:contain;
+  border-radius:15px;
+  margin-top:10px;
+}
+
+.card audio{
+  width:100%;
+  margin-top:10px;
 }
 
 .delete{
-background:#ff3d5a;
+  background:#ff3f5f;
 }
 
+.status{
+  text-align:center;
+  margin-top:12px;
+}
 </style>
 
 </head>
 
-
 <body>
-
 
 <div class="box">
 
 <h2>💫 مدیریت پست‌ها</h2>
 
+<input
+  id="title"
+  placeholder="عنوان پست"
+>
 
-<input id="title" placeholder="عنوان">
+<textarea
+  id="content"
+  placeholder="متن پست"
+></textarea>
 
+<div class="file">
+📷 عکس
+<input
+  id="imageFile"
+  type="file"
+  accept="image/*"
+>
+</div>
 
-<textarea id="content" placeholder="متن پست"></textarea>
+<div class="file">
+🎬 فیلم
+<input
+  id="videoFile"
+  type="file"
+  accept="video/*"
+>
+</div>
 
+<div class="file">
+🎵 آهنگ
+<input
+  id="musicFile"
+  type="file"
+  accept="audio/*"
+>
+</div>
 
-<input id="file" type="file" accept="image/*">
-
-
-<button onclick="savePost()">
-انتشار 💫
+<button onclick="publishPost()">
+💫 انتشار پست
 </button>
 
+<div id="status" class="status"></div>
 
 <div id="posts"></div>
-
 
 </div>
 
 
-
 <script>
-
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
-
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-
 const db =
 supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 
+const titleInput =
+document.getElementById("title");
 
-async function uploadImage(file){
+const contentInput =
+document.getElementById("content");
 
-if(!file) return "";
+const imageFile =
+document.getElementById("imageFile");
+
+const videoFile =
+document.getElementById("videoFile");
+
+const musicFile =
+document.getElementById("musicFile");
+
+const status =
+document.getElementById("status");
+
+const posts =
+document.getElementById("posts");
 
 
-const name =
-Date.now()+"-"+file.name;
+async function uploadFile(file,folder){
+
+  if(!file)
+    return "";
+
+  const safeName =
+    file.name
+      .replace(/[^a-zA-Z0-9._-]/g,"_");
+
+  const fileName =
+    folder +
+    "/" +
+    Date.now() +
+    "-" +
+    safeName;
 
 
-const {error}=
+  const {error} =
+    await db.storage
+      .from("Minuit cotier")
+      .upload(
+        fileName,
+        file,
+        {
+          upsert:false
+        }
+      );
 
-await db.storage
-.from("Minuit cotier")
-.upload(
-name,
-file
-);
+
+  if(error)
+    throw error;
 
 
-if(error){
+  const {data} =
+    db.storage
+      .from("Minuit cotier")
+      .getPublicUrl(fileName);
 
-alert(error.message);
-return "";
 
+  return data.publicUrl;
 }
 
 
 
-const {data}=
+async function publishPost(){
 
-db.storage
-.from("Minuit cotier")
-.getPublicUrl(name);
+  try{
 
-
-
-return data.publicUrl;
+    status.textContent =
+      "در حال آپلود... ⏳";
 
 
+    const image =
+      imageFile.files[0];
+
+    const video =
+      videoFile.files[0];
+
+    const music =
+      musicFile.files[0];
+
+
+    let imageUrl = "";
+    let videoUrl = "";
+    let musicUrl = "";
+
+
+    if(image){
+
+      status.textContent =
+        "در حال آپلود عکس... 📷";
+
+      imageUrl =
+        await uploadFile(
+          image,
+          "images"
+        );
+    }
+
+
+    if(video){
+
+      status.textContent =
+        "در حال آپلود فیلم... 🎬";
+
+      videoUrl =
+        await uploadFile(
+          video,
+          "videos"
+        );
+    }
+
+
+    if(music){
+
+      status.textContent =
+        "در حال آپلود آهنگ... 🎵";
+
+      musicUrl =
+        await uploadFile(
+          music,
+          "music"
+        );
+    }
+
+
+    status.textContent =
+      "در حال ساخت پست...";
+
+
+    const {error} =
+      await db
+        .from("posts")
+        .insert({
+
+          title:
+            titleInput.value.trim(),
+
+          content:
+            contentInput.value.trim(),
+
+          image_url:
+            imageUrl,
+
+          video_url:
+            videoUrl,
+
+          music_url:
+            musicUrl
+        });
+
+
+    if(error)
+      throw error;
+
+
+    titleInput.value = "";
+    contentInput.value = "";
+
+    imageFile.value = "";
+    videoFile.value = "";
+    musicFile.value = "";
+
+
+    status.textContent =
+      "پست منتشر شد ✅";
+
+
+    loadPosts();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    status.textContent =
+      "خطا: " +
+      error.message;
+  }
 }
-
-
-
-
-async function savePost(){
-
-
-const file =
-document.getElementById("file").files[0];
-
-
-let image_url="";
-
-
-if(file){
-
-image_url =
-await uploadImage(file);
-
-}
-
-
-
-const {error}=
-
-await db
-.from("posts")
-.insert({
-
-title:
-title.value,
-
-content:
-content.value,
-
-image_url:
-image_url
-
-});
-
-
-
-if(error){
-
-alert(error.message);
-return;
-
-}
-
-
-
-alert("پست اضافه شد ✅");
-
-
-title.value="";
-content.value="";
-file.value="";
-content.value="";
-
-
-loadPosts();
-
-
-}
-
 
 
 
 async function loadPosts(){
 
-
-const {data,error}=
-
-await db
-.from("posts")
-.select("*")
-.order(
-"created_at",
-{ascending:false}
-);
+  const {data,error} =
+    await db
+      .from("posts")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      );
 
 
+  if(error){
 
-if(error) return;
+    posts.innerHTML =
+      "<p>خطا در دریافت پست‌ها</p>";
 
-
-
-let html="";
-
-
-data.forEach(p=>{
+    return;
+  }
 
 
-html+=`
-
-<div class="card">
-
-<h3>${p.title || ""}</h3>
-
-<p>${p.content || ""}</p>
+  let html = "";
 
 
-${p.image_url ?
-`<img src="${p.image_url}">`
-:""}
+  data.forEach(function(p){
+
+    html += `
+
+      <div class="card">
+
+        <h3>
+          ${escapeHtml(p.title || "")}
+        </h3>
+
+        <p>
+          ${escapeHtml(p.content || "")}
+        </p>
+
+        ${
+          p.image_url
+          ?
+          `<img src="${p.image_url}">`
+          :
+          ""
+        }
+
+        ${
+          p.video_url
+          ?
+          `
+          <video
+            src="${p.video_url}"
+            controls
+            preload="metadata">
+          </video>
+          `
+          :
+          ""
+        }
+
+        ${
+          p.music_url
+          ?
+          `
+          <audio
+            src="${p.music_url}"
+            controls>
+          </audio>
+          `
+          :
+          ""
+        }
+
+        <button
+          class="delete"
+          onclick="deletePost('${p.id}')">
+
+          🗑️ حذف پست
+
+        </button>
+
+      </div>
+
+    `;
+  });
+
+
+  posts.innerHTML =
+    html;
+}
 
 
 
-<button class="delete"
-onclick="deletePost('${p.id}')">
+function escapeHtml(text){
 
-حذف 🗑️
-
-</button>
-
-
-</div>
-
-`;
-
-});
-
-
-posts.innerHTML=html;
-
-
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
 
 
 async function deletePost(id){
 
-
-const {error}=
-
-await db
-.from("posts")
-.delete()
-.eq(
-"id",
-id
-);
+  if(
+    !confirm("این پست حذف شود؟")
+  )
+    return;
 
 
+  const {error} =
+    await db
+      .from("posts")
+      .delete()
+      .eq("id",id);
 
-if(error){
 
-alert(error.message);
-return;
+  if(error){
 
+    alert(error.message);
+
+    return;
+  }
+
+
+  loadPosts();
 }
 
 
 loadPosts();
-
-
-}
-
-
-
-loadPosts();
-
 
 </script>
 
-
 </body>
-
 </html>
