@@ -19,17 +19,13 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#02030d;
+  background:#02020d;
   font-family:Arial,sans-serif;
 }
 
 body{
   overscroll-behavior:none;
 }
-
-/* ==============================
-   فضای اصلی
-============================== */
 
 #space{
   position:fixed;
@@ -38,13 +34,11 @@ body{
   touch-action:none;
   user-select:none;
   background:
-    radial-gradient(
-      circle at 50% 45%,
-      #20195e 0%,
-      #0e0b32 32%,
-      #05051a 65%,
-      #010108 100%
-    );
+    radial-gradient(circle at 50% 50%,
+      #30226b 0%,
+      #14133e 28%,
+      #06061d 60%,
+      #010108 100%);
   cursor:grab;
 }
 
@@ -52,78 +46,64 @@ body{
   cursor:grabbing;
 }
 
-/* ==============================
-   کهکشان
-============================== */
-
 #galaxy{
   position:absolute;
-  width:7000px;
-  height:7000px;
+  width:9000px;
+  height:9000px;
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
+  transition:transform .18s ease-out;
 }
-
-/* ==============================
-   مه
-============================== */
 
 .nebula{
   position:absolute;
   border-radius:50%;
-  filter:blur(90px);
-  opacity:.16;
+  filter:blur(110px);
+  opacity:.17;
   pointer-events:none;
 }
 
 .n1{
-  width:1400px;
-  height:800px;
-  left:500px;
-  top:400px;
-  background:#573cff;
+  width:1700px;
+  height:900px;
+  left:300px;
+  top:500px;
+  background:#673cff;
 }
 
 .n2{
-  width:1200px;
-  height:900px;
-  left:4500px;
-  top:500px;
-  background:#ff2b9c;
+  width:1600px;
+  height:1000px;
+  left:4700px;
+  top:600px;
+  background:#ff279f;
 }
 
 .n3{
-  width:1500px;
-  height:900px;
-  left:2200px;
+  width:1800px;
+  height:1100px;
+  left:1800px;
   top:4000px;
-  background:#168cff;
+  background:#138dff;
 }
 
 .n4{
-  width:1200px;
-  height:900px;
-  left:5000px;
-  top:4700px;
-  background:#8c32ff;
+  width:1500px;
+  height:1100px;
+  left:5500px;
+  top:5500px;
+  background:#9a31ff;
 }
-
-/* ==============================
-   ستاره های ریز
-============================== */
 
 .star{
   position:absolute;
+  color:white;
   pointer-events:none;
-  color:#fff;
-  font-size:9px;
-  text-shadow:
-    0 0 5px currentColor,
-    0 0 12px currentColor;
+  text-shadow:0 0 6px currentColor,0 0 15px currentColor;
   animation:
     twinkle var(--speed) ease-in-out infinite alternate,
-    drift var(--drift) ease-in-out infinite alternate;
+    floatStar var(--drift) ease-in-out infinite alternate;
 }
 
 @keyframes twinkle{
@@ -137,7 +117,7 @@ body{
   }
 }
 
-@keyframes drift{
+@keyframes floatStar{
   from{
     margin-left:0;
     margin-top:0;
@@ -148,156 +128,157 @@ body{
   }
 }
 
-/* ==============================
-   ستاره دنباله دار
-============================== */
+/* راهنما */
 
-.comet{
+#guide{
   position:absolute;
-  width:10px;
-  height:10px;
+  z-index:500;
+  font-size:48px;
+  width:70px;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  filter:
+    drop-shadow(0 0 8px #fff000)
+    drop-shadow(0 0 28px #ffc400)
+    drop-shadow(0 0 60px rgba(255,200,0,.7));
+  transition:
+    left 2s ease-in-out,
+    top 2s ease-in-out;
+  animation:guidePulse 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes guidePulse{
+  from{
+    transform:scale(.82) rotate(-5deg);
+  }
+  to{
+    transform:scale(1.2) rotate(5deg);
+  }
+}
+
+/* نقاط پست */
+
+.post-point{
+  position:absolute;
+  width:52px;
+  height:52px;
   border-radius:50%;
-  background:white;
+  z-index:300;
+  cursor:pointer;
+
+  background:
+    radial-gradient(
+      circle,
+      #fff 0 7%,
+      #8ceeff 8% 23%,
+      #358aff 24% 43%,
+      transparent 70%
+    );
+
   box-shadow:
-    0 0 8px white,
-    0 0 20px #8eeaff,
-    0 0 40px #39bfff;
-  z-index:20;
-  pointer-events:none;
+    0 0 15px #6eeaff,
+    0 0 40px #328dff,
+    0 0 75px rgba(80,160,255,.45);
+
+  animation:postPulse 2.4s infinite ease-in-out;
 }
 
-.comet:after{
-  content:"";
-  position:absolute;
-  width:180px;
-  height:5px;
-  right:4px;
-  top:3px;
-  border-radius:100%;
-  background:linear-gradient(
-    90deg,
-    white,
-    rgba(90,220,255,.5),
-    transparent
-  );
-  filter:blur(2px);
-  transform:rotate(-15deg);
-  transform-origin:right center;
+@keyframes postPulse{
+  0%,100%{
+    transform:scale(.72);
+    opacity:.55;
+  }
+  50%{
+    transform:scale(1.18);
+    opacity:1;
+  }
 }
 
-/* ==============================
-   خورشید
-============================== */
+.post-point.active{
+  box-shadow:
+    0 0 20px #fff,
+    0 0 55px #ffe600,
+    0 0 110px #ffbd00;
+}
+
+/* سیارات */
 
 .sun{
   position:absolute;
-  width:180px;
-  height:180px;
-  left:5700px;
+  left:7200px;
   top:700px;
+  width:190px;
+  height:190px;
   border-radius:50%;
   background:
-    radial-gradient(
-      circle at 35% 30%,
+    radial-gradient(circle at 35% 30%,
       #fffbd0,
       #ffd52d 28%,
       #ff7600 62%,
-      #cf2100
-    );
+      #c91d00);
   box-shadow:
-    0 0 50px #ffbd00,
-    0 0 130px #ff7200,
-    0 0 250px rgba(255,80,0,.3);
+    0 0 60px #ffb900,
+    0 0 140px #ff6500,
+    0 0 260px rgba(255,80,0,.3);
 }
-
-/* ==============================
-   زمین
-============================== */
 
 .earth{
   position:absolute;
-  width:170px;
-  height:170px;
-  left:850px;
-  top:1200px;
+  left:800px;
+  top:1100px;
+  width:180px;
+  height:180px;
   border-radius:50%;
   background:
-    radial-gradient(
-      circle at 35% 30%,
-      #6ee8ff 0 10%,
-      transparent 11%
-    ),
-    radial-gradient(
-      circle at 65% 40%,
-      #3aa85a 0 14%,
-      transparent 15%
-    ),
-    radial-gradient(
-      circle at 40% 70%,
-      #277b46 0 12%,
-      transparent 13%
-    ),
-    linear-gradient(
-      130deg,
-      #1980ec,
-      #063a94 58%,
-      #020b29
-    );
+    radial-gradient(circle at 30% 30%,
+      #55e7ff 0 9%,transparent 10%),
+    radial-gradient(circle at 65% 40%,
+      #39a957 0 14%,transparent 15%),
+    radial-gradient(circle at 40% 70%,
+      #287844 0 12%,transparent 13%),
+    linear-gradient(130deg,#238ff0,#073b99 60%,#020b29);
   box-shadow:
-    0 0 40px #238cff,
+    0 0 45px #218cff,
     inset -35px -25px 40px rgba(0,0,0,.7);
 }
 
-/* ماه */
-
 .moon{
   position:absolute;
+  left:1100px;
+  top:990px;
   width:75px;
   height:75px;
-  left:1110px;
-  top:1080px;
   border-radius:50%;
   background:
-    radial-gradient(
-      circle at 30% 30%,
-      #eee,
-      #999 55%,
-      #444
-    );
-  box-shadow:
-    0 0 25px rgba(220,230,255,.5),
-    inset -18px -15px 25px rgba(0,0,0,.6);
+    radial-gradient(circle at 30% 30%,
+      #eee,#999 55%,#444);
+  box-shadow:0 0 25px rgba(220,230,255,.5);
 }
-
-/* مریخ */
 
 .mars{
   position:absolute;
-  width:125px;
-  height:125px;
   left:4400px;
   top:1300px;
+  width:130px;
+  height:130px;
   border-radius:50%;
   background:
-    radial-gradient(
-      circle at 30% 25%,
-      #ff9a68,
-      #c74b2c 52%,
-      #57170f
-    );
+    radial-gradient(circle at 30% 25%,
+      #ff9a68,#c74b2c 52%,#57170f);
   box-shadow:
-    0 0 35px rgba(255,70,30,.4),
+    0 0 35px rgba(255,70,30,.45),
     inset -28px -22px 35px rgba(0,0,0,.65);
 }
 
-/* مشتری */
-
 .jupiter{
   position:absolute;
-  width:210px;
-  height:210px;
-  left:4800px;
-  top:3400px;
+  left:5200px;
+  top:3500px;
+  width:220px;
+  height:220px;
   border-radius:50%;
   background:
     repeating-linear-gradient(
@@ -305,8 +286,7 @@ body{
       #d9b77f 0 13px,
       #956e4c 13px 25px,
       #e5cda5 25px 38px,
-      #76553d 38px 51px
-    );
+      #76553d 38px 51px);
   box-shadow:
     0 0 40px rgba(220,170,100,.4),
     inset -40px -30px 45px rgba(0,0,0,.6);
@@ -315,30 +295,24 @@ body{
 .jupiter:after{
   content:"";
   position:absolute;
-  width:55px;
-  height:34px;
+  width:58px;
+  height:35px;
   border-radius:50%;
   background:#b94e35;
-  left:105px;
-  top:115px;
+  left:110px;
+  top:120px;
 }
-
-/* زحل */
 
 .saturn{
   position:absolute;
-  width:175px;
-  height:175px;
   left:2300px;
-  top:4800px;
+  top:5200px;
+  width:180px;
+  height:180px;
   border-radius:50%;
   background:
-    radial-gradient(
-      circle at 35% 30%,
-      #fff1bd,
-      #c49b63 55%,
-      #705036
-    );
+    radial-gradient(circle at 35% 30%,
+      #fff1bd,#c49b63 55%,#705036);
   box-shadow:
     0 0 35px rgba(255,220,150,.4),
     inset -30px -25px 40px rgba(0,0,0,.6);
@@ -347,144 +321,95 @@ body{
 .saturn:before{
   content:"";
   position:absolute;
-  width:310px;
-  height:80px;
-  left:-68px;
+  width:320px;
+  height:85px;
+  left:-70px;
   top:48px;
-  border:8px solid rgba(220,195,150,.75);
+  border:8px solid rgba(220,195,150,.7);
   border-radius:50%;
   transform:rotate(-18deg);
 }
 
-/* ==============================
-   ستاره راهنما
-============================== */
-
-#guide{
-  position:absolute;
-  left:3500px;
-  top:3400px;
-  z-index:200;
-  font-size:42px;
-  cursor:pointer;
-  filter:
-    drop-shadow(0 0 8px #fff000)
-    drop-shadow(0 0 25px #ffbd00);
-  animation:guideFloat 7s ease-in-out infinite alternate;
-}
-
-@keyframes guideFloat{
-  0%{
-    transform:translate(0,0) scale(.85);
-  }
-  50%{
-    transform:translate(350px,-180px) scale(1.15);
-  }
-  100%{
-    transform:translate(-300px,260px) scale(.95);
-  }
-}
-
-/* ==============================
-   نقاط محتوا
-============================== */
-
-.content-point{
-  position:absolute;
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  cursor:pointer;
-  z-index:100;
-
-  background:
-    radial-gradient(
-      circle,
-      white 0 7%,
-      #a6edff 8% 20%,
-      #418dff 21% 42%,
-      transparent 70%
-    );
-
-  box-shadow:
-    0 0 15px #55d9ff,
-    0 0 40px rgba(60,180,255,.55);
-
-  animation:
-    pointPulse 2.5s ease-in-out infinite;
-}
-
-@keyframes pointPulse{
-  0%,100%{
-    transform:scale(.8);
-    opacity:.6;
-  }
-  50%{
-    transform:scale(1.18);
-    opacity:1;
-  }
-}
-
-.content-point:after{
-  content:"";
-  position:absolute;
-  inset:-13px;
-  border:1px solid rgba(120,220,255,.25);
-  border-radius:50%;
-  animation:ring 3s infinite;
-}
-
-@keyframes ring{
-  from{
-    transform:scale(.6);
-    opacity:.8;
-  }
-  to{
-    transform:scale(1.7);
-    opacity:0;
-  }
-}
-
-/* ==============================
-   پروفایل
-============================== */
+/* پروفایل */
 
 .profile{
   position:absolute;
-  left:3350px;
-  top:3150px;
+  left:4400px;
+  top:4100px;
   width:300px;
   text-align:center;
   color:white;
-  z-index:100;
-  pointer-events:none;
+  z-index:250;
 }
 
 .profile img{
-  width:105px;
-  height:105px;
+  width:110px;
+  height:110px;
   border-radius:50%;
   object-fit:cover;
-  border:2px solid rgba(255,255,255,.7);
-  box-shadow:
-    0 0 25px rgba(120,180,255,.7);
+  border:2px solid rgba(255,255,255,.75);
+  box-shadow:0 0 35px rgba(110,180,255,.75);
 }
 
 .profile h1{
-  margin-top:10px;
-  font-size:16px;
-  text-shadow:0 0 12px #8cb8ff;
+  margin-top:12px;
+  font-size:17px;
+  text-shadow:0 0 14px #9bbaff;
 }
 
 .profile p{
-  margin-top:6px;
-  font-size:11px;
+  margin-top:7px;
   opacity:.65;
+  font-size:11px;
 }
 
-/* ==============================
-   پنجره محتوا
-============================== */
+/* راهنمای کوچک */
+
+#guideText{
+  position:absolute;
+  left:4400px;
+  top:4200px;
+  color:rgba(255,255,255,.5);
+  font-size:11px;
+  width:300px;
+  text-align:center;
+  pointer-events:none;
+}
+
+/* شهاب */
+
+.comet{
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:white;
+  z-index:150;
+  box-shadow:
+    0 0 10px white,
+    0 0 25px #5eeaff,
+    0 0 50px #268cff;
+}
+
+.comet:after{
+  content:"";
+  position:absolute;
+  width:190px;
+  height:5px;
+  right:3px;
+  top:3px;
+  border-radius:50%;
+  background:linear-gradient(
+    90deg,
+    white,
+    rgba(70,220,255,.5),
+    transparent
+  );
+  filter:blur(2px);
+  transform:rotate(-15deg);
+}
+
+/* پنجره */
 
 #viewer{
   position:fixed;
@@ -494,7 +419,7 @@ body{
   align-items:center;
   justify-content:center;
   padding:18px;
-  background:rgba(0,0,15,.82);
+  background:rgba(0,0,15,.84);
   backdrop-filter:blur(10px);
 }
 
@@ -507,36 +432,34 @@ body{
   width:min(92vw,600px);
   max-height:88vh;
   overflow:auto;
-  padding:20px;
-  border-radius:24px;
+  padding:22px;
+  border-radius:25px;
   background:
     linear-gradient(
       145deg,
-      rgba(25,25,75,.98),
-      rgba(7,7,30,.98)
+      rgba(30,28,80,.98),
+      rgba(5,5,25,.98)
     );
   border:1px solid rgba(130,180,255,.3);
-  box-shadow:0 0 50px rgba(50,120,255,.3);
+  box-shadow:0 0 60px rgba(50,120,255,.35);
   color:white;
   text-align:center;
 }
 
 .viewer-box h2{
   margin-bottom:14px;
-  font-size:20px;
 }
 
 .viewer-box p{
-  line-height:1.8;
+  line-height:1.9;
   opacity:.85;
   margin-bottom:12px;
 }
 
 .viewer-box img,
 .viewer-box video{
-  display:block;
   width:100%;
-  max-width:100%;
+  display:block;
   border-radius:15px;
   margin:12px auto;
 }
@@ -559,83 +482,73 @@ body{
   font-size:23px;
 }
 
-/* ==============================
-   قلب
-============================== */
-
-.like-button{
+.like{
   border:0;
   background:none;
   color:white;
-  font-size:34px;
+  font-size:36px;
   cursor:pointer;
-  padding:8px;
 }
 
-.heart-particle{
+/* قلب ها */
+
+.heart{
   position:fixed;
   z-index:99999;
   pointer-events:none;
-  font-size:10px;
   animation:heartFly 1.7s ease-out forwards;
-  filter:drop-shadow(0 0 5px currentColor);
 }
 
 @keyframes heartFly{
   0%{
     opacity:1;
-    transform:translate(0,0) scale(.3);
+    transform:translate(0,0) scale(.2);
   }
-
   100%{
     opacity:0;
     transform:
       translate(var(--x),var(--y))
-      scale(1.4)
-      rotate(var(--r));
+      rotate(var(--r))
+      scale(1.3);
   }
 }
 
-/* ==============================
-   موزیک
-============================== */
+/* موزیک */
 
 .music{
   position:fixed;
   left:15px;
   bottom:15px;
   z-index:6000;
-  width:45px;
-  height:45px;
+  width:48px;
+  height:48px;
   border-radius:50%;
   border:1px solid rgba(255,255,255,.2);
-  background:rgba(20,20,65,.7);
+  background:rgba(20,20,65,.75);
   color:white;
   font-size:20px;
-  cursor:pointer;
 }
 
-.hint{
+.message{
   position:fixed;
+  top:15px;
   left:50%;
-  bottom:18px;
   transform:translateX(-50%);
-  z-index:3000;
-  color:rgba(255,255,255,.55);
+  z-index:6000;
+  color:rgba(255,255,255,.7);
   font-size:11px;
   pointer-events:none;
-  white-space:nowrap;
+  opacity:0;
+  transition:.5s;
+}
+
+.message.show{
+  opacity:1;
 }
 </style>
 </head>
 
 <body>
-
-<button
-  id="musicBtn"
-  class="music">
-  ♫
-</button>
 
 <div id="space">
 
@@ -647,46 +560,45 @@ body{
     <div class="nebula n4"></div>
 
     <div class="sun"></div>
-
     <div class="earth"></div>
     <div class="moon"></div>
     <div class="mars"></div>
     <div class="jupiter"></div>
     <div class="saturn"></div>
 
-    <div id="guide">⭐</div>
-
     <div class="profile">
-      <img id="profileImage" src="" alt="">
+      <img id="profileImage" alt="">
       <h1 id="siteName">𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</h1>
       <p id="siteBio"></p>
+    </div>
+
+    <div id="guide">⭐</div>
+
+    <div id="guideText">
+      ستاره راهنما مسیر پست‌ها را پیدا می‌کند ✦
     </div>
 
   </div>
 
 </div>
 
-<div class="hint">
-  انگشتت را بکش و داخل کهکشان بگرد 🌌
+<button id="musicBtn" class="music">♫</button>
+
+<div id="message" class="message">
+  پست بعدی را پیدا کردم ✨
 </div>
 
 <div id="viewer">
 
   <div class="viewer-box">
 
-    <button
-      class="close"
-      onclick="closeViewer()">
-      ×
-    </button>
+    <button class="close" onclick="closeViewer()">×</button>
 
     <h2 id="viewerTitle"></h2>
 
     <div id="viewerContent"></div>
 
-    <button
-      class="like-button"
-      onclick="explodeHearts(event)">
+    <button class="like" onclick="explodeHearts(event)">
       ♡
     </button>
 
@@ -696,9 +608,9 @@ body{
 
 <script>
 
-/* =========================================
+/* ==========================================
    SUPABASE
-========================================= */
+========================================== */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -706,16 +618,16 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-const supabaseClient =
+const db =
 supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 
 
-/* =========================================
-   حرکت کهکشان
-========================================= */
+/* ==========================================
+   دوربین
+========================================== */
 
 const space =
 document.getElementById("space");
@@ -737,62 +649,103 @@ let startY = 0;
 let originalX = 0;
 let originalY = 0;
 
+function limitCamera(){
 
-/* کشیدن */
+  const max = 4100;
+
+  targetX =
+    Math.max(
+      -max,
+      Math.min(max,targetX)
+    );
+
+  targetY =
+    Math.max(
+      -max,
+      Math.min(max,targetY)
+    );
+}
+
+function animateCamera(){
+
+  cameraX +=
+    (targetX-cameraX)*.12;
+
+  cameraY +=
+    (targetY-cameraY)*.12;
+
+  galaxy.style.transform =
+    `translate(
+      calc(-50% + ${cameraX}px),
+      calc(-50% + ${cameraY}px)
+    )`;
+
+  requestAnimationFrame(
+    animateCamera
+  );
+}
+
+animateCamera();
+
+
+/* کشیدن با انگشت */
 
 space.addEventListener(
   "pointerdown",
-  e => {
+  e=>{
 
-    dragging = true;
+    dragging=true;
 
     space.classList.add("dragging");
 
-    startX = e.clientX;
-    startY = e.clientY;
+    startX=e.clientX;
+    startY=e.clientY;
 
-    originalX = targetX;
-    originalY = targetY;
+    originalX=targetX;
+    originalY=targetY;
 
     try{
-      space.setPointerCapture(e.pointerId);
+      space.setPointerCapture(
+        e.pointerId
+      );
     }catch(err){}
 
-    startAmbient();
+    startSweetMusic();
   }
 );
 
-
 space.addEventListener(
   "pointermove",
-  e => {
+  e=>{
 
     if(!dragging) return;
 
     targetX =
-      originalX +
-      (e.clientX - startX);
+      originalX+
+      e.clientX-startX;
 
     targetY =
-      originalY +
-      (e.clientY - startY);
+      originalY+
+      e.clientY-startY;
 
     limitCamera();
   }
 );
 
-
 function stopDrag(e){
 
-  dragging = false;
+  dragging=false;
 
-  space.classList.remove("dragging");
+  space.classList.remove(
+    "dragging"
+  );
 
   try{
-    space.releasePointerCapture(e.pointerId);
+    space.releasePointerCapture(
+      e.pointerId
+    );
   }catch(err){}
 }
-
 
 space.addEventListener(
   "pointerup",
@@ -805,73 +758,26 @@ space.addEventListener(
 );
 
 
-/* محدودیت */
+/* ==========================================
+   ستاره ها
+========================================== */
 
-function limitCamera(){
-
-  const maxX =
-    3500;
-
-  const maxY =
-    3500;
-
-  targetX =
-    Math.max(
-      -maxX,
-      Math.min(maxX,targetX)
-    );
-
-  targetY =
-    Math.max(
-      -maxY,
-      Math.min(maxY,targetY)
-    );
-}
-
-
-/* حرکت نرم */
-
-function animate(){
-
-  cameraX +=
-    (targetX-cameraX)*.13;
-
-  cameraY +=
-    (targetY-cameraY)*.13;
-
-  galaxy.style.transform =
-    `translate(
-      calc(-50% + ${cameraX}px),
-      calc(-50% + ${cameraY}px)
-    )`;
-
-  requestAnimationFrame(animate);
-}
-
-animate();
-
-
-/* =========================================
-   ستاره های زیاد
-========================================= */
-
-const starColors = [
+const colors=[
   "#ffffff",
-  "#79ddff",
-  "#b887ff",
-  "#ff8ed9",
-  "#ffe875",
-  "#70ffb0",
-  "#91a9ff"
+  "#73ddff",
+  "#b77cff",
+  "#ff8fd9",
+  "#ffe56a",
+  "#6dffad",
+  "#8eaaff"
 ];
 
-
-for(let i=0;i<800;i++){
+for(let i=0;i<1000;i++){
 
   const star =
     document.createElement("div");
 
-  star.className = "star";
+  star.className="star";
 
   star.textContent =
     Math.random()>.35
@@ -879,29 +785,29 @@ for(let i=0;i<800;i++){
     : "✦";
 
   star.style.left =
-    Math.random()*6800+"px";
+    Math.random()*8800+"px";
 
   star.style.top =
-    Math.random()*6800+"px";
+    Math.random()*8800+"px";
 
   star.style.color =
-    starColors[
+    colors[
       Math.floor(
-        Math.random()*starColors.length
+        Math.random()*colors.length
       )
     ];
 
   star.style.fontSize =
-    5+Math.random()*8+"px";
+    4+Math.random()*8+"px";
 
   star.style.setProperty(
     "--speed",
-    1.5+Math.random()*4+"s"
+    1.5+Math.random()*5+"s"
   );
 
   star.style.setProperty(
     "--drift",
-    3+Math.random()*8+"s"
+    4+Math.random()*9+"s"
   );
 
   star.style.setProperty(
@@ -918,40 +824,37 @@ for(let i=0;i<800;i++){
 }
 
 
-/* =========================================
-   ستاره دنباله دار
-========================================= */
+/* ==========================================
+   شهاب ها
+========================================== */
 
-function makeComet(
-  sx,sy,ex,ey,time
+function comet(
+  sx,sy,ex,ey,duration
 ){
 
-  const comet =
+  const el =
     document.createElement("div");
 
-  comet.className="comet";
+  el.className="comet";
 
-  comet.style.left=sx+"px";
-  comet.style.top=sy+"px";
+  galaxy.appendChild(el);
 
-  galaxy.appendChild(comet);
-
-  const started =
+  const start =
     performance.now();
 
   function move(now){
 
-    let p =
-      (now-started)/time;
+    const p =
+      (now-start)/duration;
 
     if(p>=1){
 
-      comet.remove();
+      el.remove();
 
       setTimeout(
         ()=>{
-          makeComet(
-            sx,sy,ex,ey,time
+          comet(
+            sx,sy,ex,ey,duration
           );
         },
         3000+
@@ -961,14 +864,11 @@ function makeComet(
       return;
     }
 
-    const x =
-      sx+(ex-sx)*p;
+    el.style.left =
+      sx+(ex-sx)*p+"px";
 
-    const y =
-      sy+(ey-sy)*p;
-
-    comet.style.left=x+"px";
-    comet.style.top=y+"px";
+    el.style.top =
+      sy+(ey-sy)*p+"px";
 
     requestAnimationFrame(move);
   }
@@ -976,227 +876,301 @@ function makeComet(
   requestAnimationFrame(move);
 }
 
-
-makeComet(
-  100,
-  900,
-  3200,
-  300,
+comet(
+  200,900,
+  4000,300,
   9000
 );
 
-makeComet(
-  6500,
-  1700,
-  3600,
-  700,
-  10000
+comet(
+  8500,1200,
+  4500,800,
+  10500
 );
 
-makeComet(
-  400,
-  6000,
-  6000,
-  4700,
-  11000
+comet(
+  300,7000,
+  7000,4500,
+  12000
 );
 
 
-/* =========================================
-   موزیک لایت بدون فایل خارجی
-========================================= */
+/* ==========================================
+   پخش پست ها
+========================================== */
 
-let audioContext = null;
-let master = null;
-let musicOn = false;
-let musicTimer = null;
+/*
+   این مختصات مخصوص فضای باز هستند.
+   هر پست یک جای متفاوت می‌گیرد.
+*/
 
-function startAmbient(){
+const postLocations=[
 
-  if(musicOn) return;
+  {x:900,y:500},
+  {x:2200,y:800},
+  {x:3700,y:600},
+  {x:5100,y:1100},
+  {x:6500,y:1800},
+  {x:1500,y:2200},
+  {x:3100,y:1800},
+  {x:4500,y:2300},
+  {x:6000,y:2700},
+  {x:800,y:3400},
+  {x:2400,y:3300},
+  {x:3900,y:3000},
+  {x:5400,y:3800},
+  {x:6800,y:4300},
+  {x:1300,y:4800},
+  {x:3000,y:4700},
+  {x:4400,y:5000},
+  {x:5800,y:5400},
+  {x:7600,y:5800},
+  {x:1800,y:6500},
+  {x:3500,y:6400},
+  {x:5000,y:6900},
+  {x:6800,y:7100}
 
-  musicOn = true;
+];
 
-  try{
+let posts=[];
+let postPoints=[];
 
-    audioContext =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-    master =
-      audioContext.createGain();
-
-    master.gain.value=.035;
-
-    master.connect(
-      audioContext.destination
-    );
-
-    playAmbientNote();
-
-    musicTimer =
-      setInterval(
-        playAmbientNote,
-        2600
-      );
-
-    document.getElementById(
-      "musicBtn"
-    ).textContent="♫";
-
-  }catch(err){
-
-    console.log(err);
-  }
-}
-
-
-function playAmbientNote(){
-
-  if(!audioContext || !master)
-    return;
-
-  const osc =
-    audioContext.createOscillator();
-
-  const gain =
-    audioContext.createGain();
-
-  const frequencies =
-    [
-      174.61,
-      220,
-      261.63,
-      329.63,
-      392
-    ];
-
-  const frequency =
-    frequencies[
-      Math.floor(
-        Math.random()*frequencies.length
-      )
-    ];
-
-  osc.frequency.value =
-    frequency;
-
-  osc.type="sine";
-
-  gain.gain.setValueAtTime(
-    0,
-    audioContext.currentTime
-  );
-
-  gain.gain.linearRampToValueAtTime(
-    .08,
-    audioContext.currentTime+.8
-  );
-
-  gain.gain.exponentialRampToValueAtTime(
-    .001,
-    audioContext.currentTime+3
-  );
-
-  osc.connect(gain);
-  gain.connect(master);
-
-  osc.start();
-
-  osc.stop(
-    audioContext.currentTime+3.1
-  );
-}
-
-
-document.getElementById(
-  "musicBtn"
-).addEventListener(
-  "click",
-  e => {
-
-    e.stopPropagation();
-
-    if(!musicOn){
-
-      startAmbient();
-
-    }else{
-
-      musicOn=false;
-
-      clearInterval(musicTimer);
-
-      if(master){
-        master.gain.value=0;
-      }
-
-      document.getElementById(
-        "musicBtn"
-      ).textContent="🔇";
-    }
-  }
-);
-
-
-/* =========================================
-   تنظیمات
-========================================= */
-
-async function loadSettings(){
+async function loadPosts(){
 
   const result =
-    await supabaseClient
-      .from("site_settings")
+    await db
+      .from("posts")
       .select("*")
       .order(
         "created_at",
         {ascending:false}
-      )
-      .limit(1);
+      );
 
   if(result.error){
-    console.log(result.error);
+
+    console.log(
+      "خطای posts:",
+      result.error
+    );
+
     return;
   }
 
-  if(!result.data?.length)
-    return;
+  posts =
+    result.data || [];
 
-  const s =
-    result.data[0];
+  postPoints=[];
 
-  if(s.site_name){
+  posts.forEach(
+    (post,index)=>{
 
-    document.getElementById(
-      "siteName"
-    ).textContent =
-      s.site_name;
-  }
+      const position =
+        postLocations[
+          index%postLocations.length
+        ];
 
-  if(s.bio){
+      const point =
+        document.createElement(
+          "div"
+        );
 
-    document.getElementById(
-      "siteBio"
-    ).textContent =
-      s.bio;
-  }
+      point.className=
+        "post-point";
 
-  if(s.image_url){
+      point.style.left=
+        position.x+"px";
 
-    document.getElementById(
-      "profileImage"
-    ).src =
-      s.image_url;
+      point.style.top=
+        position.y+"px";
+
+      point.dataset.index=index;
+
+      point.addEventListener(
+        "pointerdown",
+        e=>{
+          e.stopPropagation();
+        }
+      );
+
+      point.addEventListener(
+        "click",
+        e=>{
+
+          e.stopPropagation();
+
+          openPost(post);
+
+          currentGuideIndex=index;
+
+          setGuide(
+            position.x,
+            position.y
+          );
+        }
+      );
+
+      galaxy.appendChild(point);
+
+      postPoints.push({
+        x:position.x,
+        y:position.y,
+        element:point,
+        post:post
+      });
+    }
+  );
+
+  /*
+    اگر پست وجود داشته باشد،
+    ستاره راهنما از اولین پست شروع می‌کند.
+  */
+
+  if(postPoints.length){
+
+    setGuide(
+      postPoints[0].x,
+      postPoints[0].y
+    );
+
+    setTimeout(
+      guideJourney,
+      1800
+    );
   }
 }
 
 
-/* =========================================
-   URL امن
-========================================= */
+/* ==========================================
+   ستاره راهنما
+========================================== */
+
+const guide =
+document.getElementById("guide");
+
+let currentGuideIndex=0;
+
+function setGuide(x,y){
+
+  guide.style.left=
+    (x-35)+"px";
+
+  guide.style.top=
+    (y-35)+"px";
+}
+
+
+/*
+   ⭐ به صورت خودکار
+   از یک پست به پست بعدی می‌رود.
+*/
+
+function guideJourney(){
+
+  if(!postPoints.length)
+    return;
+
+  postPoints.forEach(
+    p=>{
+      p.element.classList.remove(
+        "active"
+      );
+    }
+  );
+
+  const current =
+    postPoints[
+      currentGuideIndex
+    ];
+
+  if(!current) return;
+
+  current.element.classList.add(
+    "active"
+  );
+
+  setGuide(
+    current.x,
+    current.y
+  );
+
+  showMessage(
+    "⭐ یک پست جدید پیدا کردم"
+  );
+
+  setTimeout(
+    ()=>{
+
+      currentGuideIndex++;
+
+      if(
+        currentGuideIndex>=
+        postPoints.length
+      ){
+        currentGuideIndex=0;
+      }
+
+      guideJourney();
+
+    },
+    6500
+  );
+}
+
+
+/*
+   با زدن ⭐
+   دوربین به سمت همان پست می‌رود.
+*/
+
+guide.addEventListener(
+  "click",
+  e=>{
+
+    e.stopPropagation();
+
+    if(!postPoints.length)
+      return;
+
+    const current =
+      postPoints[
+        currentGuideIndex
+      ];
+
+    if(!current) return;
+
+    centerOn(
+      current.x,
+      current.y
+    );
+
+    openPost(
+      current.post
+    );
+  }
+);
+
+
+/* ==========================================
+   بردن دوربین روی یک نقطه
+========================================== */
+
+function centerOn(x,y){
+
+  const worldCenter=4500;
+
+  targetX =
+    worldCenter-x;
+
+  targetY =
+    worldCenter-y;
+
+  limitCamera();
+}
+
+
+/* ==========================================
+   پنجره پست
+========================================== */
 
 function safeUrl(value){
 
@@ -1205,28 +1179,24 @@ function safeUrl(value){
 
   try{
 
-    const u =
+    const url=
       new URL(value);
 
     if(
-      u.protocol==="https:" ||
-      u.protocol==="http:"
-    )
-      return u.href;
+      url.protocol==="https:" ||
+      url.protocol==="http:"
+    ){
+      return url.href;
+    }
 
   }catch(e){}
 
   return "";
 }
 
+function escapeHtml(value){
 
-/* =========================================
-   متن امن
-========================================= */
-
-function escapeHtml(text){
-
-  return String(text ?? "")
+  return String(value ?? "")
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;")
@@ -1234,24 +1204,25 @@ function escapeHtml(text){
     .replaceAll("'","&#039;");
 }
 
-
-/* =========================================
-   باز کردن پست
-========================================= */
-
 function openPost(post){
 
   const viewer =
-    document.getElementById("viewer");
+    document.getElementById(
+      "viewer"
+    );
 
   const title =
-    document.getElementById("viewerTitle");
+    document.getElementById(
+      "viewerTitle"
+    );
 
   const content =
-    document.getElementById("viewerContent");
+    document.getElementById(
+      "viewerContent"
+    );
 
   title.textContent =
-    post.title || "";
+    post.title || "✦";
 
   let html="";
 
@@ -1304,28 +1275,20 @@ function openPost(post){
   viewer.classList.add("show");
 }
 
-
-/* =========================================
-   بستن
-========================================= */
-
 function closeViewer(){
 
   document
     .getElementById("viewer")
-    .classList.remove("show");
-
-  document
-    .getElementById("viewerContent")
-    .innerHTML="";
+    .classList.remove(
+      "show"
+    );
 }
-
 
 document
   .getElementById("viewer")
   .addEventListener(
     "click",
-    e => {
+    e=>{
 
       if(
         e.target.id==="viewer"
@@ -1336,9 +1299,9 @@ document
   );
 
 
-/* =========================================
-   100 قلب رنگی
-========================================= */
+/* ==========================================
+   قلب ها
+========================================== */
 
 function explodeHearts(event){
 
@@ -1356,198 +1319,326 @@ function explodeHearts(event){
 
   const colors=[
     "#ff3b81",
-    "#ff4f4f",
-    "#ff9f1c",
+    "#ff5a5a",
+    "#ffb000",
     "#ffe600",
-    "#62e6ff",
-    "#7c5cff",
-    "#ff72ff",
-    "#55ff9a",
-    "#ffffff",
-    "#ff68c4"
+    "#61eaff",
+    "#8a6cff",
+    "#ff72e8",
+    "#62ffad",
+    "#fff"
   ];
 
   for(let i=0;i<100;i++){
 
-    const heart =
-      document.createElement("span");
+    const h =
+      document.createElement(
+        "span"
+      );
 
-    heart.className=
-      "heart-particle";
+    h.className="heart";
 
-    heart.textContent="♥";
+    h.textContent="♥";
 
-    heart.style.left=x+"px";
-    heart.style.top=y+"px";
+    h.style.left=x+"px";
+    h.style.top=y+"px";
 
-    heart.style.color =
+    h.style.color=
       colors[
         Math.floor(
           Math.random()*colors.length
         )
       ];
 
-    const angle =
+    const angle=
       Math.random()*Math.PI*2;
 
-    const distance =
-      40+
+    const distance=
+      50+
       Math.random()*260;
 
-    heart.style.setProperty(
+    h.style.setProperty(
       "--x",
       Math.cos(angle)*distance+"px"
     );
 
-    heart.style.setProperty(
+    h.style.setProperty(
       "--y",
       Math.sin(angle)*distance+"px"
     );
 
-    heart.style.setProperty(
+    h.style.setProperty(
       "--r",
       -180+
       Math.random()*360+
       "deg"
     );
 
-    heart.style.fontSize =
+    h.style.fontSize=
       7+
-      Math.random()*9+
+      Math.random()*10+
       "px";
 
-    document.body.appendChild(
-      heart
-    );
+    document.body.appendChild(h);
 
     setTimeout(
       ()=>{
-        heart.remove();
+        h.remove();
       },
-      2000
+      1800
     );
   }
 }
 
 
-/* =========================================
-   محل های پست
-========================================= */
+/* ==========================================
+   تنظیمات
+========================================== */
 
-const locations=[
-
-  [1500,700],
-  [2500,1300],
-  [3900,900],
-  [5000,1900],
-  [1200,2600],
-  [3000,2300],
-  [4700,2900],
-  [5900,3200],
-  [800,3900],
-  [2200,3900],
-  [3700,4400],
-  [5200,4600],
-  [1400,5500],
-  [3500,5600],
-  [5700,5700]
-
-];
-
-
-/* =========================================
-   پست ها
-========================================= */
-
-async function loadPosts(){
+async function loadSettings(){
 
   const result =
-    await supabaseClient
-      .from("posts")
+    await db
+      .from("site_settings")
       .select("*")
       .order(
         "created_at",
         {ascending:false}
-      );
+      )
+      .limit(1);
 
   if(result.error){
 
     console.log(
-      "posts:",
+      "settings:",
       result.error
     );
 
     return;
   }
 
-  const posts =
-    result.data || [];
+  const data =
+    result.data?.[0];
 
-  posts.forEach(
-    (post,index)=>{
+  if(!data)
+    return;
 
-      const pos =
-        locations[
-          index%locations.length
-        ];
+  if(data.site_name){
 
-      const point =
-        document.createElement(
-          "div"
-        );
+    document.getElementById(
+      "siteName"
+    ).textContent=
+      data.site_name;
+  }
 
-      point.className=
-        "content-point";
+  if(data.bio){
 
-      point.style.left=
-        pos[0]+"px";
+    document.getElementById(
+      "siteBio"
+    ).textContent=
+      data.bio;
+  }
 
-      point.style.top=
-        pos[1]+"px";
+  if(data.image_url){
 
-      point.addEventListener(
-        "pointerdown",
-        e=>{
-          e.stopPropagation();
-        }
-      );
-
-      point.addEventListener(
-        "click",
-        e=>{
-
-          e.stopPropagation();
-
-          openPost(post);
-        }
-      );
-
-      galaxy.appendChild(
-        point
-      );
-    }
-  );
+    document.getElementById(
+      "profileImage"
+    ).src=
+      data.image_url;
+  }
 }
 
 
-/* =========================================
-   ستاره راهنما
-========================================= */
+/* ==========================================
+   موزیک شیرین و رویایی
+========================================== */
+
+let audioCtx=null;
+let musicGain=null;
+let musicTimer=null;
+let musicStarted=false;
+
+const melody=[
+  261.63,
+  329.63,
+  392.00,
+  329.63,
+  293.66,
+  349.23,
+  440.00,
+  349.23
+];
+
+let noteIndex=0;
+
+function startSweetMusic(){
+
+  if(musicStarted)
+    return;
+
+  musicStarted=true;
+
+  try{
+
+    audioCtx=
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+    musicGain=
+      audioCtx.createGain();
+
+    musicGain.gain.value=.025;
+
+    musicGain.connect(
+      audioCtx.destination
+    );
+
+    sweetNote();
+
+    musicTimer=
+      setInterval(
+        sweetNote,
+        900
+      );
+
+  }catch(e){
+
+    console.log(e);
+  }
+}
+
+function sweetNote(){
+
+  if(!audioCtx || !musicGain)
+    return;
+
+  const osc=
+    audioCtx.createOscillator();
+
+  const gain=
+    audioCtx.createGain();
+
+  osc.type="sine";
+
+  osc.frequency.value=
+    melody[
+      noteIndex%
+      melody.length
+    ];
+
+  noteIndex++;
+
+  const now=
+    audioCtx.currentTime;
+
+  gain.gain.setValueAtTime(
+    0,
+    now
+  );
+
+  gain.gain.linearRampToValueAtTime(
+    .12,
+    now+.12
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    .001,
+    now+.8
+  );
+
+  osc.connect(gain);
+  gain.connect(musicGain);
+
+  osc.start(now);
+
+  osc.stop(
+    now+.85
+  );
+}
 
 document
-  .getElementById("guide")
+  .getElementById("musicBtn")
   .addEventListener(
-    "pointerdown",
+    "click",
     e=>{
+
       e.stopPropagation();
-      startAmbient();
+
+      if(!musicStarted){
+
+        startSweetMusic();
+
+      }else{
+
+        if(
+          musicGain &&
+          audioCtx
+        ){
+
+          if(
+            musicGain.gain.value>0
+          ){
+
+            musicGain.gain.value=0;
+
+            document
+              .getElementById(
+                "musicBtn"
+              )
+              .textContent="🔇";
+
+          }else{
+
+            musicGain.gain.value=.025;
+
+            document
+              .getElementById(
+                "musicBtn"
+              )
+              .textContent="♫";
+          }
+        }
+      }
     }
   );
 
 
-/* =========================================
-   اجرا
-========================================= */
+/* ==========================================
+   پیام
+========================================== */
+
+let messageTimer=null;
+
+function showMessage(text){
+
+  const box=
+    document.getElementById(
+      "message"
+    );
+
+  box.textContent=text;
+
+  box.classList.add("show");
+
+  clearTimeout(messageTimer);
+
+  messageTimer=
+    setTimeout(
+      ()=>{
+        box.classList.remove(
+          "show"
+        );
+      },
+      2200
+    );
+}
+
+
+/* ==========================================
+   شروع
+========================================== */
 
 loadSettings();
 loadPosts();
