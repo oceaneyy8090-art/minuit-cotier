@@ -6,19 +6,30 @@
 
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
+
 <style>
 
 html,body{
+
 margin:0;
+
 height:100%;
+
 overflow:hidden;
-touch-action:none;
+
 background:#020617;
+
+touch-action:none;
+
 }
 
+
 canvas{
+
 display:block;
+
 }
+
 
 
 #postBox{
@@ -26,7 +37,9 @@ display:block;
 display:none;
 
 position:fixed;
+
 top:50%;
+
 left:50%;
 
 transform:translate(-50%,-50%);
@@ -48,7 +61,8 @@ z-index:10;
 }
 
 
-#postBox img{
+
+#postImage{
 
 max-width:100%;
 
@@ -57,11 +71,10 @@ border-radius:15px;
 }
 
 
+
 #like{
 
-font-size:35px;
-
-cursor:pointer;
+font-size:40px;
 
 }
 
@@ -71,25 +84,25 @@ cursor:pointer;
 
 position:fixed;
 
-bottom:25px;
+right:20px;
 
-right:25px;
-
-z-index:20;
-
-background:#071a3d;
-
-color:white;
-
-border:0;
-
-border-radius:50%;
+bottom:20px;
 
 width:55px;
 
 height:55px;
 
+border:0;
+
+border-radius:50%;
+
+background:#071a3d;
+
+color:white;
+
 font-size:22px;
+
+z-index:20;
 
 }
 
@@ -106,7 +119,9 @@ font-size:22px;
 
 
 <audio id="music" loop>
+
 <source src="music.mp3">
+
 </audio>
 
 
@@ -119,6 +134,7 @@ font-size:22px;
 <button onclick="closePost()">بستن</button>
 
 <h2 id="postTitle"></h2>
+
 
 <img id="postImage">
 
@@ -152,11 +168,9 @@ SUPABASE_KEY
 
 
 
-
 const canvas=document.getElementById("sky");
 
 const ctx=canvas.getContext("2d");
-
 
 
 let W,H;
@@ -178,6 +192,7 @@ onresize=resize;
 
 
 let camX=0;
+
 let camY=0;
 
 
@@ -193,32 +208,40 @@ let activePost=null;
 
 
 
+
 const colors=[
-"#fff",
+
+"#ffffff",
 "#7dd3fc",
 "#a78bfa",
 "#f9a8d4",
 "#c7d2fe"
+
 ];
 
 
 
 
 
-function addStar(){
+// ساخت ستاره در اطراف محل حرکت
+
+function addStar(x,y){
 
 
 stars.push({
 
-x:Math.random()*5000-2500,
+x:x ?? camX+(Math.random()-0.5)*W*4,
 
-y:Math.random()*5000-2500,
+y:y ?? camY+(Math.random()-0.5)*H*4,
+
 
 vx:(Math.random()-.5)*0.2,
 
 vy:(Math.random()-.5)*0.2,
 
+
 size:2+Math.random()*6,
+
 
 color:
 colors[
@@ -234,7 +257,7 @@ Math.floor(Math.random()*colors.length)
 
 
 
-for(let i=0;i<1200;i++){
+for(let i=0;i<1500;i++){
 
 addStar();
 
@@ -243,6 +266,10 @@ addStar();
 
 
 
+
+
+
+// گرفتن پست ها از Supabase
 
 
 async function loadPosts(){
@@ -268,24 +295,28 @@ return;
 
 posts=data.map((p,i)=>({
 
-x:(i*350)-500,
 
-y:(i*250)-300,
+x:i*500-500,
+
+y:i*350-300,
+
 
 icon:"🌛",
 
-title:p.title || "پست",
+
+title:p.title || "پست جدید",
+
 
 content:p.content || "",
 
+
 image:p.image_url || ""
+
 
 }));
 
 
-
 }
-
 
 
 loadPosts();
@@ -294,12 +325,27 @@ loadPosts();
 
 
 
+
+
 function draw(){
+
 
 
 ctx.fillStyle="#020617";
 
 ctx.fillRect(0,0,W,H);
+
+
+
+
+while(stars.length<2000){
+
+addStar();
+
+}
+
+
+
 
 
 
@@ -316,15 +362,18 @@ let x=s.x-camX+W/2;
 let y=s.y-camY+H/2;
 
 
+
 ctx.fillStyle=s.color;
 
 ctx.font=s.size+"px Arial";
+
 
 ctx.fillText("☆",x,y);
 
 
 
 });
+
 
 
 
@@ -347,8 +396,8 @@ y
 );
 
 
-});
 
+});
 
 
 
@@ -361,7 +410,7 @@ e.x+=e.vx;
 e.y+=e.vy;
 
 
-ctx.font="18px Arial";
+ctx.font="20px Arial";
 
 ctx.fillStyle=e.color;
 
@@ -392,7 +441,7 @@ requestAnimationFrame(draw);
 
 
 draw();
-// باز کردن پست با 🌛
+// باز شدن پست با 🌛
 
 canvas.onclick=e=>{
 
@@ -406,27 +455,22 @@ let y=p.y-camY+H/2;
 
 
 
-if(
-Math.hypot(
-e.clientX-x,
-e.clientY-y
-)<50
-){
+if(Math.hypot(e.clientX-x,e.clientY-y)<60){
 
 
 activePost=p;
 
 
-document.getElementById("postTitle").innerHTML=
-p.title;
+
+document.getElementById("postTitle").innerHTML=p.title;
 
 
-document.getElementById("postContent").innerHTML=
-p.content;
+document.getElementById("postContent").innerHTML=p.content;
 
 
 
 let img=document.getElementById("postImage");
+
 
 
 if(p.image){
@@ -470,7 +514,8 @@ document.getElementById("postBox").style.display="none";
 
 
 
-// لایک
+
+// لایک با انفجار ستاره
 
 document.getElementById("like").onclick=()=>{
 
@@ -481,35 +526,34 @@ if(!activePost)return;
 document.getElementById("like").innerHTML="♥";
 
 
-for(let i=0;i<150;i++){
+
+for(let i=0;i<200;i++){
 
 
 effects.push({
+
 
 x:activePost.x,
 
 y:activePost.y,
 
 
-vx:(Math.random()-.5)*8,
+vx:(Math.random()-0.5)*10,
 
-vy:(Math.random()-.5)*8,
+vy:(Math.random()-0.5)*10,
 
 
-life:70,
+life:80,
 
 
 color:
-colors[
-Math.floor(Math.random()*colors.length)
-]
+colors[Math.floor(Math.random()*colors.length)]
 
 
 });
 
 
 }
-
 
 
 };
@@ -519,16 +563,21 @@ Math.floor(Math.random()*colors.length)
 
 
 
-// حرکت آسمان
+
+// حرکت در فضا
 
 let sx=null;
+
 let sy=null;
+
 let ox=0;
+
 let oy=0;
 
 
 
 canvas.onpointerdown=e=>{
+
 
 sx=e.clientX;
 
@@ -544,10 +593,12 @@ oy=camY;
 
 
 
+
 canvas.onpointermove=e=>{
 
 
 if(sx===null)return;
+
 
 
 camX=ox-(e.clientX-sx);
@@ -555,13 +606,26 @@ camX=ox-(e.clientX-sx);
 camY=oy-(e.clientY-sy);
 
 
+
+// ساخت ستاره های جدید در مسیر
+
+while(stars.length<2500){
+
+addStar();
+
+}
+
+
 };
+
 
 
 
 canvas.onpointerup=()=>{
 
+
 sx=null;
+
 
 };
 
@@ -586,7 +650,6 @@ if(playing){
 
 music.pause();
 
-
 document.getElementById("musicBtn").innerHTML="🔇";
 
 
@@ -600,7 +663,6 @@ else{
 
 music.play();
 
-
 document.getElementById("musicBtn").innerHTML="🎵";
 
 
@@ -611,6 +673,7 @@ playing=true;
 
 
 }
+
 
 
 
