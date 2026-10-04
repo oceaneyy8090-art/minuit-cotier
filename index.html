@@ -56,32 +56,29 @@ let camY=0;
 let stars=[];
 
 
-
 const colors=[
 "#ffffff",
 "#bae6fd",
-"#c4b5fd",
-"#f9a8d4"
+"#ddd6fe",
+"#fbcfe8"
 ];
 
 
 
 
-// ساخت ستاره‌های جهان
+// ساخت ستاره
 
-function newStar(){
+function makeStar(){
 
 return {
 
-x:(Math.random()-0.5)*12000,
+x:Math.random()*10000-5000,
 
-y:(Math.random()-0.5)*12000,
+y:Math.random()*10000-5000,
 
-size:3+Math.random()*5,
+size:2+Math.random()*4,
 
-color:colors[Math.floor(Math.random()*colors.length)],
-
-alpha:Math.random()*10
+color:colors[Math.floor(Math.random()*colors.length)]
 
 };
 
@@ -89,27 +86,29 @@ alpha:Math.random()*10
 
 
 
-for(let i=0;i<1800;i++){
 
-stars.push(newStar());
+// فقط ۸۰۰ ستاره سبک
+
+for(let i=0;i<800;i++){
+
+stars.push(makeStar());
 
 }
 
 
 
 
+function draw(){
 
-function loop(){
 
 
+// پس زمینه
 
 let bg=ctx.createLinearGradient(0,0,0,H);
 
-bg.addColorStop(0,"#010314");
+bg.addColorStop(0,"#020617");
 
-bg.addColorStop(.5,"#071a3d");
-
-bg.addColorStop(1,"#312e81");
+bg.addColorStop(1,"#1e1b4b");
 
 
 ctx.fillStyle=bg;
@@ -120,10 +119,9 @@ ctx.fillRect(0,0,W,H);
 
 
 
-for(let i=0;i<stars.length;i++){
+// ستاره‌ها
 
-
-let s=stars[i];
+for(let s of stars){
 
 
 let x=s.x-camX+W/2;
@@ -133,18 +131,11 @@ let y=s.y-camY+H/2;
 
 
 if(
-x>-30 &&
-x<W+30 &&
-y>-30 &&
-y<H+30
+x>-20 &&
+x<W+20 &&
+y>-20 &&
+y<H+20
 ){
-
-
-s.alpha+=0.03;
-
-
-ctx.globalAlpha=
-0.6+Math.sin(s.alpha)*0.3;
 
 
 ctx.font=s.size+"px Arial";
@@ -160,15 +151,14 @@ ctx.fillText("☆",x,y);
 }
 
 
-ctx.globalAlpha=1;
 
+requestAnimationFrame(draw);
 
-requestAnimationFrame(loop);
 
 }
 
 
-loop();
+draw();
 
 
 
@@ -176,21 +166,21 @@ loop();
 
 // حرکت آسمان
 
-let sx=null;
-let sy=null;
+let startX=null;
+let startY=null;
 
-let oldX=0;
-let oldY=0;
+let saveX=0;
+let saveY=0;
 
 
 
 canvas.onpointerdown=e=>{
 
-sx=e.clientX;
-sy=e.clientY;
+startX=e.clientX;
+startY=e.clientY;
 
-oldX=camX;
-oldY=camY;
+saveX=camX;
+saveY=camY;
 
 };
 
@@ -198,12 +188,12 @@ oldY=camY;
 
 canvas.onpointermove=e=>{
 
-if(sx===null)return;
+if(startX===null)return;
 
 
-camX=oldX-(e.clientX-sx);
+camX=saveX-(e.clientX-startX);
 
-camY=oldY-(e.clientY-sy);
+camY=saveY-(e.clientY-startY);
 
 
 };
@@ -212,15 +202,13 @@ camY=oldY-(e.clientY-sy);
 
 canvas.onpointerup=()=>{
 
-sx=null;
-sy=null;
+startX=null;
+startY=null;
 
 };
 
 
-
 </script>
-
 
 </body>
 </html>
