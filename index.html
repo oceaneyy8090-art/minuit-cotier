@@ -38,6 +38,24 @@ display:block;
 const lightMusic=document.getElementById("lightMusic");
 lightMusic.volume=0.25;
 
+
+// 🎵 موزیک لایت پست‌ها
+
+function playPostMusic(){
+
+lightMusic.currentTime=0;
+lightMusic.play();
+
+}
+
+
+function stopPostMusic(){
+
+lightMusic.pause();
+lightMusic.currentTime=0;
+
+}
+
 const SUPABASE_KEY = "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
 const canvas=document.getElementById("sky");
