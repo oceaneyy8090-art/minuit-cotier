@@ -2,49 +2,102 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<title>Minuit côtier</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>☆ Minuit côtier ☆</title>
 
 <style>
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  background: #080812;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #08091f, #17144b, #32236b);
   color: white;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   text-align: center;
+  overflow-x: hidden;
 }
 
 h1 {
   margin-top: 30px;
+  font-size: 30px;
+}
+
+.subtitle {
+  opacity: 0.7;
+  margin-bottom: 25px;
+}
+
+#posts {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: auto;
+  padding: 10px;
 }
 
 .post {
-  background: #171725;
-  margin: 20px;
+  background: rgba(20, 20, 45, 0.9);
+  margin: 20px 10px;
   padding: 20px;
   border-radius: 20px;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+}
+
+.post h2 {
+  margin-top: 0;
+}
+
+.post p {
+  line-height: 1.8;
 }
 
 .post img {
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   border-radius: 15px;
+  margin-top: 10px;
+}
+
+.loading {
+  margin-top: 40px;
+  opacity: 0.8;
+}
+
+.error {
+  background: #4b1825;
+  padding: 20px;
+  margin: 30px 10px;
+  border-radius: 15px;
+  direction: rtl;
 }
 
 .star {
   position: fixed;
-  top: -20px;
+  top: -30px;
   color: white;
-  animation: starfall 5s linear infinite;
+  font-size: 18px;
+  z-index: 1;
+  pointer-events: none;
+  animation: starfall linear infinite;
 }
 
 @keyframes starfall {
+
   from {
-    transform: translateY(-20px);
+    transform: translateY(-30px) rotate(0deg);
   }
+
   to {
-    transform: translateY(100vh);
+    transform: translateY(110vh) rotate(180deg);
   }
+
 }
+
 </style>
 </head>
 
@@ -52,61 +105,239 @@ h1 {
 
 <h1>☆ Minuit côtier ☆</h1>
 
-<div id="posts">در حال بارگذاری...</div>
+<div class="subtitle">
+  ساحلِ نیمه‌شب
+</div>
+
+<div id="posts">
+  <div class="loading">
+    در حال بارگذاری پست‌ها... ☆
+  </div>
+</div>
 
 <script>
 
-const SUPABASE_URL = "https://oyowhuyzgjvpoeupoegh.supabase.co";
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
 
-const SUPABASE_KEY = "sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7";
+
+/*
+  👇 فقط این قسمت را با Publishable Key خودت عوض کن
+*/
+
+const SUPABASE_KEY =
+"sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7";
 
 
 // ساخت ستاره‌ها
-for(let i = 0; i < 40; i++){
-  let star = document.createElement("div");
+
+for (let i = 0; i < 50; i++) {
+
+  const star = document.createElement("div");
+
   star.className = "star";
+
   star.innerHTML = "☆";
-  star.style.left = Math.random()*100 + "%";
-  star.style.animationDelay = Math.random()*5 + "s";
+
+  star.style.left =
+    Math.random() * 100 + "%";
+
+  star.style.fontSize =
+    (10 + Math.random() * 18) + "px";
+
+  star.style.animationDuration =
+    (4 + Math.random() * 7) + "s";
+
+  star.style.animationDelay =
+    Math.random() * 7 + "s";
+
   document.body.appendChild(star);
+
 }
 
 
-// گرفتن پست‌ها از Supabase
-async function getPosts(){
+// دریافت پست‌ها
 
-  let response = await fetch(
-    SUPABASE_URL + "/rest/v1/posts?select=*",
-    {
-      headers:{
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY
+async function getPosts() {
+
+  const postsBox =
+    document.getElementById("posts");
+
+  try {
+
+    const response = await fetch(
+
+      SUPABASE_URL +
+      "/rest/v1/posts?select=*&order=created_at.desc",
+
+      {
+
+        method: "GET",
+
+        headers: {
+
+          "apikey": SUPABASE_KEY,
+
+          "Authorization":
+            "Bearer " + SUPABASE_KEY,
+
+          "Content-Type":
+            "application/json"
+
+        }
+
       }
+
+    );
+
+
+    const resultText =
+      await response.text();
+
+
+    if (!response.ok) {
+
+      postsBox.innerHTML = `
+
+        <div class="error">
+
+          <h3>
+            ⚠️ خطا در دریافت پست‌ها
+          </h3>
+
+          <p>
+            ${resultText}
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+
     }
-  );
 
-  let data = await response.json();
 
-  document.getElementById("posts").innerHTML =
-  data.map(post => `
+    const data =
+      JSON.parse(resultText);
 
-    <div class="post">
 
-      <h2>${post.Title || ""}</h2>
+    if (!Array.isArray(data)) {
 
-      <p>${post.content || ""}</p>
+      postsBox.innerHTML = `
 
-      ${
-        post.image_url 
-        ? `<img src="${post.image_url}">`
-        : ""
-      }
+        <div class="error">
 
-    </div>
+          <h3>
+            ⚠️ اطلاعات پست‌ها درست دریافت نشد
+          </h3>
 
-  `).join("");
+          <p>
+            ${resultText}
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    if (data.length === 0) {
+
+      postsBox.innerHTML = `
+
+        <div class="loading">
+
+          هنوز پستی منتشر نشده ☆
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    postsBox.innerHTML =
+
+      data.map(post => {
+
+        return `
+
+          <article class="post">
+
+            <h2>
+
+              ${
+                post.Title ||
+                post.title ||
+                ""
+
+              }
+
+            </h2>
+
+            <p>
+
+              ${
+                post.content ||
+                ""
+
+              }
+
+            </p>
+
+            ${
+              post.image_url
+
+              ?
+
+              `<img
+                src="${post.image_url}"
+                alt="پست"
+              >`
+
+              :
+
+              ""
+
+            }
+
+          </article>
+
+        `;
+
+      }).join("");
+
+
+  }
+
+  catch (error) {
+
+    postsBox.innerHTML = `
+
+      <div class="error">
+
+        <h3>
+          ⚠️ خطا
+        </h3>
+
+        <p>
+          ${error.message}
+        </p>
+
+      </div>
+
+    `;
+
+  }
 
 }
+
 
 getPosts();
 
@@ -114,3 +345,4 @@ getPosts();
 
 </body>
 </html>
+            
