@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>تنظیمات | Minuit côtier</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+min-height:100vh;
+font-family:Tahoma;
+color:white;
+background:
+radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
+linear-gradient(135deg,#050716,#17104a);
+overflow-x:hidden;
+}
+
+
+#stars{
+position:fixed;
+inset:0;
+pointer-events:none;
+}
+
+
+.star{
+position:absolute;
+color:white;
+font-size:8px;
+animation:fall linear infinite;
+opacity:.7;
+}
+
+
+@keyframes fall{
+from{
+transform:translateY(-20px);
+}
+to{
+transform:translateY(110vh);
+}
+}
+
+
+.container{
+width:90%;
+max-width:600px;
+margin:auto;
+padding:30px 0;
+position:relative;
+z-index:2;
+}
+
+
+.card{
+
+background:#ffffff12;
+border-radius:22px;
+padding:20px;
+backdrop-filter:blur(10px);
+
+}
+
+
+h1,h2{
+text-align:center;
+}
+
+
+input,textarea,button{
+
+width:100%;
+padding:14px;
+margin-top:12px;
+border-radius:15px;
+border:0;
+
+}
+
+
+input,textarea{
+
+background:#ffffff18;
+color:white;
+
+}
+
+
+textarea{
+height:120px;
+}
+
+
+button{
+
+background:#7650ff;
+color:white;
+font-weight:bold;
+
+}
+
+
+#preview{
+
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+display:block;
+margin:15px auto;
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="stars"></div>
+
+
+<div class="container">
+
+
+<div class="card">
+
+
+<h1>☆ Minuit côtier ☆</h1>
+
+<h2>⚙️ تنظیمات</h2>
+
+
+
+<img id="preview">
+
+
+
+<input
+type="file"
+id="imageFile"
+accept="image/*"
+>
+
+
+
+<input
+id="name"
+placeholder="نام سایت"
+>
+
+
+
+<textarea
+id="bio"
+placeholder="بیو سایت"
+></textarea>
+
+
+
+<button onclick="saveSettings()">
+💾 ذخیره تنظیمات
+</button>
+
+
+<p id="msg"></p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<script>
+
+
+/* SUPABASE */
+
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+/* STARS */
+
+
+const starBox =
+document.getElementById("stars");
+
+
+for(let i=0;i<80;i++){
+
+let s=document.createElement("span");
+
+s.className="star";
+
+s.innerText="☆";
+
+s.style.left=Math.random()*100+"%";
+
+s.style.animationDuration=
+(Math.random()*8+7)+"s";
+
+s.style.animationDelay=
+Math.random()*5+"s";
+
+
+starBox.appendChild(s);
+
+}
+
+
+
+
+let imageUrl="";
+
+
+
+document
+.getElementById("imageFile")
+.addEventListener("change",e=>{
+
+
+const file=e.target.files[0];
+
+
+if(file){
+
+document.getElementById("preview")
+.src=
+URL.createObjectURL(file);
+
+}
+
+
+});
+
+
+
+
+
+async function uploadImage(){
+
+
+const file =
+document.getElementById("imageFile")
+.files[0];
+
+
+if(!file)
+return "";
+
+
+
+const name =
+"profile-"+Date.now();
+
+
+
+const {error}=
+
+await db.storage
+.from("Minuit cotier")
+.upload(name,file);
+
+
+
+if(error){
+
+alert(error.message);
+
+return "";
+
+}
+
+
+
+const {data}=
+
+db.storage
+.from("Minuit cotier")
+.getPublicUrl(name);
+
+
+
+return data.publicUrl;
+
+
+}
+
+
+
+
+
+
+async function saveSettings(){
+
+
+const msg =
+document.getElementById("msg");
+
+
+
+msg.innerText="در حال ذخیره...";
+
+
+
+imageUrl =
+await uploadImage();
+
+
+
+const {error}=
+
+await db
+.from("site_settings")
+.insert({
+
+site_name:
+document.getElementById("name").value,
+
+bio:
+document.getElementById("bio").value,
+
+image_url:
+imageUrl
+
+});
+
+
+
+if(error){
+
+msg.innerText=
+"خطا: "+error.message;
+
+}else{
+
+msg.innerText=
+"ذخیره شد ✅❤️";
+
+}
+
+
+}
+
+
+</script>
+
+
+</body>
+</html>
