@@ -9,15 +9,13 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   min-height:100vh;
   font-family:Tahoma,Arial,sans-serif;
-  color:white;
+  color:#fff;
   background:
     radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
     radial-gradient(circle at 80% 80%,#182d67,transparent 35%),
@@ -25,7 +23,6 @@ body{
   overflow-x:hidden;
 }
 
-/* ستاره‌های ریز */
 #stars{
   position:fixed;
   inset:0;
@@ -36,11 +33,11 @@ body{
 
 .star{
   position:absolute;
-  color:white;
+  color:#fff;
   font-size:8px;
   opacity:.75;
+  text-shadow:0 0 8px #fff;
   animation:fall linear infinite;
-  text-shadow:0 0 8px white;
 }
 
 @keyframes fall{
@@ -48,15 +45,8 @@ body{
     transform:translateY(-10vh) rotate(0deg);
     opacity:0;
   }
-
-  15%{
-    opacity:.8;
-  }
-
-  85%{
-    opacity:.7;
-  }
-
+  15%{opacity:.8}
+  85%{opacity:.7}
   100%{
     transform:translateY(110vh) rotate(180deg);
     opacity:0;
@@ -101,15 +91,14 @@ h2{
   font-size:20px;
 }
 
-input,
-textarea{
+input,textarea{
   width:100%;
   padding:13px;
   margin:7px 0;
   border:1px solid rgba(255,255,255,.15);
   border-radius:13px;
   background:rgba(255,255,255,.08);
-  color:white;
+  color:#fff;
   outline:none;
 }
 
@@ -130,21 +119,15 @@ button{
   padding:13px;
   margin-top:8px;
   cursor:pointer;
-  color:white;
+  color:#fff;
   font-weight:bold;
   background:linear-gradient(135deg,#6d4aff,#a65cff);
 }
 
-button:hover{
-  opacity:.9;
-}
+button:hover{opacity:.9}
 
 .danger{
   background:linear-gradient(135deg,#9b254f,#d64265);
-}
-
-.secondary{
-  background:rgba(255,255,255,.1);
 }
 
 .post{
@@ -153,8 +136,7 @@ button:hover{
   margin-top:15px;
 }
 
-.post img,
-.post video{
+.post img{
   width:100%;
   border-radius:15px;
   margin-top:10px;
@@ -165,15 +147,14 @@ button:hover{
   font-weight:bold;
 }
 
-.small{
-  font-size:12px;
-  opacity:.6;
-}
-
 .message{
   text-align:center;
   margin:12px 0;
   min-height:20px;
+}
+
+.hidden{
+  display:none;
 }
 </style>
 </head>
@@ -215,102 +196,117 @@ button:hover{
 
 </div>
 
-<!-- ADMIN PANEL -->
 
-<div id="adminPanel" style="display:none">
+<!-- ADMIN -->
 
-<div class="card">
+<div id="adminPanel" class="hidden">
 
-<h2>⚙️ تنظیمات سایت</h2>
+  <!-- SETTINGS -->
 
-<input
-  id="siteName"
-  placeholder="نام سایت"
->
+  <div class="card">
 
-<textarea
-  id="siteBio"
-  placeholder="توضیحات / بیو سایت"
-></textarea>
+    <h2>⚙️ تنظیمات سایت</h2>
 
-<input
-  id="profileImage"
-  placeholder="لینک عکس پروفایل"
->
+    <input
+      id="siteName"
+      placeholder="نام سایت"
+    >
 
-<button onclick="saveSettings()">
-  ذخیره تنظیمات 💾
-</button>
+    <textarea
+      id="siteBio"
+      placeholder="توضیحات / بیو سایت"
+    ></textarea>
 
-<div id="settingsMessage" class="message"></div>
+    <input
+      id="profileImage"
+      placeholder="لینک عکس پروفایل"
+    >
+
+    <button onclick="saveSettings()">
+      ذخیره تنظیمات 💾
+    </button>
+
+    <div id="settingsMessage" class="message"></div>
+
+  </div>
+
+
+  <!-- NEW POST -->
+
+  <div class="card">
+
+    <h2>📝 انتشار پست</h2>
+
+    <input
+      id="title"
+      placeholder="عنوان پست"
+    >
+
+    <textarea
+      id="content"
+      placeholder="متن پست"
+    ></textarea>
+
+    <input
+      id="image"
+      placeholder="لینک عکس"
+    >
+
+    <input
+      id="video"
+      placeholder="لینک ویدیو"
+    >
+
+    <input
+      id="audio"
+      placeholder="لینک آهنگ"
+    >
+
+    <button onclick="publishPost()">
+      ⭐ انتشار پست
+    </button>
+
+    <div id="postMessage" class="message"></div>
+
+  </div>
+
+
+  <!-- POSTS -->
+
+  <div class="card">
+
+    <h2>📚 پست‌های منتشرشده</h2>
+
+    <div id="posts">
+      در حال دریافت پست‌ها...
+    </div>
+
+  </div>
+
+
+  <!-- LOGOUT -->
+
+  <div class="card">
+
+    <button
+      class="danger"
+      onclick="logout()"
+    >
+      خروج از پنل 🚪
+    </button>
+
+  </div>
 
 </div>
 
-<div class="card">
-
-<h2>📝 انتشار پست</h2>
-
-<input
-  id="title"
-  placeholder="عنوان پست"
->
-
-<textarea
-  id="content"
-  placeholder="متن پست"
-></textarea>
-
-<input
-  id="image"
-  placeholder="لینک عکس"
->
-
-<input
-  id="video"
-  placeholder="لینک ویدیو"
->
-
-<input
-  id="audio"
-  placeholder="لینک آهنگ"
->
-
-<button onclick="publishPost()">
-  ⭐ انتشار پست
-</button>
-
-<div id="postMessage" class="message"></div>
-
 </div>
 
-<div class="card">
-
-<h2>📚 پست‌های منتشرشده</h2>
-
-<div id="posts">
-  در حال دریافت پست‌ها...
-</div>
-
-</div>
-
-<div class="card">
-
-<button
-  class="danger"
-  onclick="logout()"
->
-  خروج از پنل 🚪
-</button>
-
-</div>
-
-</div>
-
-</div>
 
 <script>
 
-/* SUPABASE */
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -318,8 +314,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-const db =
-supabase.createClient(
+const db = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY,
   {
@@ -331,7 +326,9 @@ supabase.createClient(
 );
 
 
-/* STARS */
+/* =========================
+   STARS
+========================= */
 
 const starsBox =
 document.getElementById("stars");
@@ -364,15 +361,33 @@ for(let i=0;i<90;i++){
 }
 
 
-/* LOGIN */
+/* =========================
+   SHOW ADMIN
+========================= */
+
+function showAdmin(){
+
+  document.getElementById("loginBox")
+  .style.display="none";
+
+  document.getElementById("adminPanel")
+  .style.display="block";
+}
+
+
+/* =========================
+   LOGIN
+========================= */
 
 async function login(){
 
   const email =
-  document.getElementById("email").value.trim();
+  document.getElementById("email")
+  .value.trim();
 
   const password =
-  document.getElementById("password").value;
+  document.getElementById("password")
+  .value;
 
   const message =
   document.getElementById("loginMessage");
@@ -385,10 +400,13 @@ async function login(){
     return;
   }
 
-  const {error} =
+  message.innerText =
+  "در حال ورود...";
+
+  const {data,error} =
   await db.auth.signInWithPassword({
-    email,
-    password
+    email:email,
+    password:password
   });
 
   if(error){
@@ -404,26 +422,35 @@ async function login(){
 
   showAdmin();
 
-  loadSettings();
+  await loadSettings();
 
-  loadPosts();
+  await loadPosts();
 }
 
 
-/* SESSION */
+/* =========================
+   CHECK SESSION
+========================= */
 
 async function checkSession(){
 
-  const {data} =
+  const {data,error} =
   await db.auth.getSession();
+
+  if(error){
+
+    console.log(error);
+
+    return;
+  }
 
   if(data.session){
 
     showAdmin();
 
-    loadSettings();
+    await loadSettings();
 
-    loadPosts();
+    await loadPosts();
 
   }else{
 
@@ -436,36 +463,26 @@ async function checkSession(){
 }
 
 
-/* SHOW ADMIN */
-
-function showAdmin(){
-
-  document.getElementById("loginBox")
-  .style.display="none";
-
-  document.getElementById("adminPanel")
-  .style.display="block";
-}
-  document.getElementById("adminPanel")
-  .style.display="block";
-}
-
-
-/* SAVE SETTINGS */
+/* =========================
+   SAVE SETTINGS
+========================= */
 
 async function saveSettings(){
 
-  const siteName =
-  document.getElementById("siteName").value.trim();
-
-  const siteBio =
-  document.getElementById("siteBio").value.trim();
-
-  const profileImage =
-  document.getElementById("profileImage").value.trim();
-
   const message =
   document.getElementById("settingsMessage");
+
+  const siteName =
+  document.getElementById("siteName")
+  .value.trim();
+
+  const siteBio =
+  document.getElementById("siteBio")
+  .value.trim();
+
+  const profileImage =
+  document.getElementById("profileImage")
+  .value.trim();
 
   const {data:sessionData} =
   await db.auth.getSession();
@@ -478,11 +495,19 @@ async function saveSettings(){
     return;
   }
 
-  const {data:oldSettings} =
+  const {data:oldSettings,error:readError} =
   await db
   .from("site_settings")
   .select("id")
   .limit(1);
+
+  if(readError){
+
+    message.innerText =
+    "خطا: "+readError.message;
+
+    return;
+  }
 
   let result;
 
@@ -523,7 +548,9 @@ async function saveSettings(){
 }
 
 
-/* LOAD SETTINGS */
+/* =========================
+   LOAD SETTINGS
+========================= */
 
 async function loadSettings(){
 
@@ -533,24 +560,38 @@ async function loadSettings(){
   .select("*")
   .limit(1);
 
-  if(error || !data || !data.length){
+  if(error){
+
+    console.log("Settings:",error.message);
+
     return;
   }
 
-  const settings = data[0];
+  if(!data || !data.length){
 
-  document.getElementById("siteName").value =
+    return;
+  }
+
+  const settings =
+  data[0];
+
+  document.getElementById("siteName")
+  .value =
   settings.site_name || "";
 
-  document.getElementById("siteBio").value =
+  document.getElementById("siteBio")
+  .value =
   settings.bio || "";
 
-  document.getElementById("profileImage").value =
+  document.getElementById("profileImage")
+  .value =
   settings.image_url || "";
 }
 
 
-/* PUBLISH POST */
+/* =========================
+   PUBLISH POST
+========================= */
 
 async function publishPost(){
 
@@ -569,22 +610,27 @@ async function publishPost(){
   }
 
   const title =
-  document.getElementById("title").value.trim();
+  document.getElementById("title")
+  .value.trim();
 
   const content =
-  document.getElementById("content").value.trim();
+  document.getElementById("content")
+  .value.trim();
 
   const image =
-  document.getElementById("image").value.trim();
+  document.getElementById("image")
+  .value.trim();
 
   const video =
-  document.getElementById("video").value.trim();
+  document.getElementById("video")
+  .value.trim();
 
   const audio =
-  document.getElementById("audio").value.trim();
+  document.getElementById("audio")
+  .value.trim();
 
-
-  let finalContent = content;
+  let finalContent =
+  content;
 
 
   if(video){
@@ -599,6 +645,10 @@ async function publishPost(){
     finalContent +=
     "\n\n🎵 AUDIO:\n"+audio;
   }
+
+
+  message.innerText =
+  "در حال انتشار...";
 
 
   const {error} =
@@ -624,18 +674,29 @@ async function publishPost(){
   "پست منتشر شد ✅❤️";
 
 
-  document.getElementById("title").value="";
-  document.getElementById("content").value="";
-  document.getElementById("image").value="";
-  document.getElementById("video").value="";
-  document.getElementById("audio").value="";
+  document.getElementById("title")
+  .value="";
+
+  document.getElementById("content")
+  .value="";
+
+  document.getElementById("image")
+  .value="";
+
+  document.getElementById("video")
+  .value="";
+
+  document.getElementById("audio")
+  .value="";
 
 
-  loadPosts();
+  await loadPosts();
 }
 
 
-/* LOAD POSTS */
+/* =========================
+   LOAD POSTS
+========================= */
 
 async function loadPosts(){
 
@@ -650,13 +711,16 @@ async function loadPosts(){
   await db
   .from("posts")
   .select("*")
-  .order("created_at",{ascending:false});
+  .order("created_at",{
+    ascending:false
+  });
 
 
   if(error){
 
     box.innerHTML =
-    "خطا در دریافت پست‌ها ❌<br>"+error.message;
+    "خطا در دریافت پست‌ها ❌<br>"+
+    escapeHtml(error.message);
 
     return;
   }
@@ -682,26 +746,35 @@ async function loadPosts(){
     div.className="post";
 
 
-    let html = "";
+    let html="";
 
 
     html +=
     `<div class="post-title">
-      ${escapeHtml(post.title || "بدون عنوان")}
+      ${escapeHtml(
+        post.title || "بدون عنوان"
+      )}
     </div>`;
 
 
     if(post.content){
 
       html +=
-      `<p>${escapeHtml(post.content)}</p>`;
+      `<p>${escapeHtml(
+        post.content
+      ).replace(/\n/g,"<br>")}</p>`;
     }
 
 
     if(post.image_url){
 
       html +=
-      `<img src="${escapeAttr(post.image_url)}">`;
+      `<img
+        src="${escapeAttr(
+          post.image_url
+        )}"
+        alt="post image"
+      >`;
     }
 
 
@@ -713,14 +786,17 @@ async function loadPosts(){
     </button>`;
 
 
-    div.innerHTML=html;
+    div.innerHTML =
+    html;
 
     box.appendChild(div);
   });
 }
 
 
-/* DELETE POST */
+/* =========================
+   DELETE POST
+========================= */
 
 async function deletePost(id){
 
@@ -742,7 +818,8 @@ async function deletePost(id){
   if(error){
 
     alert(
-      "حذف نشد ❌\n"+error.message
+      "حذف نشد ❌\n"+
+      error.message
     );
 
     return;
@@ -751,11 +828,13 @@ async function deletePost(id){
 
   alert("پست حذف شد ✅");
 
-  loadPosts();
+  await loadPosts();
 }
 
 
-/* ESCAPE TEXT */
+/* =========================
+   ESCAPE
+========================= */
 
 function escapeHtml(text){
 
@@ -774,7 +853,9 @@ function escapeAttr(text){
 }
 
 
-/* LOGOUT */
+/* =========================
+   LOGOUT
+========================= */
 
 async function logout(){
 
@@ -792,7 +873,9 @@ async function logout(){
 }
 
 
-/* START */
+/* =========================
+   START
+========================= */
 
 checkSession();
 
