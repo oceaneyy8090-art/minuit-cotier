@@ -2,7 +2,6 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -11,306 +10,349 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+*{
+  box-sizing:border-box;
+}
 
 body{
-
-margin:0;
-font-family:tahoma;
-
-background:
-linear-gradient(135deg,#080820,#34205e);
-
-color:white;
-
+  margin:0;
+  min-height:100vh;
+  font-family:tahoma;
+  color:white;
+  background:
+    radial-gradient(circle at 20% 20%,#3b2778,transparent 35%),
+    linear-gradient(135deg,#050515,#171344,#08081d);
 }
-
 
 .box{
-
-width:90%;
-max-width:500px;
-
-margin:25px auto;
-
-background:#ffffff15;
-
-padding:20px;
-
-border-radius:25px;
-
+  width:92%;
+  max-width:500px;
+  margin:25px auto;
+  padding:22px;
+  border-radius:28px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 0 40px rgba(100,80,255,.2);
 }
 
-
-
-input,textarea,button{
-
-width:100%;
-
-padding:14px;
-
-margin-top:12px;
-
-border:0;
-
-border-radius:15px;
-
+h2{
+  text-align:center;
 }
 
-
-
-input,textarea{
-
-background:#ffffff20;
-
-color:white;
-
+.preview{
+  width:130px;
+  height:130px;
+  display:block;
+  margin:20px auto;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(255,255,255,.7);
+  box-shadow:0 0 35px #65cfff;
+  background:#111;
 }
 
+input,
+textarea,
+button{
+  width:100%;
+  border:0;
+  border-radius:16px;
+  padding:14px;
+  margin-top:12px;
+  font-family:inherit;
+}
+
+input,
+textarea{
+  color:white;
+  background:rgba(255,255,255,.1);
+  outline:none;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:rgba(255,255,255,.55);
+}
 
 button{
-
-background:#8265ff;
-
-color:white;
-
+  color:white;
+  background:linear-gradient(135deg,#7b61ff,#4f9cff);
+  font-size:16px;
 }
 
-
-
-img{
-
-width:120px;
-
-height:120px;
-
-border-radius:50%;
-
-object-fit:cover;
-
-display:block;
-
-margin:auto;
-
-box-shadow:0 0 30px #70ddff;
-
+.fileButton{
+  display:block;
+  text-align:center;
+  padding:14px;
+  margin-top:12px;
+  border-radius:16px;
+  background:rgba(255,255,255,.12);
+  cursor:pointer;
 }
 
+#file{
+  display:none;
+}
+
+#msg{
+  text-align:center;
+  min-height:25px;
+}
 </style>
-
 </head>
-
 
 <body>
 
-
 <div class="box">
 
+<h2>⚙️ تنظیمات کانال</h2>
 
-<h2>
-⚙️ تنظیمات کانال
-</h2>
+<img
+  id="preview"
+  class="preview"
+  alt="پروفایل"
+>
 
+<label class="fileButton" for="file">
+📷 انتخاب عکس پروفایل
+</label>
 
-<img id="preview">
+<input
+  id="file"
+  type="file"
+  accept="image/*"
+>
 
+<input
+  id="name"
+  placeholder="نام کانال"
+>
 
-
-<input id="name"
-placeholder="نام کانال">
-
-
-
-<input id="image"
-placeholder="لینک عکس پروفایل">
-
-
-
-<textarea id="bio"
-placeholder="بیو کانال"></textarea>
-
-
+<textarea
+  id="bio"
+  placeholder="بیو کانال"
+></textarea>
 
 <button onclick="saveSettings()">
-
-ذخیره تغییرات 💾
-
+💾 ذخیره تغییرات
 </button>
-
-
 
 <p id="msg"></p>
 
-
 </div>
 
-
-
-
-
 <script>
-
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
-
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-
 const db =
 supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
+let currentId = null;
+let currentImage = "";
+
+const fileInput =
+document.getElementById("file");
+
+const preview =
+document.getElementById("preview");
+
+const nameInput =
+document.getElementById("name");
+
+const bioInput =
+document.getElementById("bio");
+
+const msg =
+document.getElementById("msg");
 
 
+fileInput.addEventListener(
+  "change",
+  function(){
+
+    const file = this.files[0];
+
+    if(!file) return;
+
+    const localUrl =
+      URL.createObjectURL(file);
+
+    preview.src = localUrl;
+  }
+);
 
 
 async function loadSettings(){
 
+  const {data,error} =
+    await db
+      .from("site_settings")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      )
+      .limit(1);
 
-const {data,error}=
+  if(error){
 
-await db
-.from("site_settings")
-.select("*")
-.limit(1);
+    console.log(error);
+    return;
+  }
 
+  if(!data || !data.length)
+    return;
 
+  const s = data[0];
 
-if(error){
+  currentId = s.id || null;
 
-console.log(error);
+  nameInput.value =
+    s.site_name || "";
 
-return;
+  bioInput.value =
+    s.bio || "";
 
+  currentImage =
+    s.image_url || "";
+
+  if(currentImage)
+    preview.src = currentImage;
 }
 
 
+async function uploadProfile(file){
 
-if(!data[0])
-return;
+  const extension =
+    file.name.includes(".")
+    ? file.name.split(".").pop()
+    : "jpg";
 
+  const fileName =
+    "profile-" +
+    Date.now() +
+    "." +
+    extension;
 
+  const {error} =
+    await db.storage
+      .from("Minuit cotier")
+      .upload(
+        fileName,
+        file,
+        {
+          upsert:true
+        }
+      );
 
-let s=data[0];
+  if(error)
+    throw error;
 
+  const {data} =
+    db.storage
+      .from("Minuit cotier")
+      .getPublicUrl(fileName);
 
-name.value =
-s.site_name || "";
-
-
-image.value =
-s.image_url || "";
-
-
-bio.value =
-s.bio || "";
-
-
-preview.src =
-s.image_url || "";
-
+  return data.publicUrl;
 }
-
-
-
-image.oninput=()=>{
-
-preview.src=image.value;
-
-};
-
-
-
 
 
 async function saveSettings(){
 
+  msg.textContent =
+    "در حال ذخیره...";
+
+  try{
+
+    const file =
+      fileInput.files[0];
+
+    let imageUrl =
+      currentImage;
+
+    if(file){
+
+      imageUrl =
+        await uploadProfile(file);
+
+    }
+
+    const values = {
+
+      site_name:
+        nameInput.value.trim(),
+
+      bio:
+        bioInput.value.trim(),
+
+      image_url:
+        imageUrl
+
+    };
 
 
-const newData={
-
-site_name:
-name.value,
-
-image_url:
-image.value,
-
-bio:
-bio.value
-
-};
+    let result;
 
 
+    if(currentId){
 
-const {data}=
+      result =
+        await db
+          .from("site_settings")
+          .update(values)
+          .eq("id",currentId);
 
-await db
-.from("site_settings")
-.select("id")
-.limit(1);
+    }else{
 
+      result =
+        await db
+          .from("site_settings")
+          .insert(values)
+          .select()
+          .single();
 
-
-let result;
-
-
-
-if(data && data[0]){
-
-
-result=
-await db
-.from("site_settings")
-.update(newData)
-.eq(
-"id",
-data[0].id
-);
+      if(result.data)
+        currentId =
+          result.data.id;
+    }
 
 
-
-}else{
-
-
-result=
-await db
-.from("site_settings")
-.insert(newData);
+    if(result.error)
+      throw result.error;
 
 
+    currentImage =
+      imageUrl;
 
+    msg.textContent =
+      "ذخیره شد ✅";
+
+  }catch(error){
+
+    console.error(error);
+
+    msg.textContent =
+      "خطا: " + error.message;
+  }
 }
-
-
-
-if(result.error){
-
-msg.innerText=
-"خطا ❌";
-
-}else{
-
-
-msg.innerText=
-"ذخیره شد ✅";
-
-}
-
-
-}
-
 
 
 loadSettings();
 
-
 </script>
 
-
 </body>
-
 </html>
