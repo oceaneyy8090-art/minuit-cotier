@@ -21,121 +21,53 @@ display:block;
 }
 
 
-#musicBtn{
-
-position:fixed;
-
-right:20px;
-
-bottom:20px;
-
-width:55px;
-
-height:55px;
-
-border-radius:50%;
-
-border:none;
-
-background:#ffffff22;
-
-color:white;
-
-font-size:25px;
-
-z-index:20;
-
-}
-
-
-
 #postBox{
-
 display:none;
-
 position:fixed;
-
 top:50%;
-
 left:50%;
-
 transform:translate(-50%,-50%);
-
 background:#071a3d;
-
 color:white;
-
-width:80%;
-
 padding:20px;
-
+width:80%;
 border-radius:20px;
-
 text-align:center;
-
 z-index:10;
-
 }
-
 
 
 #like{
-
 font-size:35px;
-
 color:white;
-
 }
 
 </style>
 
 </head>
 
-
 <body>
 
-
 <canvas id="sky"></canvas>
-
-
-<audio id="lightMusic" loop>
-
-<source src="light.mp3" type="audio/mpeg">
-
-</audio>
-
-
-<button id="musicBtn">🔇</button>
-
 
 
 <div id="postBox">
 
 <button onclick="closePost()">بستن</button>
 
-<h2 id="postTitle">🌛 پست</h2>
+<h2 id="postTitle">🌛</h2>
 
-<p id="postText">
-محتوای پست
-</p>
+<p id="postText"></p>
 
-
-<div id="like">
-♡
-</div>
-
+<div id="like">♡</div>
 
 </div>
-
 
 
 <script>
 
-
 const canvas=document.getElementById("sky");
-
 const ctx=canvas.getContext("2d");
-
 
 
 let W,H;
@@ -144,188 +76,81 @@ let W,H;
 function resize(){
 
 W=canvas.width=innerWidth;
-
 H=canvas.height=innerHeight;
 
 }
 
-
 resize();
-
 onresize=resize;
 
 
 
-
-const music=document.getElementById("lightMusic");
-
-music.volume=0.25;
-
-
-
-let musicOn=false;
-
-
-document.getElementById("musicBtn").onclick=()=>{
-
-
-if(musicOn){
-
-music.pause();
-
-musicOn=false;
-
-musicBtn.innerHTML="🔇";
-
-
-}else{
-
-
-music.play();
-
-musicOn=true;
-
-musicBtn.innerHTML="🎵";
-
-
-}
-
-
-};
-
-
-
-
 let camX=0;
-
 let camY=0;
 
 
-
 let stars=[];
-
 let effects=[];
 
 
-
 const colors=[
-
 "#ffffff",
 "#7dd3fc",
-"#a78bfa",
+"#c4b5fd",
 "#f9a8d4",
-"#c7d2fe"
-
+"#fde68a"
 ];
 
 
 
-
-function addStar(x,y){
-
-
-stars.push({
-
-
-x:x,
-
-y:y,
-
-
-vx:(Math.random()-.5)*0.25,
-
-vy:(Math.random()-.5)*0.25,
-
-
-size:2+Math.random()*7,
-
-
-color:
-colors[
-Math.floor(Math.random()*colors.length)
-]
-
-
-});
-
-
-}
-
-
-
+// ساخت جهان ستاره‌ها
 
 for(let i=0;i<3000;i++){
 
+stars.push({
 
-addStar(
+x:(Math.random()-0.5)*20000,
 
-(Math.random()-0.5)*10000,
+y:(Math.random()-0.5)*20000,
 
-(Math.random()-0.5)*10000
+size:2.5+Math.random()*5,
 
-);
+color:colors[Math.floor(Math.random()*colors.length)],
 
+twinkle:Math.random()*10
+
+});
 
 }
+
+
 let posts=[
 
 {
 x:300,
 y:200,
-title:"اولین پست 🌛",
-text:"اینجا متن پست قرار می‌گیرد ✨"
-},
-
-{
-x:-500,
-y:600,
-title:"پست دوم 🌛",
-text:"یک پست دیگر در آسمان شب"
+title:"پست اول 🌛",
+text:"سلام از Minuit côtier"
 }
 
 ];
 
 
 let activePost=null;
-
-
+// رسم آسمان
 
 function draw(){
 
 
-
-// ساخت ستاره در هرجای جدیدی که می‌ری
-
-while(stars.length<4000){
-
-addStar(
-
-camX+(Math.random()-0.5)*W*6,
-
-camY+(Math.random()-0.5)*H*6
-
-);
-
-}
-
-
-
-
-
 let bg=ctx.createLinearGradient(0,0,0,H);
 
-
 bg.addColorStop(0,"#010314");
-
 bg.addColorStop(.5,"#071a3d");
-
-bg.addColorStop(1,"#31486d");
+bg.addColorStop(1,"#312e81");
 
 
 ctx.fillStyle=bg;
-
 ctx.fillRect(0,0,W,H);
-
 
 
 
@@ -335,25 +160,38 @@ ctx.fillRect(0,0,W,H);
 stars.forEach(s=>{
 
 
-s.x+=s.vx;
-
-s.y+=s.vy;
-
-
-
 let x=s.x-camX+W/2;
 
 let y=s.y-camY+H/2;
 
 
+if(
+x>-100 &&
+x<W+100 &&
+y>-100 &&
+y<H+100
+){
 
-ctx.font=s.size+"px Arial";
+
+s.twinkle+=0.03;
+
+
+ctx.font=
+(s.size+Math.sin(s.twinkle)*0.5)
++"px Arial";
+
 
 ctx.fillStyle=s.color;
 
 
-ctx.fillText("☆",x,y);
+ctx.fillText(
+"☆",
+x,
+y
+);
 
+
+}
 
 
 });
@@ -362,8 +200,7 @@ ctx.fillText("☆",x,y);
 
 
 
-
-// پست‌ها 🌛
+// 🌛 پست‌ها
 
 posts.forEach(p=>{
 
@@ -389,8 +226,7 @@ y
 
 
 
-
-// انفجار لایک
+// افکت لایک
 
 effects.forEach((e,i)=>{
 
@@ -400,8 +236,7 @@ e.x+=e.vx;
 e.y+=e.vy;
 
 
-
-ctx.font="18px Arial";
+ctx.font=e.size+"px Arial";
 
 ctx.fillStyle=e.color;
 
@@ -425,7 +260,6 @@ effects.splice(i,1);
 }
 
 
-
 });
 
 
@@ -436,15 +270,14 @@ requestAnimationFrame(draw);
 }
 
 
-
 draw();
 
 
 
 
 
+// باز کردن پست با 🌛
 
-// لمس 🌛
 
 canvas.onclick=e=>{
 
@@ -459,12 +292,10 @@ let y=p.y-camY+H/2;
 
 
 if(
-
 Math.hypot(
 e.clientX-x,
 e.clientY-y
 )<45
-
 ){
 
 
@@ -480,13 +311,7 @@ document.getElementById("postText").innerHTML=p.text;
 document.getElementById("postBox").style.display="block";
 
 
-// پخش موزیک
-
-music.play();
-
-
 }
-
 
 
 });
@@ -500,24 +325,16 @@ music.play();
 
 function closePost(){
 
-
 document.getElementById("postBox").style.display="none";
 
-
-music.pause();
-
-
 }
-
-
-
-
-
-
-// لایک ♡
+// لایک ♡ و پرتاب ستاره‌ها
 
 
 document.getElementById("like").onclick=()=>{
+
+
+if(!activePost) return;
 
 
 document.getElementById("like").style.color="red";
@@ -529,18 +346,20 @@ for(let i=0;i<200;i++){
 
 effects.push({
 
-
 x:activePost.x,
 
 y:activePost.y,
 
 
-vx:(Math.random()-0.5)*12,
+vx:(Math.random()-0.5)*14,
 
-vy:(Math.random()-0.5)*12,
+vy:(Math.random()-0.5)*14,
 
 
-life:90,
+life:100,
+
+
+size:2+Math.random()*5,
 
 
 color:
@@ -557,25 +376,38 @@ Math.floor(Math.random()*colors.length)
 
 
 };
-// حرکت در آسمان
+
+
+
+
+
+
+// حرکت داخل آسمان
+
 
 let sx=null;
 let sy=null;
 
-let ox=0;
-let oy=0;
+let startX=0;
+let startY=0;
 
 
 
 canvas.onpointerdown=e=>{
 
+
 sx=e.clientX;
+
 sy=e.clientY;
 
-ox=camX;
-oy=camY;
+
+startX=camX;
+
+startY=camY;
+
 
 };
+
 
 
 
@@ -587,50 +419,45 @@ if(sx===null)return;
 
 
 
-camX=ox-(e.clientX-sx);
+camX=startX-(e.clientX-sx);
 
-camY=oy-(e.clientY-sy);
+
+camY=startY-(e.clientY-sy);
 
 
 
 };
+
 
 
 
 
 canvas.onpointerup=()=>{
 
+
 sx=null;
+
 sy=null;
 
+
 };
-
-
-
-
-
-// ---------- آماده برای Supabase ----------
-
+// اتصال Supabase
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
-
 
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
 
 
-
-// گرفتن پست‌های واقعی
-
-async function getPosts(){
+async function loadPosts(){
 
 
 try{
 
 
-let result=await fetch(
+let res=await fetch(
 
 SUPABASE_URL+
 "/rest/v1/posts?select=*",
@@ -652,29 +479,25 @@ headers:{
 
 
 
-let data=await result.json();
+let data=await res.json();
 
 
 
-
-// تبدیل هر پست به 🌛
-
-posts=data.map((p,i)=>{
+posts=data.map((p)=>{
 
 
 return{
 
 
-x:(Math.random()-0.5)*5000,
+x:(Math.random()-0.5)*8000,
 
-y:(Math.random()-0.5)*5000,
+y:(Math.random()-0.5)*8000,
 
 
 title:p.title || "پست 🌛",
 
 
 text:p.content || ""
-
 
 };
 
@@ -683,11 +506,9 @@ text:p.content || ""
 
 
 
-}catch(err){
+}catch(e){
 
-
-console.log(err);
-
+console.log(e);
 
 }
 
@@ -696,9 +517,7 @@ console.log(err);
 
 
 
-
-getPosts();
-
+loadPosts();
 </script>
 
 </body>
