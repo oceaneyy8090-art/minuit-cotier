@@ -2,57 +2,68 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>پنل مدیریت ☆ Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   min-height:100vh;
   font-family:Arial,sans-serif;
-  color:white;
+  color:#fff;
   background:linear-gradient(135deg,#08091f,#17144b,#32236b);
-  padding:25px 15px;
+  padding:20px;
 }
+
 .star{
   position:fixed;
-  color:#fff;
-  opacity:.7;
-  animation:fall linear infinite;
+  color:white;
   pointer-events:none;
+  animation:fall linear infinite;
+  opacity:.7;
 }
+
 @keyframes fall{
   from{transform:translateY(-10vh)}
   to{transform:translateY(110vh)}
 }
+
 .box{
-  max-width:500px;
+  max-width:520px;
   margin:30px auto;
-  background:rgba(10,8,35,.75);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:20px;
   padding:25px;
+  border-radius:22px;
+  background:rgba(8,7,30,.82);
+  border:1px solid rgba(255,255,255,.15);
   box-shadow:0 0 30px rgba(100,80,255,.2);
 }
+
 h1{text-align:center}
+
 input,textarea{
   width:100%;
-  padding:13px;
   margin:8px 0;
+  padding:14px;
   border:0;
   border-radius:12px;
+  outline:none;
   background:#211d50;
   color:white;
-  outline:none;
 }
-textarea{min-height:120px;resize:vertical}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
 button{
   width:100%;
-  padding:13px;
   margin-top:10px;
+  padding:14px;
   border:0;
   border-radius:12px;
   background:#7568ff;
@@ -60,20 +71,35 @@ button{
   font-size:16px;
   font-weight:bold;
 }
-button:active{transform:scale(.98)}
-.hidden{display:none}
-.post{
-  background:rgba(255,255,255,.07);
-  padding:15px;
-  border-radius:15px;
-  margin-top:12px;
+
+button:active{
+  transform:scale(.98);
 }
+
+.hidden{display:none}
+
 .msg{
   text-align:center;
+  min-height:25px;
   margin:12px 0;
-  min-height:22px;
 }
-.logout{background:#3c345f}
+
+.post{
+  margin-top:12px;
+  padding:15px;
+  border-radius:15px;
+  background:rgba(255,255,255,.07);
+}
+
+.post img{
+  width:100%;
+  border-radius:12px;
+  margin-top:8px;
+}
+
+.logout{
+  background:#3d345c;
+}
 </style>
 </head>
 
@@ -81,44 +107,90 @@ button:active{transform:scale(.98)}
 
 <div id="stars"></div>
 
+<!-- LOGIN -->
+
 <div class="box" id="loginBox">
-  <h1>☆ ورود به پنل ☆</h1>
 
-  <input id="email" type="email" placeholder="ایمیل">
-  <input id="password" type="password" placeholder="رمز عبور">
+<h1>☆ ورود به پنل ☆</h1>
 
-  <button onclick="login()">ورود</button>
+<input
+  id="email"
+  type="email"
+  placeholder="ایمیل"
+/>
 
-  <div class="msg" id="loginMsg"></div>
+<input
+  id="password"
+  type="password"
+  placeholder="رمز عبور"
+/>
+
+<button onclick="login()">ورود</button>
+
+<div class="msg" id="loginMsg"></div>
+
 </div>
+
+
+<!-- ADMIN -->
 
 <div class="box hidden" id="adminBox">
 
-  <h1>☆ پنل مدیریت ☆</h1>
+<h1>☆ پنل مدیریت ☆</h1>
 
-  <h2>انتشار پست ☆</h2>
+<h2>انتشار پست ☆</h2>
 
-  <input id="title" placeholder="عنوان پست">
-  <textarea id="content" placeholder="متن پست"></textarea>
-  <input id="image_url" placeholder="لینک عکس (اختیاری)">
+<input
+  id="title"
+  placeholder="عنوان پست"
+/>
 
-  <button onclick="publishPost()">انتشار پست ☆</button>
+<textarea
+  id="content"
+  placeholder="متن پست"
+></textarea>
 
-  <div class="msg" id="postMsg"></div>
+<input
+  id="image_url"
+  placeholder="لینک عکس (اختیاری)"
+/>
 
-  <h2>پست‌های منتشرشده</h2>
-  <div id="posts"></div>
+<button onclick="publishPost()">
+انتشار پست ☆
+</button>
 
-  <button class="logout" onclick="logout()">خروج</button>
+<div class="msg" id="postMsg"></div>
+
+<h2>پست‌های منتشرشده</h2>
+
+<div id="posts">
+در حال دریافت...
 </div>
 
+<button class="logout" onclick="logout()">
+خروج
+</button>
+
+</div>
+
+
 <script>
+
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
+/*
+  اینجا Publishable Key خودت را قرار بده.
+  Secret Key را هرگز قرار نده.
+*/
+
 const SUPABASE_KEY =
 "sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7";
+
 
 const db = supabase.createClient(
   SUPABASE_URL,
@@ -133,50 +205,98 @@ const db = supabase.createClient(
 );
 
 
-// ساخت ستاره‌ها
-for(let i=0;i<35;i++){
-  const s=document.createElement("div");
-  s.className="star";
-  s.textContent="☆";
-  s.style.left=Math.random()*100+"%";
-  s.style.fontSize=(10+Math.random()*18)+"px";
-  s.style.animationDuration=(5+Math.random()*10)+"s";
-  s.style.animationDelay=(-Math.random()*10)+"s";
-  document.getElementById("stars").appendChild(s);
+/* =========================
+   STARS
+========================= */
+
+for(let i=0;i<40;i++){
+
+  const star=document.createElement("div");
+
+  star.className="star";
+
+  star.textContent="☆";
+
+  star.style.left =
+    Math.random()*100+"%";
+
+  star.style.fontSize =
+    (10+Math.random()*18)+"px";
+
+  star.style.animationDuration =
+    (5+Math.random()*10)+"s";
+
+  star.style.animationDelay =
+    (-Math.random()*10)+"s";
+
+  document
+    .getElementById("stars")
+    .appendChild(star);
 }
 
 
-// ورود
+/* =========================
+   LOGIN
+========================= */
+
 async function login(){
 
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value;
+  const email =
+    document.getElementById("email")
+    .value.trim();
 
-  const msg=document.getElementById("loginMsg");
+  const password =
+    document.getElementById("password")
+    .value;
+
+  const msg =
+    document.getElementById("loginMsg");
 
   if(!email || !password){
-    msg.textContent="ایمیل و رمز عبور را وارد کن.";
+
+    msg.textContent =
+      "ایمیل و رمز عبور را وارد کن.";
+
     return;
   }
 
-  msg.textContent="در حال ورود...";
+  msg.textContent =
+    "در حال ورود...";
 
-  const {data,error}=await db.auth.signInWithPassword({
-    email:email,
-    password:password
-  });
+
+  const {data,error} =
+    await db.auth.signInWithPassword({
+
+      email:email,
+
+      password:password
+
+    });
+
 
   if(error){
-    msg.textContent=error.message;
+
+    console.log(error);
+
+    msg.textContent =
+      error.message;
+
     return;
   }
+
 
   if(!data.session){
-    msg.textContent="نشست کاربری ساخته نشد.";
+
+    msg.textContent =
+      "Session ساخته نشد.";
+
     return;
   }
 
-  msg.textContent="ورود موفق بود ✓";
+
+  msg.textContent =
+    "ورود موفق بود ✓";
+
 
   showAdmin();
 
@@ -184,157 +304,338 @@ async function login(){
 }
 
 
-// نمایش پنل
+/* =========================
+   SHOW ADMIN
+========================= */
+
 function showAdmin(){
 
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("adminBox").classList.remove("hidden");
+  document
+    .getElementById("loginBox")
+    .classList.add("hidden");
 
+  document
+    .getElementById("adminBox")
+    .classList.remove("hidden");
 }
 
 
-// انتشار پست
-async function publishPost(){
+/* =========================
+   CHECK SESSION
+========================= */
 
-  const title=document.getElementById("title").value.trim();
-  const content=document.getElementById("content").value.trim();
-  const image_url=document.getElementById("image_url").value.trim();
-
-  const msg=document.getElementById("postMsg");
-
-  if(!title && !content){
-    msg.textContent="عنوان یا متن پست را وارد کن.";
-    return;
-  }
-
-  msg.textContent="در حال انتشار...";
-
-  const {
-    data:{session},
-    error:sessionError
-  } = await db.auth.getSession();
-
-  if(sessionError || !session){
-    msg.textContent="نشست منقضی شده؛ دوباره وارد شو.";
-    await logout();
-    return;
-  }
-
-  const {data,error}=await db
-    .from("posts")
-    .insert([
-      {
-        title:title,
-        content:content,
-        image_url:image_url || null
-      }
-    ])
-    .select();
-
-  if(error){
-
-    console.log(error);
-
-    msg.textContent=error.message;
-    return;
-  }
-
-  msg.textContent="پست با موفقیت منتشر شد ✓";
-
-  document.getElementById("title").value="";
-  document.getElementById("content").value="";
-  document.getElementById("image_url").value="";
-
-  loadPosts();
-}
-
-
-// نمایش پست‌ها
-async function loadPosts(){
-
-  const container=document.getElementById("posts");
-
-  container.innerHTML="در حال دریافت پست‌ها...";
-
-  const {data,error}=await db
-    .from("posts")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  if(error){
-    container.innerHTML="خطا در دریافت پست‌ها";
-    console.log(error);
-    return;
-  }
-
-  if(!data || data.length===0){
-    container.innerHTML="هنوز پستی منتشر نشده ☆";
-    return;
-  }
-
-  container.innerHTML="";
-
-  data.forEach(post=>{
-
-    const div=document.createElement("div");
-    div.className="post";
-
-    div.innerHTML=`
-      <strong>${escapeHtml(post.title || "")}</strong>
-      <p>${escapeHtml(post.content || "")}</p>
-      ${
-        post.image_url
-        ? `<img src="${escapeHtml(post.image_url)}"
-             style="width:100%;border-radius:12px;margin-top:8px;">`
-        : ""
-      }
-    `;
-
-    container.appendChild(div);
-
-  });
-}
-
-
-// خروج
-async function logout(){
-
-  await db.auth.signOut();
-
-  document.getElementById("adminBox").classList.add("hidden");
-  document.getElementById("loginBox").classList.remove("hidden");
-
-  document.getElementById("loginMsg").textContent="";
-
-}
-
-
-// امنیت ساده برای نمایش متن
-function escapeHtml(text){
-
-  const div=document.createElement("div");
-  div.textContent=text;
-
-  return div.innerHTML;
-
-}
-
-
-// اگر قبلاً وارد شده بود
 async function checkSession(){
 
-  const {
-    data:{session}
-  } = await db.auth.getSession();
+  const {data,error} =
+    await db.auth.getSession();
 
-  if(session){
+
+  if(error){
+
+    console.log(error);
+
+    return;
+  }
+
+
+  if(data.session){
 
     showAdmin();
+
     loadPosts();
 
   }
 
 }
+
+
+/* =========================
+   PUBLISH POST
+========================= */
+
+async function publishPost(){
+
+  const title =
+    document
+      .getElementById("title")
+      .value.trim();
+
+  const content =
+    document
+      .getElementById("content")
+      .value.trim();
+
+  const image_url =
+    document
+      .getElementById("image_url")
+      .value.trim();
+
+
+  const msg =
+    document.getElementById("postMsg");
+
+
+  if(!title && !content){
+
+    msg.textContent =
+      "عنوان یا متن پست را وارد کن.";
+
+    return;
+  }
+
+
+  msg.textContent =
+    "در حال انتشار...";
+
+
+  /*
+    مهم:
+    Session واقعی Supabase را می‌گیریم.
+  */
+
+  const {
+    data:sessionData,
+    error:sessionError
+  } =
+    await db.auth.getSession();
+
+
+  if(sessionError){
+
+    msg.textContent =
+      "خطا در دریافت نشست.";
+
+    console.log(sessionError);
+
+    return;
+  }
+
+
+  const session =
+    sessionData.session;
+
+
+  if(!session){
+
+    msg.textContent =
+      "ابتدا دوباره وارد حساب شو.";
+
+    await logout();
+
+    return;
+  }
+
+
+  /*
+    بررسی می‌کنیم کاربر واقعاً
+    authenticated باشد.
+  */
+
+  const {
+    data:userData,
+    error:userError
+  } =
+    await db.auth.getUser();
+
+
+  if(userError || !userData.user){
+
+    msg.textContent =
+      "نشست معتبر نیست. دوباره وارد شو.";
+
+    await logout();
+
+    return;
+  }
+
+
+  /*
+    حالا INSERT از طریق
+    Supabase Client انجام می‌شود.
+  */
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("posts")
+      .insert({
+
+        title:title,
+
+        content:content,
+
+        image_url:
+          image_url || null
+
+      })
+      .select();
+
+
+  if(error){
+
+    console.log("INSERT ERROR:",error);
+
+    msg.textContent =
+      error.message;
+
+    return;
+  }
+
+
+  console.log("POST CREATED:",data);
+
+
+  msg.textContent =
+    "پست با موفقیت منتشر شد ✓";
+
+
+  document
+    .getElementById("title")
+    .value="";
+
+  document
+    .getElementById("content")
+    .value="";
+
+  document
+    .getElementById("image_url")
+    .value="";
+
+
+  loadPosts();
+}
+
+
+/* =========================
+   LOAD POSTS
+========================= */
+
+async function loadPosts(){
+
+  const container =
+    document.getElementById("posts");
+
+
+  container.innerHTML =
+    "در حال دریافت پست‌ها...";
+
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("posts")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  if(error){
+
+    console.log(error);
+
+    container.innerHTML =
+      "خطا در دریافت پست‌ها.";
+
+    return;
+  }
+
+
+  if(!data || data.length===0){
+
+    container.innerHTML =
+      "هنوز پستی منتشر نشده ☆";
+
+    return;
+  }
+
+
+  container.innerHTML="";
+
+
+  data.forEach(post=>{
+
+    const div =
+      document.createElement("div");
+
+    div.className="post";
+
+
+    const title =
+      document.createElement("strong");
+
+    title.textContent =
+      post.title || "";
+
+
+    const content =
+      document.createElement("p");
+
+    content.textContent =
+      post.content || "";
+
+
+    div.appendChild(title);
+
+    div.appendChild(content);
+
+
+    if(post.image_url){
+
+      const img =
+        document.createElement("img");
+
+      img.src =
+        post.image_url;
+
+      img.alt="";
+
+      div.appendChild(img);
+
+    }
+
+
+    container.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+
+  await db.auth.signOut();
+
+
+  document
+    .getElementById("adminBox")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("loginBox")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("loginMsg")
+    .textContent="";
+
+}
+
+
+/* =========================
+   START
+========================= */
 
 checkSession();
 
