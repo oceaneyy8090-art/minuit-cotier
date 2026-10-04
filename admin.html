@@ -32,6 +32,7 @@ body{
   from{
     transform:translateY(-30px) rotate(0deg);
   }
+
   to{
     transform:translateY(110vh) rotate(360deg);
   }
@@ -145,7 +146,9 @@ button{
   placeholder="رمز عبور"
 />
 
-<button onclick="login()">ورود</button>
+<button onclick="login()">
+ورود
+</button>
 
 </div>
 
@@ -188,7 +191,9 @@ button{
 در حال بارگذاری...
 </div>
 
-<button class="logout" onclick="logout()">
+<button
+  class="logout"
+  onclick="logout()">
 خروج از پنل
 </button>
 
@@ -207,7 +212,7 @@ const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7";
+"Publishable key";
 
 
 /* ستاره‌های ریز */
@@ -216,25 +221,27 @@ function createStars(){
 
   for(let i=0;i<80;i++){
 
-    const star=document.createElement("div");
+    const star =
+      document.createElement("div");
 
     star.className="star";
 
     star.innerText="☆";
 
-    star.style.left=
+    star.style.left =
       Math.random()*100+"%";
 
-    star.style.animationDuration=
+    star.style.animationDuration =
       (5+Math.random()*10)+"s";
 
-    star.style.animationDelay=
+    star.style.animationDelay =
       (-Math.random()*10)+"s";
 
-    star.style.fontSize=
+    star.style.fontSize =
       (5+Math.random()*8)+"px";
 
-    document.getElementById("stars")
+    document
+      .getElementById("stars")
       .appendChild(star);
   }
 }
@@ -244,7 +251,8 @@ createStars();
 
 function showMessage(text){
 
-  document.getElementById("message")
+  document
+    .getElementById("message")
     .innerText=text;
 
 }
@@ -255,12 +263,15 @@ function showMessage(text){
 async function login(){
 
   const email =
-    document.getElementById("email")
-    .value.trim();
+    document
+      .getElementById("email")
+      .value
+      .trim();
 
   const password =
-    document.getElementById("password")
-    .value;
+    document
+      .getElementById("password")
+      .value;
 
   if(!email || !password){
 
@@ -271,29 +282,34 @@ async function login(){
     return;
   }
 
-  showMessage("در حال ورود...");
+  showMessage(
+    "در حال ورود..."
+  );
 
   try{
 
-    const response=await fetch(
-      SUPABASE_URL +
-      "/auth/v1/token?grant_type=password",
-      {
-        method:"POST",
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7",
+        {
+          method:"POST",
 
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Content-Type":"application/json"
-        },
+          headers:{
+            "apikey":SUPABASE_KEY,
+            "Content-Type":
+              "application/json"
+          },
 
-        body:JSON.stringify({
-          email:email,
-          password:password
-        })
-      }
-    );
+          body:JSON.stringify({
+            email:email,
+            password:password
+          })
+        }
+      );
 
-    const data=await response.json();
+    const data =
+      await response.json();
 
     if(!response.ok){
 
@@ -316,11 +332,15 @@ async function login(){
       data.refresh_token
     );
 
-    document.getElementById("loginBox")
-      .classList.add("hidden");
+    document
+      .getElementById("loginBox")
+      .classList
+      .add("hidden");
 
-    document.getElementById("adminBox")
-      .classList.remove("hidden");
+    document
+      .getElementById("adminBox")
+      .classList
+      .remove("hidden");
 
     showMessage(
       "با موفقیت وارد شدی ❤️"
@@ -344,19 +364,27 @@ async function login(){
 async function addPost(){
 
   const title =
-    document.getElementById("title")
-    .value.trim();
+    document
+      .getElementById("title")
+      .value
+      .trim();
 
   const content =
-    document.getElementById("content")
-    .value.trim();
+    document
+      .getElementById("content")
+      .value
+      .trim();
 
   const image_url =
-    document.getElementById("image_url")
-    .value.trim();
+    document
+      .getElementById("image_url")
+      .value
+      .trim();
 
   const token =
-    localStorage.getItem("access_token");
+    localStorage.getItem(
+      "access_token"
+    );
 
 
   if(!token){
@@ -386,36 +414,41 @@ async function addPost(){
 
   try{
 
-    const response=await fetch(
-      SUPABASE_URL +
-      "/rest/v1/posts",
-      {
-        method:"POST",
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/rest/v1/posts",
+        {
+          method:"POST",
 
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Authorization":
-            "Bearer "+token,
-          "Content-Type":
-            "application/json",
-          "Prefer":
-            "return=representation"
-        },
+          headers:{
+            "apikey":SUPABASE_KEY,
 
-        body:JSON.stringify({
+            "Authorization":
+              "Bearer " + token,
 
-          Title:title,
+            "Content-Type":
+              "application/json",
 
-          content:content,
+            "Prefer":
+              "return=representation"
+          },
 
-          image_url:image_url
+          body:JSON.stringify({
 
-        })
-      }
-    );
+            title:title,
+
+            content:content,
+
+            image_url:image_url
+
+          })
+        }
+      );
 
 
-    const data=await response.json();
+    const data =
+      await response.json();
 
 
     if(!response.ok){
@@ -431,13 +464,16 @@ async function addPost(){
     }
 
 
-    document.getElementById("title")
+    document
+      .getElementById("title")
       .value="";
 
-    document.getElementById("content")
+    document
+      .getElementById("content")
       .value="";
 
-    document.getElementById("image_url")
+    document
+      .getElementById("image_url")
       .value="";
 
 
@@ -468,23 +504,25 @@ async function loadPosts(){
 
   try{
 
-    const response=await fetch(
-      SUPABASE_URL +
-      "/rest/v1/posts?select=*&order=created_at.desc",
-      {
-        headers:{
-          "apikey":SUPABASE_KEY
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/rest/v1/posts?select=*&order=created_at.desc",
+        {
+          headers:{
+            "apikey":SUPABASE_KEY
+          }
         }
-      }
-    );
+      );
 
 
-    const data=await response.json();
+    const data =
+      await response.json();
 
 
     if(!response.ok){
 
-      postsBox.innerText=
+      postsBox.innerText =
         data.message ||
         "خطا در دریافت پست‌ها.";
 
@@ -494,7 +532,7 @@ async function loadPosts(){
 
     if(!data.length){
 
-      postsBox.innerText=
+      postsBox.innerText =
         "هنوز پستی منتشر نشده.";
 
       return;
@@ -506,20 +544,20 @@ async function loadPosts(){
 
     data.forEach(post=>{
 
-      const div=
+      const div =
         document.createElement("div");
 
       div.className="post";
 
 
-      const title=
-        post.Title || "";
+      const title =
+        post.title || "";
 
-      const content=
+      const content =
         post.content || "";
 
 
-      div.innerHTML=`
+      div.innerHTML = `
 
         <h3>
           ${escapeHtml(title)}
@@ -547,7 +585,7 @@ async function loadPosts(){
 
   }catch(error){
 
-    postsBox.innerText=
+    postsBox.innerText =
       "خطا در اتصال به دیتابیس.";
 
   }
@@ -555,11 +593,11 @@ async function loadPosts(){
 }
 
 
-/* جلوگیری از اجرای HTML داخل پست */
+/* جلوگیری از HTML */
 
 function escapeHtml(text){
 
-  const div=
+  const div =
     document.createElement("div");
 
   div.textContent=text;
@@ -589,14 +627,20 @@ function logout(){
 /* بررسی ورود قبلی */
 
 if(
-  localStorage.getItem("access_token")
+  localStorage.getItem(
+    "access_token"
+  )
 ){
 
-  document.getElementById("loginBox")
-    .classList.add("hidden");
+  document
+    .getElementById("loginBox")
+    .classList
+    .add("hidden");
 
-  document.getElementById("adminBox")
-    .classList.remove("hidden");
+  document
+    .getElementById("adminBox")
+    .classList
+    .remove("hidden");
 
   loadPosts();
 
@@ -605,4 +649,4 @@ if(
 </script>
 
 </body>
-</html>
+  </html>
