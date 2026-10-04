@@ -2,578 +2,472 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#030313;
-  touch-action:none;
-  font-family:Arial,sans-serif;
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#08051f;
+touch-action:none;
 }
 
-#space{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
+canvas{
+width:100%;
+height:100%;
+display:block;
 }
 
-#world{
-  position:absolute;
-  width:1px;
-  height:1px;
-  left:0;
-  top:0;
-  will-change:transform;
+#title{
+position:fixed;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+color:white;
+opacity:.7;
+font-size:15px;
+font-family:sans-serif;
 }
-
-.item{
-  position:absolute;
-  left:0;
-  top:0;
-  user-select:none;
-  white-space:nowrap;
-  will-change:transform;
-}
-
-.star{
-  font-size:18px;
-  pointer-events:none;
-}
-
-.magic{
-  font-size:25px;
-  pointer-events:auto;
-  padding:12px;
-  cursor:pointer;
-}
-
-.planet{
-  font-size:21px;
-  pointer-events:none;
-}
-
-.comet{
-  font-size:20px;
-  pointer-events:none;
-}
-
-.heart{
-  font-size:21px;
-  pointer-events:none;
-}
-
-
-/* =====================
-   POST
-===================== */
 
 #post{
-  display:none;
-
-  position:fixed;
-  z-index:100;
-
-  left:50%;
-  top:50%;
-
-  transform:translate(-50%,-50%);
-
-  width:min(84vw,340px);
-  max-height:78vh;
-
-  overflow:auto;
-
-  padding:16px;
-
-  background:#09091d;
-  color:white;
-
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:18px;
-
-  text-align:center;
-}
-
-#post h2{
-  margin:2px 0 10px;
-  font-size:17px;
-}
-
-#post p{
-  margin:6px 0;
-  font-size:13px;
-  line-height:1.8;
-  opacity:.8;
+display:none;
+position:fixed;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:80%;
+max-width:350px;
+background:#11102b;
+color:white;
+border-radius:18px;
+padding:20px;
+text-align:center;
+font-family:sans-serif;
+z-index:5;
 }
 
 #post img,
 #post video{
-  width:100%;
-  max-height:300px;
-  object-fit:contain;
-  border-radius:12px;
-}
-
-#post audio{
-  width:100%;
-  margin-top:8px;
+width:100%;
+border-radius:12px;
 }
 
 #close{
-  position:absolute;
-  left:8px;
-  top:8px;
-
-  width:32px;
-  height:32px;
-
-  border:0;
-  border-radius:50%;
-
-  background:#282347;
-  color:#fff;
-
-  font-size:20px;
+position:absolute;
+left:8px;
+top:8px;
+border:0;
+border-radius:50%;
+background:#33285c;
+color:white;
+width:30px;
+height:30px;
 }
 
-#hint{
-  position:fixed;
-  z-index:10;
-
-  top:14px;
-  left:50%;
-
-  transform:translateX(-50%);
-
-  color:#fff;
-  opacity:.35;
-
-  font-size:11px;
-
-  pointer-events:none;
-}
 </style>
 </head>
 
 <body>
 
-<div id="space">
-  <div id="world"></div>
-</div>
+<canvas id="space"></canvas>
 
-<div id="hint">
-  بکش و در هر جهتی حرکت کن ✦
+<div id="title">
+𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓
 </div>
 
 <div id="post">
-
-  <button id="close">×</button>
-
-  <div id="postContent"></div>
-
+<button id="close">×</button>
+<div id="postContent"></div>
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
+const canvas=document.getElementById("space");
+const ctx=canvas.getContext("2d");
 
-/* ==================================================
-   SUPABASE
-================================================== */
+let W,H;
 
-const SUPABASE_URL =
-"https://oyowhuyzgjvpoeupoegh.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
-
-const db =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
-/* ==================================================
-   WORLD
-================================================== */
-
-const space =
-document.getElementById("space");
-
-const world =
-document.getElementById("world");
-
-let cameraX = 0;
-let cameraY = 0;
-
-let dragging = false;
-
-let startX = 0;
-let startY = 0;
-
-let startCameraX = 0;
-let startCameraY = 0;
-
-let moved = false;
-
-
-/* ==================================================
-   RENDER WORLD
-================================================== */
-
-function renderWorld(){
-
-  world.style.transform =
-    `translate3d(${-cameraX}px,${-cameraY}px,0)`;
-
+function resize(){
+W=canvas.width=innerWidth;
+H=canvas.height=innerHeight;
 }
 
-renderWorld();
+resize();
+onresize=resize;
 
 
-/* ==================================================
-   OBJECTS
-================================================== */
+let camX=0;
+let camY=0;
 
-const objects = [];
+let stars=[];
 
-const starColors = [
-  "#ff4f9a",
-  "#ff5577",
-  "#ff6b6b",
-  "#ff9f43",
-  "#ffd166",
-  "#4dd8ff",
-  "#6ea8ff",
-  "#9b7cff",
-  "#c77dff",
-  "#ffffff"
+
+/* رنگ ستاره‌ها */
+const starColors=[
+"#ff5ca8",
+"#ff6b6b",
+"#ffd166",
+"#66d9ff",
+"#8d7aff",
+"#d18cff",
+"#ffffff"
 ];
 
 
-const types = [
-  "star",
-  "star",
-  "star",
-  "star",
-  "star",
-  "star",
+/* ساخت دنیای ستاره‌ای */
+function createObject(){
 
-  "magic",
-  "magic",
-  "magic",
+  let typeRand=Math.random();
 
-  "planet",
-  "comet",
-  "heart"
-];
+  let obj={
+    x:(Math.random()-0.5)*6000,
+    y:(Math.random()-0.5)*6000,
+    move:Math.random()*6,
+    speed:.3+Math.random()*.5
+  };
 
 
-/* ==================================================
-   CREATE OBJECTS
-================================================== */
+  if(typeRand<0.65){
 
-for(let i=0;i<55;i++){
-
-  const el =
-    document.createElement("div");
-
-  const type =
-    types[
+    obj.type="star";
+    obj.symbol="☆";
+    obj.color=
+    starColors[
       Math.floor(
-        Math.random()*types.length
+        Math.random()*starColors.length
       )
     ];
 
-  el.className =
-    "item " + type;
-
-
-  if(type === "star"){
-
-    el.textContent = "☆";
-
-    el.style.color =
-      starColors[
-        Math.floor(
-          Math.random()*starColors.length
-        )
-      ];
+    obj.size=13;
 
   }
 
-  if(type === "magic"){
+  else if(typeRand<0.78){
 
-    el.textContent = "💫";
-
-  }
-
-  if(type === "planet"){
-
-    el.textContent = "🪐";
+    obj.type="magic";
+    obj.symbol="💫";
+    obj.size=22;
 
   }
 
-  if(type === "comet"){
+  else if(typeRand<0.88){
 
-    el.textContent = "☄️";
+    obj.type="planet";
+    obj.symbol="🪐";
+    obj.size=17;
 
   }
 
-  if(type === "heart"){
+  else{
 
-    el.textContent = "💘";
+    obj.type="comet";
+    obj.symbol="☄️";
+    obj.size=18;
 
   }
 
 
-  const x =
-    Math.random()*9000 - 4500;
-
-  const y =
-    Math.random()*9000 - 4500;
-
-
-  const size =
-    .75 + Math.random()*.6;
-
-
-  world.appendChild(el);
-
-
-  objects.push({
-
-    el,
-
-    type,
-
-    x,
-
-    y,
-
-    size,
-
-    phase:
-      Math.random()*Math.PI*2,
-
-    speed:
-      .15 + Math.random()*.35
-
-  });
+  stars.push(obj);
 
 }
 
 
-/* ==================================================
-   ANIMATION
-================================================== */
-
-let time = 0;
-
-function animate(){
-
-  time += .016;
+/* تعداد کم برای سرعت */
+for(let i=0;i<70;i++){
+ createObject();
+}
 
 
-  for(const obj of objects){
 
-    /*
-       هر شیء کمی شناور می‌شود.
-       💫 هم دقیقاً مثل بقیه حرکت می‌کند.
-    */
+function draw(time){
 
-    const moveX =
-      Math.sin(
-        time*obj.speed +
-        obj.phase
-      ) * 12;
-
-    const moveY =
-      Math.cos(
-        time*obj.speed +
-        obj.phase
-      ) * 12;
+ctx.clearRect(0,0,W,H);
 
 
-    /*
-       کمی حرکت چرخشی برای تنوع
-    */
+/* پس زمینه */
 
-    const rotate =
-      Math.sin(
-        time*obj.speed +
-        obj.phase
-      ) * 8;
+let bg=
+ctx.createLinearGradient(
+0,0,W,H
+);
+
+bg.addColorStop(
+0,
+"#08051f"
+);
+
+bg.addColorStop(
+.5,
+"#16104a"
+);
+
+bg.addColorStop(
+1,
+"#32145b"
+);
+
+ctx.fillStyle=bg;
+
+ctx.fillRect(
+0,0,W,H
+);
 
 
-    obj.el.style.transform =
-      `translate3d(
-        ${obj.x + moveX}px,
-        ${obj.y + moveY}px,
-        0
-      ) rotate(${rotate}deg)
-      scale(${obj.size})`;
 
-  }
+ctx.textAlign="center";
+ctx.textBaseline="middle";
 
 
-  requestAnimationFrame(animate);
+
+stars.forEach(o=>{
+
+
+let x=
+o.x+
+Math.sin(
+time*0.001*o.speed+
+o.move
+)*12
+-
+camX+
+W/2;
+
+
+let y=
+o.y+
+Math.cos(
+time*0.001*o.speed+
+o.move
+)*12
+-
+camY+
+H/2;
+
+
+
+if(
+x<-50||
+x>W+50||
+y<-50||
+y>H+50
+)return;
+
+
+
+/* ستاره دنباله دار */
+
+if(o.type==="comet"){
+
+ctx.strokeStyle=
+"rgba(120,220,255,.7)";
+
+ctx.lineWidth=2;
+
+ctx.beginPath();
+
+ctx.moveTo(
+x-25,
+y+15
+);
+
+ctx.lineTo(
+x,
+y
+);
+
+ctx.stroke();
+
+
+ctx.fillStyle="white";
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+4,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+
+return;
 
 }
 
-animate();
 
 
-/* ==================================================
-   DRAG
-================================================== */
+ctx.font=
+o.size+"px Arial";
 
-space.addEventListener(
-  "pointerdown",
-  e => {
-
-    if(
-      e.target.classList.contains("magic")
-    ){
-
-      return;
-
-    }
+ctx.fillStyle=
+o.color ||
+"white";
 
 
-    dragging = true;
-
-    moved = false;
-
-    startX =
-      e.clientX;
-
-    startY =
-      e.clientY;
-
-    startCameraX =
-      cameraX;
-
-    startCameraY =
-      cameraY;
-
-
-    space.setPointerCapture(
-      e.pointerId
-    );
-
-  }
+ctx.fillText(
+o.symbol,
+x,
+y
 );
 
 
-space.addEventListener(
-  "pointermove",
-  e => {
-
-    if(!dragging)
-      return;
+});
 
 
-    const dx =
-      e.clientX - startX;
+requestAnimationFrame(draw);
 
-    const dy =
-      e.clientY - startY;
+}
 
+requestAnimationFrame(draw);
 
-    if(
-      Math.abs(dx)>5 ||
-      Math.abs(dy)>5
-    ){
+/* =====================
+   حرکت با انگشت
+===================== */
 
-      moved = true;
-
-    }
-
-
-    cameraX =
-      startCameraX - dx;
-
-    cameraY =
-      startCameraY - dy;
+let downX=0;
+let downY=0;
+let startX=0;
+let startY=0;
+let moved=false;
 
 
-    renderWorld();
+canvas.addEventListener(
+"pointerdown",
+e=>{
 
-  }
+downX=e.clientX;
+downY=e.clientY;
+
+startX=camX;
+startY=camY;
+
+moved=false;
+
+});
+
+
+
+canvas.addEventListener(
+"pointermove",
+e=>{
+
+let dx=e.clientX-downX;
+let dy=e.clientY-downY;
+
+
+if(
+Math.abs(dx)>5||
+Math.abs(dy)>5
+)
+moved=true;
+
+
+camX=startX-dx;
+camY=startY-dy;
+
+
+});
+
+
+
+canvas.addEventListener(
+"pointerup",
+e=>{
+
+if(!moved){
+
+checkMagic(
+e.clientX,
+e.clientY
+);
+
+}
+
+});
+
+
+
+/* =====================
+   کلیک روی 💫
+===================== */
+
+
+function checkMagic(mx,my){
+
+let worldX=
+camX-W/2+mx;
+
+let worldY=
+camY-H/2+my;
+
+
+for(let o of stars){
+
+
+if(
+o.type!=="magic"
+)
+continue;
+
+
+let x=o.x-camX+W/2;
+let y=o.y-camY+H/2;
+
+
+let distance=
+Math.hypot(
+x-mx,
+y-my
 );
 
 
-space.addEventListener(
-  "pointerup",
-  () => {
+if(distance<35){
 
-    dragging = false;
+showPost();
 
-  }
-);
+break;
 
+}
 
-space.addEventListener(
-  "pointercancel",
-  () => {
+}
 
-    dragging = false;
-
-  }
-);
+}
 
 
-/* ==================================================
-   POSTS
-================================================== */
 
-let posts = [];
+/* =====================
+   پست
+===================== */
 
-let postIndex = 0;
+
+let posts=[];
 
 
 async function loadPosts(){
 
-  const result =
-    await db
-      .from("posts")
-      .select("*")
-      .order(
-        "created_at",
-        {
-          ascending:false
-        }
-      );
+let result=
+await db
+.from("posts")
+.select("*")
+.order(
+"created_at",
+{
+ascending:false
+}
+);
 
 
-  if(result.error){
+if(!result.error){
 
-    console.log(
-      "Posts error:",
-      result.error
-    );
+posts=result.data||[];
 
-    return;
-
-  }
-
-
-  posts =
-    result.data || [];
+}
 
 }
 
@@ -581,189 +475,73 @@ async function loadPosts(){
 loadPosts();
 
 
-/* ==================================================
-   MAGIC CLICK
-================================================== */
-
-document.addEventListener(
-  "click",
-  e => {
-
-    if(
-      !e.target.classList.contains("magic")
-    ){
-
-      return;
-
-    }
-
-
-    showPost();
-
-  }
-);
-
-
-/* ==================================================
-   SHOW POST
-================================================== */
 
 function showPost(){
 
-  const box =
-    document.getElementById(
-      "post"
-    );
+let box=
+document.getElementById("post");
 
-  const content =
-    document.getElementById(
-      "postContent"
-    );
+let content=
+document.getElementById("postContent");
 
 
-  content.innerHTML =
-    "";
+if(posts.length===0){
+
+content.innerHTML=
+"هنوز پستی نیست 💔";
+
+}
+else{
 
 
-  if(!posts.length){
-
-    content.innerHTML =
-      "<p>هنوز پستی وجود نداره 💔</p>";
-
-    box.style.display =
-      "block";
-
-    return;
-
-  }
+let p=
+posts[
+Math.floor(
+Math.random()*posts.length
+)
+];
 
 
-  const data =
-    posts[
-      postIndex %
-      posts.length
-    ];
+content.innerHTML=
+`
+<h3>${p.title||""}</h3>
 
+<p>${p.content||""}</p>
 
-  postIndex++;
+${p.image_url?
+`<img src="${p.image_url}">`
+:""}
 
+${p.video_url?
+`<video controls src="${p.video_url}"></video>`
+:""}
 
-  if(data.title){
-
-    const title =
-      document.createElement("h2");
-
-    title.textContent =
-      data.title;
-
-    content.appendChild(
-      title
-    );
-
-  }
-
-
-  if(data.content){
-
-    const text =
-      document.createElement("p");
-
-    text.textContent =
-      data.content;
-
-    content.appendChild(
-      text
-    );
-
-  }
-
-
-  if(data.image_url){
-
-    const image =
-      document.createElement("img");
-
-    image.src =
-      data.image_url;
-
-    image.alt =
-      data.title || "post";
-
-    content.appendChild(
-      image
-    );
-
-  }
-
-
-  if(data.video_url){
-
-    const video =
-      document.createElement("video");
-
-    video.src =
-      data.video_url;
-
-    video.controls =
-      true;
-
-    video.preload =
-      "metadata";
-
-    content.appendChild(
-      video
-    );
-
-  }
-
-
-  if(data.music_url){
-
-    const audio =
-      document.createElement("audio");
-
-    audio.src =
-      data.music_url;
-
-    audio.controls =
-      true;
-
-    audio.preload =
-      "none";
-
-    audio.volume =
-      0.5;
-
-    content.appendChild(
-      audio
-    );
-
-  }
-
-
-  box.style.display =
-    "block";
+`;
 
 }
 
 
-/* ==================================================
-   CLOSE POST
-================================================== */
+box.style.display=
+"block";
+
+}
+
+
+
 
 document
 .getElementById("close")
 .addEventListener(
-  "click",
-  () => {
+"click",
+()=>{
 
-    document
-      .getElementById("post")
-      .style.display =
-      "none";
+document
+.getElementById("post")
+.style.display="none";
 
-  }
+}
 );
+
 
 </script>
 
