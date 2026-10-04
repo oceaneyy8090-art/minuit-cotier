@@ -3,184 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minuit côtier - Admin</title>
+
+<title>Test Session</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body{
-  margin:0;
-  padding:30px;
-  background:linear-gradient(135deg,#08091f,#17144b,#32236b);
+  background:#111;
   color:white;
-  font-family:Arial,sans-serif;
   text-align:center;
+  font-family:Arial;
+  padding:30px;
 }
-.box{
-  max-width:500px;
-  margin:auto;
-  background:#111333;
-  padding:25px;
-  border-radius:20px;
-}
-input,textarea,button{
-  width:100%;
-  box-sizing:border-box;
-  margin:8px 0;
-  padding:14px;
-  border-radius:12px;
+input,button{
+  width:90%;
+  padding:12px;
+  margin:8px;
+  border-radius:10px;
   border:0;
 }
 button{
-  background:#7c5cff;
+  background:#765cff;
   color:white;
-  font-weight:bold;
 }
-#status{
+#out{
   margin-top:20px;
+  background:#222;
   padding:15px;
-  border-radius:12px;
-  background:#22254d;
+  border-radius:10px;
   word-break:break-word;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="box">
+<h2>☆ Minuit côtier ☆</h2>
 
-<h1>☆ Minuit côtier ☆</h1>
-<h2>پنل مدیریت</h2>
+<input id="email" placeholder="ایمیل">
 
-<input id="email" type="email" placeholder="ایمیل">
-<input id="password" type="password" placeholder="رمز عبور">
+<input id="password" type="password" placeholder="رمز">
 
 <button onclick="login()">ورود</button>
 
-<hr>
+<button onclick="check()">بررسی Session</button>
 
-<input id="title" placeholder="عنوان پست">
-<textarea id="content" placeholder="متن پست"></textarea>
-
-<button onclick="publish()">انتشار پست</button>
-
-<div id="status">هنوز تست نشده</div>
-
+<div id="out">
+آماده
 </div>
+
 
 <script>
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
+
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-const db = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY,
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:false
-    }
-  }
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
+
+
 
 async function login(){
 
-  const email =
-    document.getElementById("email").value;
+const email =
+document.getElementById("email").value;
 
-  const password =
-    document.getElementById("password").value;
+const password =
+document.getElementById("password").value;
 
-  const {data,error} =
-    await db.auth.signInWithPassword({
-      email,
-      password
-    });
 
-  if(error){
-    document.getElementById("status").innerText =
-      "خطای ورود:\n" + error.message;
-    return;
-  }
+const {data,error} =
+await db.auth.signInWithPassword({
+email,
+password
+});
 
-  document.getElementById("status").innerText =
-    "ورود موفق شد ✅\n\nحالا روی انتشار پست بزن.";
+
+if(error){
+
+document.getElementById("out").innerText =
+"خطای ورود:\n" + error.message;
+
+return;
 
 }
 
-async function publish(){
 
-  document.getElementById("status").innerText =
-    "در حال بررسی حساب...";
+document.getElementById("out").innerText =
+"ورود موفق شد ✅";
 
-  const {
-    data:{session},
-    error:sessionError
-  } = await db.auth.getSession();
+}
 
-  if(sessionError){
-    document.getElementById("status").innerText =
-      "خطای Session:\n" + sessionError.message;
-    return;
-  }
 
-  if(!session){
-    document.getElementById("status").innerText =
-      "هیچ Session فعالی پیدا نشد ❌\n\nاول وارد شو.";
-    return;
-  }
 
-  const {
-    data:{user},
-    error:userError
-  } = await db.auth.getUser();
+async function check(){
 
-  if(userError || !user){
-    document.getElementById("status").innerText =
-      "کاربر احراز هویت نشده ❌\n\n" +
-      (userError?.message || "");
-    return;
-  }
+const {data,error} =
+await db.auth.getSession();
 
-  document.getElementById("status").innerText =
-    "کاربر شناسایی شد ✅\n" +
-    "Email: " + (user.email || "نامشخص") +
-    "\n\nحالا ارسال پست...";
 
-  const title =
-    document.getElementById("title").value;
+if(error){
 
-  const content =
-    document.getElementById("content").value;
+document.getElementById("out").innerText =
+error.message;
 
-  const {data,error} =
-    await db
-      .from("posts")
-      .insert({
-        title:title,
-        content:content,
-        image_url:null
-      })
-      .select();
+return;
 
-  if(error){
-    document.getElementById("status").innerText =
-      "خطای انتشار:\n" + error.message;
-    return;
-  }
+}
 
-  document.getElementById("status").innerText =
-    "پست با موفقیت منتشر شد ✅❤️";
+
+if(!data.session){
+
+document.getElementById("out").innerText =
+"Session وجود ندارد ❌";
+
+return;
+
+}
+
+
+document.getElementById("out").innerText =
+"Session دارد ✅\n\n" +
+"User ID:\n" +
+data.session.user.id +
+"\n\nEmail:\n" +
+data.session.user.email;
+
 
 }
 
 </script>
+
 
 </body>
 </html>
