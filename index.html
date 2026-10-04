@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>Minuit côtier</title>
 
+<style>
+body {
+  margin: 0;
+  background: #080812;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 30px;
+}
+
+.post {
+  background: #171725;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.post img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 15px;
+}
+
+.star {
+  position: fixed;
+  top: -20px;
+  color: white;
+  animation: starfall 5s linear infinite;
+}
+
+@keyframes starfall {
+  from {
+    transform: translateY(-20px);
+  }
+  to {
+    transform: translateY(100vh);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>☆ Minuit côtier ☆</h1>
+
+<div id="posts">در حال بارگذاری...</div>
+
+<script>
+
+const SUPABASE_URL = "sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7;
+
+const SUPABASE_KEY = "کلید_Publishable_خودت_اینجا";
+
+
+// ساخت ستاره‌ها
+for(let i = 0; i < 40; i++){
+  let star = document.createElement("div");
+  star.className = "star";
+  star.innerHTML = "☆";
+  star.style.left = Math.random()*100 + "%";
+  star.style.animationDelay = Math.random()*5 + "s";
+  document.body.appendChild(star);
+}
+
+
+// گرفتن پست‌ها از Supabase
+async function getPosts(){
+
+  let response = await fetch(
+    SUPABASE_URL + "/rest/v1/posts?select=*",
+    {
+      headers:{
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY
+      }
+    }
+  );
+
+  let data = await response.json();
+
+  document.getElementById("posts").innerHTML =
+  data.map(post => 
+
+    <div class="post">
+
+
+      <h2>${post.Title || ""}</h2>
+
+
+      <p>${post.content || ""}</p>
+
+
+      ${
+
+        post.image_url 
+
+        ? 
+<img src="${post.image_url}">
+        : ""
+
+      }
+
+
+    </div>
+
+
+  
+).join("");
+
+}
+
+getPosts();
+
+</script>
+
+</body>
+</html>
