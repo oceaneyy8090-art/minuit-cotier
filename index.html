@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa">
 <head>
@@ -8,6 +7,10 @@
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
 <style>
+*{
+    box-sizing:border-box;
+}
+
 html,body{
     margin:0;
     width:100%;
@@ -19,154 +22,313 @@ html,body{
 }
 
 canvas{
-    display:block;
+    position:fixed;
+    inset:0;
     width:100%;
     height:100%;
     background:#000;
 }
 
 
-/* پنجره پست */
+/* =========================
+   پنجره پست
+========================= */
 
-#postWindow{
+#post{
     display:none;
+
     position:fixed;
+    z-index:50;
+
     left:50%;
     top:50%;
+
     transform:translate(-50%,-50%);
-    width:min(88%,420px);
-    max-height:80vh;
+
+    width:min(88vw,420px);
+    max-height:82vh;
+
     overflow:auto;
 
-    background:rgba(8,8,15,.96);
-    border:1px solid rgba(255,255,255,.15);
-    border-radius:22px;
+    padding:24px 20px 20px;
 
-    padding:22px;
-    box-sizing:border-box;
+    background:rgba(5,5,10,.97);
 
-    color:white;
+    border:1px solid rgba(255,255,255,.18);
+
+    border-radius:24px;
+
+    color:#fff;
+
     text-align:center;
 
-    z-index:20;
-
     box-shadow:
-        0 0 35px rgba(160,120,255,.25);
+        0 0 35px rgba(150,100,255,.25);
 }
 
-#postWindow h2{
-    margin:5px 0 15px;
+#post h2{
+    margin:8px 35px 15px;
     font-size:23px;
 }
 
 #postText{
     color:#ddd;
-    line-height:1.8;
+    line-height:1.9;
     white-space:pre-wrap;
 }
 
-#closePost{
+#close{
     position:absolute;
-    top:10px;
-    right:12px;
 
-    width:38px;
-    height:38px;
+    top:10px;
+    right:10px;
+
+    width:40px;
+    height:40px;
 
     border:0;
     border-radius:50%;
 
-    background:#171722;
+    background:#181820;
+
     color:white;
 
-    font-size:20px;
+    font-size:25px;
 }
 
-#likeButton{
-    margin-top:20px;
+#like{
+    margin:20px auto 0;
 
-    width:64px;
-    height:52px;
+    width:68px;
+    height:55px;
 
     border:0;
     border-radius:18px;
 
-    background:#15151f;
+    background:#15151d;
+
     color:white;
 
-    font-size:30px;
+    font-size:32px;
 }
 
-#likeButton.liked{
-    color:#ff4fa3;
+#like.liked{
+    color:#ff55aa;
+
     text-shadow:
-        0 0 12px #ff4fa3,
-        0 0 25px #ff4fa3;
+        0 0 10px #ff55aa,
+        0 0 25px #ff55aa;
 }
 </style>
 </head>
+
 
 <body>
 
 <canvas id="sky"></canvas>
 
 
-<!-- پنجره پست -->
+<div id="post">
 
-<div id="postWindow">
-
-    <button id="closePost">×</button>
+    <button id="close">×</button>
 
     <h2 id="postTitle"></h2>
 
     <div id="postText"></div>
 
-    <button id="likeButton">♡</button>
+    <button id="like">♡</button>
 
 </div>
 
 
 <script>
 
-const canvas=document.getElementById("sky");
-const ctx=canvas.getContext("2d");
+/* ==================================================
+   CANVAS
+================================================== */
+
+const canvas=
+    document.getElementById("sky");
+
+const ctx=
+    canvas.getContext("2d");
+
 
 let W=innerWidth;
 let H=innerHeight;
 
-
-/* =========================
-   اندازه صفحه
-========================= */
 
 function resize(){
 
     W=innerWidth;
     H=innerHeight;
 
-    const dpr=Math.min(
-        devicePixelRatio||1,
-        1.5
-    );
+    const dpr=
+        Math.min(
+            devicePixelRatio||1,
+            1.5
+        );
 
-    canvas.width=W*dpr;
-    canvas.height=H*dpr;
+    canvas.width=
+        W*dpr;
 
-    canvas.style.width=W+"px";
-    canvas.style.height=H+"px";
+    canvas.height=
+        H*dpr;
+
+    canvas.style.width=
+        W+"px";
+
+    canvas.style.height=
+        H+"px";
 
     ctx.setTransform(
-        dpr,0,0,dpr,0,0
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
     );
 }
 
-addEventListener("resize",resize);
+
+addEventListener(
+    "resize",
+    resize
+);
+
 resize();
 
 
-/* =========================
+/* ==================================================
+   رنگ‌ها
+================================================== */
+
+const COLORS=[
+
+    "#ffffff",
+    "#ffd1ec",
+    "#ff8fce",
+    "#ffb4df",
+
+    "#bda7ff",
+    "#9275ff",
+    "#c9b8ff",
+
+    "#8ccfff",
+    "#5dbaff",
+    "#9eeeff",
+
+    "#e8c7ff",
+    "#f7b9ff",
+
+    "#c6ffe5"
+];
+
+
+/* ==================================================
+   آسمان بزرگ
+================================================== */
+
+const WORLD=24000;
+
+
+/* ==================================================
+   ستاره‌های اصلی
+================================================== */
+
+const STAR_COUNT=3000;
+
+const stars=[];
+
+
+for(
+    let i=0;
+    i<STAR_COUNT;
+    i++
+){
+
+    stars.push({
+
+        x:
+            (Math.random()-.5)*
+            WORLD,
+
+        y:
+            (Math.random()-.5)*
+            WORLD,
+
+        /*
+           ☆ بزرگ
+        */
+
+        size:
+            13+
+            Math.random()*5,
+
+        color:
+            COLORS[
+                Math.floor(
+                    Math.random()*
+                    COLORS.length
+                )
+            ],
+
+        vx:
+            (Math.random()-.5)*
+            .65,
+
+        vy:
+            (Math.random()-.5)*
+            .65,
+
+        phase:
+            Math.random()*
+            Math.PI*2
+    });
+}
+
+
+/* ==================================================
+   پست‌ها
+
+   فعلاً یک پست واقعی برای تست داریم.
+   بعداً همین آرایه از Supabase پر می‌شود.
+================================================== */
+
+const posts=[
+
+    {
+        id:1,
+
+        /*
+           جای 🌛
+        */
+
+        x:0,
+        y:0,
+
+        title:
+            "پست اول 🌙",
+
+        text:
+            "به Minuit côtier خوش اومدی ✨\n\n"+
+            "این یک پست آزمایشی است."
+    }
+
+];
+
+
+/* ==================================================
+   ستاره‌های افکت لایک
+================================================== */
+
+const likeStars=[];
+
+
+/* ==================================================
    دوربین
-========================= */
+================================================== */
 
 let camX=0;
 let camY=0;
@@ -174,7 +336,15 @@ let camY=0;
 let targetX=0;
 let targetY=0;
 
+
+/* ==================================================
+   حرکت انگشت
+================================================== */
+
 let dragging=false;
+
+let downX=0;
+let downY=0;
 
 let startX=0;
 let startY=0;
@@ -183,459 +353,14 @@ let startCamX=0;
 let startCamY=0;
 
 
-/* =========================
-   رنگ ستاره‌ها
-========================= */
-
-const colors=[
-    "#ffffff",
-    "#ffd5ef",
-    "#ff9ed6",
-    "#ffb8e5",
-    "#d3baff",
-    "#b59cff",
-    "#a9d9ff",
-    "#78c8ff",
-    "#9df3ff",
-    "#e3c8ff",
-    "#f4b9ff",
-    "#c5ffe3"
-];
-
-
-/* =========================
-   آسمان
-========================= */
-
-const WORLD=24000;
-
-const STAR_COUNT=3000;
-
-const stars=[];
-
-
-/* =========================
-   ستاره‌های اصلی
-========================= */
-
-for(let i=0;i<STAR_COUNT;i++){
-
-    stars.push({
-
-        x:(Math.random()-.5)*WORLD,
-
-        y:(Math.random()-.5)*WORLD,
-
-        size:13+Math.random()*4,
-
-        color:
-            colors[
-                Math.floor(
-                    Math.random()*colors.length
-                )
-            ],
-
-        vx:(Math.random()-.5)*0.8,
-
-        vy:(Math.random()-.5)*0.8,
-
-        phase:
-            Math.random()*Math.PI*2
-    });
-}
-
-
-/* =========================
-   پست‌ها
-========================= */
-
-/*
-   فعلاً یک پست نمونه برای تست.
-
-   وقتی به پنل مدیریت وصلش کنیم،
-   این قسمت از Supabase پر میشه.
-*/
-
-const posts=[
-
-    {
-        id:1,
-
-        x:0,
-        y:0,
-
-        title:"پست اول 🌙",
-
-        text:
-        "به Minuit côtier خوش اومدی ✨\n\n"+
-        "این اولین پست آزمایشی کاناله."
-    }
-
-];
-
-
-/* =========================
-   ماه‌ها
-========================= */
-
-function drawPosts(){
-
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-
-    for(const post of posts){
-
-        const x=
-            post.x-
-            camX+
-            W/2;
-
-        const y=
-            post.y-
-            camY+
-            H/2;
-
-
-        if(
-            x<-80 ||
-            x>W+80 ||
-            y<-80 ||
-            y>H+80
-        ){
-            continue;
-        }
-
-
-        /*
-           🌛 مخصوص هر پست
-        */
-
-        ctx.font="32px Arial";
-
-        ctx.shadowColor="#ffffff";
-        ctx.shadowBlur=7;
-
-        ctx.fillText(
-            "🌛",
-            x,
-            y
-        );
-
-        ctx.shadowBlur=0;
-    }
-}
-
-
-/* =========================
-   ستاره‌های لایک
-========================= */
-
-const likeStars=[];
-
-
-/*
-   وقتی لایک میشه
-   کل صفحه پر میشه
-*/
-
-function createLikeStars(){
-
-    /*
-       اگر دوباره لایک زد
-       دوباره افکت نساز
-    */
-
-    for(let i=0;i<800;i++){
-
-        const side=
-            Math.floor(
-                Math.random()*4
-            );
-
-        let x;
-        let y;
-
-
-        if(side===0){
-
-            x=Math.random()*W;
-            y=-30;
-
-        }else if(side===1){
-
-            x=W+30;
-            y=Math.random()*H;
-
-        }else if(side===2){
-
-            x=Math.random()*W;
-            y=H+30;
-
-        }else{
-
-            x=-30;
-            y=Math.random()*H;
-        }
-
-
-        const dx=W/2-x;
-        const dy=H/2-y;
-
-        const speed=
-            .003+
-            Math.random()*.008;
-
-
-        likeStars.push({
-
-            x:x,
-            y:y,
-
-            vx:
-                dx*speed+
-                (Math.random()-.5),
-
-            vy:
-                dy*speed+
-                (Math.random()-.5),
-
-            size:
-                13+
-                Math.random()*4,
-
-            color:
-                colors[
-                    Math.floor(
-                        Math.random()*colors.length
-                    )
-                ],
-
-            life:
-                200+
-                Math.random()*140
-        });
-    }
-}
-
-
-function drawLikeStars(){
-
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-
-    for(
-        let i=likeStars.length-1;
-        i>=0;
-        i--
-    ){
-
-        const s=likeStars[i];
-
-        s.x+=s.vx;
-        s.y+=s.vy;
-
-        s.vx*=.998;
-        s.vy*=.998;
-
-        s.life--;
-
-
-        if(s.life<=0){
-
-            likeStars.splice(i,1);
-
-            continue;
-        }
-
-
-        ctx.globalAlpha=
-            Math.min(
-                1,
-                s.life/45
-            );
-
-
-        ctx.fillStyle=s.color;
-
-        ctx.shadowColor=s.color;
-        ctx.shadowBlur=5;
-
-
-        ctx.font=
-            `normal ${s.size}px Arial`;
-
-
-        ctx.fillText(
-            "☆",
-            s.x,
-            s.y
-        );
-
-
-        ctx.shadowBlur=0;
-    }
-
-    ctx.globalAlpha=1;
-}
-
-
-/* =========================
-   پس‌زمینه
-========================= */
-
-function drawBackground(){
-
-    ctx.fillStyle="#000";
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-}
-
-
-/* =========================
-   ستاره‌های آسمان
-========================= */
-
-function drawStars(time){
-
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-
-    for(const s of stars){
-
-        s.x+=s.vx;
-        s.y+=s.vy;
-
-
-        if(s.x>WORLD/2)
-            s.x=-WORLD/2;
-
-        if(s.x<-WORLD/2)
-            s.x=WORLD/2;
-
-        if(s.y>WORLD/2)
-            s.y=-WORLD/2;
-
-        if(s.y<-WORLD/2)
-            s.y=WORLD/2;
-
-
-        const x=
-            s.x-
-            camX+
-            W/2;
-
-        const y=
-            s.y-
-            camY+
-            H/2;
-
-
-        if(
-            x<-40 ||
-            x>W+40 ||
-            y<-40 ||
-            y>H+40
-        ){
-            continue;
-        }
-
-
-        const alpha=
-            .88+
-            Math.sin(
-                time*.002+
-                s.phase
-            )*.10;
-
-
-        ctx.globalAlpha=alpha;
-
-        ctx.fillStyle=s.color;
-
-        ctx.shadowColor=s.color;
-        ctx.shadowBlur=5;
-
-
-        ctx.font=
-            `normal ${s.size}px Arial`;
-
-
-        ctx.fillText(
-            "☆",
-            x,
-            y
-        );
-
-
-        ctx.shadowBlur=0;
-    }
-
-    ctx.globalAlpha=1;
-}
-
-
-/* =========================
-   پیدا کردن پست
-========================= */
-
-let activePost=null;
-
-function findPost(x,y){
-
-    for(
-        let i=posts.length-1;
-        i>=0;
-        i--
-    ){
-
-        const post=posts[i];
-
-        const px=
-            post.x-
-            camX+
-            W/2;
-
-        const py=
-            post.y-
-            camY+
-            H/2;
-
-
-        if(
-            Math.hypot(
-                x-px,
-                y-py
-            )<50
-        ){
-
-            return post;
-        }
-    }
-
-    return null;
-}
-
-
-/* =========================
-   لمس صفحه
-========================= */
-
-let downX=0;
-let downY=0;
-
 canvas.addEventListener(
     "pointerdown",
     e=>{
 
+        dragging=true;
+
         downX=e.clientX;
         downY=e.clientY;
-
-        dragging=true;
 
         startX=e.clientX;
         startY=e.clientY;
@@ -656,7 +381,6 @@ canvas.addEventListener(
 
         if(!dragging)
             return;
-
 
         const dx=
             e.clientX-startX;
@@ -680,7 +404,7 @@ canvas.addEventListener(
     "pointerup",
     e=>{
 
-        const moveDistance=
+        const moved=
             Math.hypot(
                 e.clientX-downX,
                 e.clientY-downY
@@ -691,23 +415,16 @@ canvas.addEventListener(
 
 
         /*
-           اگر فقط ضربه زده،
-           بررسی کن روی 🌛 بوده یا نه
+           فقط اگر ضربه بود،
+           نه کشیدن
         */
 
-        if(moveDistance<12){
+        if(moved<15){
 
-            const post=
-                findPost(
-                    e.clientX,
-                    e.clientY
-                );
-
-
-            if(post){
-
-                openPost(post);
-            }
+            checkPost(
+                e.clientX,
+                e.clientY
+            );
         }
 
 
@@ -722,69 +439,342 @@ canvas.addEventListener(
 );
 
 
-/* =========================
+canvas.addEventListener(
+    "pointercancel",
+    ()=>{
+        dragging=false;
+    }
+);
+
+
+/* ==================================================
+   پس‌زمینه
+================================================== */
+
+function drawBackground(){
+
+    ctx.fillStyle="#000";
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+}
+
+
+/* ==================================================
+   ستاره‌های آسمان
+================================================== */
+
+function drawStars(time){
+
+    ctx.textAlign=
+        "center";
+
+    ctx.textBaseline=
+        "middle";
+
+
+    for(
+        const s of stars
+    ){
+
+        /*
+           حرکت مداوم
+        */
+
+        s.x+=s.vx;
+        s.y+=s.vy;
+
+
+        /*
+           برگشت از طرف دیگر جهان
+        */
+
+        if(
+            s.x>WORLD/2
+        )
+            s.x=-WORLD/2;
+
+        if(
+            s.x<-WORLD/2
+        )
+            s.x=WORLD/2;
+
+
+        if(
+            s.y>WORLD/2
+        )
+            s.y=-WORLD/2;
+
+        if(
+            s.y<-WORLD/2
+        )
+            s.y=WORLD/2;
+
+
+        /*
+           تبدیل مختصات جهان
+           به صفحه
+        */
+
+        const x=
+            s.x-
+            camX+
+            W/2;
+
+        const y=
+            s.y-
+            camY+
+            H/2;
+
+
+        /*
+           خارج صفحه
+        */
+
+        if(
+            x<-50 ||
+            x>W+50 ||
+            y<-50 ||
+            y>H+50
+        )
+            continue;
+
+
+        /*
+           چشمک خیلی کم
+        */
+
+        const alpha=
+            .90+
+            Math.sin(
+                time*.002+
+                s.phase
+            )*.08;
+
+
+        ctx.globalAlpha=
+            alpha;
+
+
+        ctx.fillStyle=
+            s.color;
+
+
+        ctx.shadowColor=
+            s.color;
+
+        ctx.shadowBlur=
+            5;
+
+
+        /*
+           خود ☆
+        */
+
+        ctx.font=
+            `normal ${s.size}px Arial`;
+
+
+        ctx.fillText(
+            "☆",
+            x,
+            y
+        );
+
+
+        ctx.shadowBlur=0;
+    }
+
+
+    ctx.globalAlpha=1;
+}
+
+
+/* ==================================================
+   🌛 برای هر پست
+================================================== */
+
+function drawPosts(){
+
+    ctx.textAlign=
+        "center";
+
+    ctx.textBaseline=
+        "middle";
+
+
+    for(
+        const p of posts
+    ){
+
+        const x=
+            p.x-
+            camX+
+            W/2;
+
+        const y=
+            p.y-
+            camY+
+            H/2;
+
+
+        if(
+            x<-80 ||
+            x>W+80 ||
+            y<-80 ||
+            y>H+80
+        )
+            continue;
+
+
+        /*
+           ماه فقط اینجاست.
+           بدون پست هیچ ماهی وجود ندارد.
+        */
+
+        ctx.font=
+            "34px Arial";
+
+        ctx.shadowColor=
+            "#fff";
+
+        ctx.shadowBlur=
+            8;
+
+
+        ctx.fillText(
+            "🌛",
+            x,
+            y
+        );
+
+
+        ctx.shadowBlur=0;
+    }
+}
+
+
+/* ==================================================
+   پیدا کردن ماه
+================================================== */
+
+function checkPost(x,y){
+
+    for(
+        let i=posts.length-1;
+        i>=0;
+        i--
+    ){
+
+        const p=
+            posts[i];
+
+
+        const px=
+            p.x-
+            camX+
+            W/2;
+
+        const py=
+            p.y-
+            camY+
+            H/2;
+
+
+        const distance=
+            Math.hypot(
+                x-px,
+                y-py
+            );
+
+
+        if(
+            distance<55
+        ){
+
+            openPost(p);
+
+            return;
+        }
+    }
+}
+
+
+/* ==================================================
    باز کردن پست
-========================= */
+================================================== */
 
-function openPost(post){
+let activePost=null;
 
-    activePost=post;
+
+function openPost(p){
+
+    activePost=p;
 
 
     document.getElementById(
         "postTitle"
     ).textContent=
-        post.title;
+        p.title;
 
 
     document.getElementById(
         "postText"
     ).textContent=
-        post.text;
+        p.text;
 
 
     const like=
         document.getElementById(
-            "likeButton"
+            "like"
         );
 
 
-    like.classList.remove("liked");
+    like.textContent=
+        "♡";
 
-    like.textContent="♡";
+    like.classList.remove(
+        "liked"
+    );
 
 
     document.getElementById(
-        "postWindow"
-    ).style.display="block";
+        "post"
+    ).style.display=
+        "block";
 }
 
 
-/* =========================
+/* ==================================================
    بستن پست
-========================= */
+================================================== */
 
 document.getElementById(
-    "closePost"
+    "close"
 ).addEventListener(
     "click",
     ()=>{
 
         document.getElementById(
-            "postWindow"
-        ).style.display="none";
+            "post"
+        ).style.display=
+            "none";
 
         activePost=null;
     }
 );
 
 
-/* =========================
-   لایک ❤️
-========================= */
+/* ==================================================
+   ♡ لایک
+================================================== */
 
 document.getElementById(
-    "likeButton"
+    "like"
 ).addEventListener(
     "click",
     function(){
@@ -794,18 +784,19 @@ document.getElementById(
 
 
         /*
-           تبدیل ♡ به ♥
+           ♡ → ♥
         */
+
+        this.textContent=
+            "♥";
 
         this.classList.add(
             "liked"
         );
 
-        this.textContent="♥";
-
 
         /*
-           پخش صدها ☆ رنگی
+           پر شدن صفحه
         */
 
         createLikeStars();
@@ -813,24 +804,233 @@ document.getElementById(
 );
 
 
-/* =========================
-   انیمیشن
-========================= */
+/* ==================================================
+   ساخت ستاره‌های لایک
+================================================== */
 
-function animate(time){
+function createLikeStars(){
 
-    if(!dragging){
+    /*
+       900 ستاره
+    */
 
-        targetX+=.10;
-        targetY+=.04;
+    for(
+        let i=0;
+        i<900;
+        i++
+    ){
+
+        /*
+           از چهار طرف صفحه
+        */
+
+        const side=
+            Math.floor(
+                Math.random()*4
+            );
+
+
+        let x;
+        let y;
+
+
+        if(side===0){
+
+            x=
+                Math.random()*W;
+
+            y=-40;
+
+        }
+
+        else if(side===1){
+
+            x=W+40;
+
+            y=
+                Math.random()*H;
+
+        }
+
+        else if(side===2){
+
+            x=
+                Math.random()*W;
+
+            y=H+40;
+
+        }
+
+        else{
+
+            x=-40;
+
+            y=
+                Math.random()*H;
+        }
+
+
+        /*
+           حرکت به داخل صفحه
+        */
+
+        const dx=
+            W/2-x;
+
+        const dy=
+            H/2-y;
+
+
+        const speed=
+            .003+
+            Math.random()*.009;
+
+
+        likeStars.push({
+
+            x:x,
+            y:y,
+
+            vx:
+                dx*speed+
+                (Math.random()-.5)*1.2,
+
+            vy:
+                dy*speed+
+                (Math.random()-.5)*1.2,
+
+            size:
+                13+
+                Math.random()*5,
+
+            color:
+                COLORS[
+                    Math.floor(
+                        Math.random()*
+                        COLORS.length
+                    )
+                ],
+
+            life:
+                220+
+                Math.random()*130
+        });
+    }
+}
+
+
+/* ==================================================
+   رسم ستاره‌های لایک
+================================================== */
+
+function drawLikeStars(){
+
+    ctx.textAlign=
+        "center";
+
+    ctx.textBaseline=
+        "middle";
+
+
+    for(
+        let i=likeStars.length-1;
+        i>=0;
+        i--
+    ){
+
+        const s=
+            likeStars[i];
+
+
+        s.x+=s.vx;
+        s.y+=s.vy;
+
+
+        s.vx*=.998;
+        s.vy*=.998;
+
+
+        s.life--;
+
+
+        if(
+            s.life<=0
+        ){
+
+            likeStars.splice(
+                i,
+                1
+            );
+
+            continue;
+        }
+
+
+        ctx.globalAlpha=
+            Math.min(
+                1,
+                s.life/45
+            );
+
+
+        ctx.fillStyle=
+            s.color;
+
+
+        ctx.shadowColor=
+            s.color;
+
+        ctx.shadowBlur=
+            6;
+
+
+        ctx.font=
+            `normal ${s.size}px Arial`;
+
+
+        ctx.fillText(
+            "☆",
+            s.x,
+            s.y
+        );
+
+
+        ctx.shadowBlur=0;
     }
 
 
+    ctx.globalAlpha=1;
+}
+
+
+/* ==================================================
+   انیمیشن
+================================================== */
+
+function animate(time){
+
+    /*
+       حرکت خیلی آرام دوربین
+    */
+
+    if(!dragging){
+
+        targetX+=.08;
+        targetY+=.03;
+    }
+
+
+    /*
+       حرکت نرم
+    */
+
     camX+=
-        (targetX-camX)*.06;
+        (targetX-camX)*
+        .06;
 
     camY+=
-        (targetY-camY)*.06;
+        (targetY-camY)*
+        .06;
 
 
     drawBackground();
