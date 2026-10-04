@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>پنل مدیریت | Minuit côtier</title>
+<title>مدیریت | Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 *{
 box-sizing:border-box;
 }
@@ -16,132 +18,257 @@ box-sizing:border-box;
 body{
 margin:0;
 min-height:100vh;
-font-family:Tahoma;
+font-family:Tahoma,Arial,sans-serif;
 color:white;
+
 background:
-radial-gradient(circle at top,#30206b,transparent 40%),
+radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
+radial-gradient(circle at 80% 70%,#35105e,transparent 35%),
 linear-gradient(135deg,#050716,#17104a);
+
+padding:20px;
 }
 
 .container{
-width:90%;
-max-width:600px;
+width:100%;
+max-width:800px;
 margin:auto;
-padding:30px 0;
 }
 
-.card{
-background:rgba(255,255,255,.1);
-border-radius:22px;
-padding:20px;
-margin-bottom:20px;
-backdrop-filter:blur(10px);
-}
-
-h1,h2{
+h1{
 text-align:center;
+margin:10px 0 25px;
 }
 
-input,button{
-width:100%;
-padding:13px;
-margin-top:10px;
-border-radius:14px;
-border:0;
+.top{
+display:flex;
+gap:10px;
+margin-bottom:20px;
 }
 
-input{
-background:#ffffff18;
-color:white;
-}
-
-button,.link{
-display:block;
-width:100%;
+.top button{
+flex:1;
 padding:14px;
-margin-top:12px;
-border-radius:14px;
+border:0;
+border-radius:15px;
 background:#7650ff;
 color:white;
-border:0;
-text-align:center;
-text-decoration:none;
 font-weight:bold;
+font-size:15px;
 }
 
-.message{
-text-align:center;
-margin-top:10px;
+.posts{
+display:flex;
+flex-direction:column;
+gap:18px;
 }
+
+.post{
+
+background:#ffffff12;
+
+border:1px solid #ffffff18;
+
+border-radius:22px;
+
+padding:18px;
+
+backdrop-filter:blur(12px);
+
+box-shadow:
+0 10px 40px #0005;
+
+}
+
+.title{
+
+font-size:20px;
+
+font-weight:bold;
+
+margin-bottom:10px;
+
+}
+
+.content{
+
+color:#ddd;
+
+line-height:1.9;
+
+white-space:pre-wrap;
+
+}
+
+.post img{
+
+display:block;
+
+width:100%;
+
+max-height:350px;
+
+object-fit:cover;
+
+border-radius:17px;
+
+margin-top:14px;
+
+}
+
+video{
+
+display:block;
+
+width:100%;
+
+max-height:400px;
+
+margin-top:14px;
+
+border-radius:17px;
+
+background:#000;
+
+}
+
+audio{
+
+width:100%;
+
+margin-top:14px;
+
+}
+
+.media{
+
+margin-top:12px;
+
+font-size:13px;
+
+color:#cfc5ff;
+
+}
+
+.date{
+
+margin-top:12px;
+
+font-size:12px;
+
+color:#aaa;
+
+}
+
+.delete{
+
+width:100%;
+
+margin-top:16px;
+
+padding:14px;
+
+border:0;
+
+border-radius:15px;
+
+background:#d9365b;
+
+color:white;
+
+font-size:15px;
+
+font-weight:bold;
+
+}
+
+.delete:active{
+
+transform:scale(.97);
+
+}
+
+.loading{
+
+text-align:center;
+
+padding:40px;
+
+color:#ccc;
+
+}
+
+.empty{
+
+text-align:center;
+
+padding:40px;
+
+background:#ffffff0d;
+
+border-radius:20px;
+
+color:#bbb;
+
+}
+
+.error{
+
+text-align:center;
+
+padding:25px;
+
+background:#ff000018;
+
+border-radius:20px;
+
+color:#ffb0b0;
+
+line-height:2;
+
+}
+
 </style>
 
 </head>
+
 
 <body>
 
 <div class="container">
 
-
-<div class="card">
-
-<h1>☆ Minuit côtier ☆</h1>
-<h2>🔐 ورود مدیر</h2>
+<h1>☆ مدیریت پست‌ها ☆</h1>
 
 
-<div id="login">
+<div class="top">
 
-<input id="email" placeholder="ایمیل">
-
-<input id="password" type="password" placeholder="رمز عبور">
-
-
-<button onclick="login()">
-ورود
+<button onclick="loadPosts()">
+🔄 بروزرسانی
 </button>
 
-
-<div id="msg" class="message"></div>
-
-</div>
-
-
-
-<div id="panel" style="display:none">
-
-<h2>پنل مدیریت</h2>
-
-
-<a class="link" href="settings.html">
-⚙️ تنظیمات سایت
-</a>
-
-
-<a class="link" href="publish.html">
-📝 انتشار پست
-</a>
-
-
-<a class="link" href="posts.html">
-📚 مدیریت پست‌ها
-</a>
-
-
-<button onclick="logout()">
-🚪 خروج
+<button onclick="location.href='publish.html'">
+➕ پست جدید
 </button>
 
-
 </div>
 
 
+<div id="posts" class="posts">
+
+<div class="loading">
+در حال دریافت پست‌ها... ⏳
 </div>
 
+</div>
 
 </div>
 
 
 <script>
 
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -158,86 +285,312 @@ SUPABASE_KEY
 );
 
 
+/* =========================
+   دریافت پست‌ها
+========================= */
 
-async function login(){
+async function loadPosts(){
 
-const email =
-document.getElementById("email").value;
-
-const password =
-document.getElementById("password").value;
+const box =
+document.getElementById("posts");
 
 
-const {error} =
-await db.auth.signInWithPassword({
+box.innerHTML =
+`
+<div class="loading">
+در حال دریافت پست‌ها... ⏳
+</div>
+`;
 
-email,
-password
 
-});
+const {data,error} =
+await db
+.from("posts")
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
 
 
 if(error){
 
-document.getElementById("msg")
-.innerText =
-"خطا: "+error.message;
+box.innerHTML =
+`
+<div class="error">
+❌ خطا در دریافت پست‌ها
+<br>
+${escapeHtml(error.message)}
+</div>
+`;
 
 return;
 
 }
 
 
-showPanel();
+if(!data || data.length===0){
+
+box.innerHTML =
+`
+<div class="empty">
+هنوز هیچ پستی نداری 🌙
+</div>
+`;
+
+return;
 
 }
 
 
-
-function showPanel(){
-
-document.getElementById("login")
-.style.display="none";
+box.innerHTML="";
 
 
-document.getElementById("panel")
-.style.display="block";
+data.forEach(post=>{
 
-}
+const div =
+document.createElement("div");
 
-
-
-async function check(){
-
-const {data}=
-
-await db.auth.getSession();
+div.className="post";
 
 
-if(data.session){
+/* عنوان */
 
-showPanel();
+if(post.title){
 
-}
+const title =
+document.createElement("div");
+
+title.className="title";
+
+title.innerText =
+post.title;
+
+div.appendChild(title);
 
 }
 
 
+/* متن */
 
-async function logout(){
+if(post.content){
 
-await db.auth.signOut();
+const content =
+document.createElement("div");
 
-location.reload();
+content.className="content";
+
+content.innerText =
+post.content;
+
+div.appendChild(content);
 
 }
 
 
-check();
+/* عکس */
 
+if(post.image_url){
+
+const img =
+document.createElement("img");
+
+img.src =
+post.image_url;
+
+img.alt =
+post.title || "تصویر پست";
+
+img.loading="lazy";
+
+div.appendChild(img);
+
+}
+
+
+/* ویدیو */
+
+if(post.video_url){
+
+const video =
+document.createElement("video");
+
+video.src =
+post.video_url;
+
+video.controls=true;
+
+video.playsInline=true;
+
+div.appendChild(video);
+
+}
+
+
+/* صدا */
+
+if(post.audio_url){
+
+const audio =
+document.createElement("audio");
+
+audio.src =
+post.audio_url;
+
+audio.controls=true;
+
+div.appendChild(audio);
+
+}
+
+
+/* نوع محتوا */
+
+let types=[];
+
+if(post.image_url)
+types.push("🖼️ عکس");
+
+if(post.video_url)
+types.push("🎬 ویدیو");
+
+if(post.audio_url)
+types.push("🎵 صدا");
+
+
+if(types.length){
+
+const media =
+document.createElement("div");
+
+media.className="media";
+
+media.innerText =
+types.join("  •  ");
+
+div.appendChild(media);
+
+}
+
+
+/* تاریخ */
+
+if(post.created_at){
+
+const date =
+document.createElement("div");
+
+date.className="date";
+
+date.innerText =
+"تاریخ: "+
+new Date(
+post.created_at
+).toLocaleString("fa-IR");
+
+div.appendChild(date);
+
+}
+
+
+/* دکمه حذف */
+
+const deleteButton =
+document.createElement("button");
+
+deleteButton.className="delete";
+
+deleteButton.innerText =
+"🗑️ حذف این پست";
+
+
+deleteButton.onclick =
+function(){
+
+deletePost(post.id);
+
+};
+
+
+div.appendChild(deleteButton);
+
+
+box.appendChild(div);
+
+});
+
+}
+
+
+/* =========================
+   حذف پست
+========================= */
+
+async function deletePost(id){
+
+const answer =
+confirm(
+"مطمئنی می‌خوای این پست حذف بشه؟\n\nاین کار قابل برگشت نیست."
+);
+
+
+if(!answer)
+return;
+
+
+const {error} =
+await db
+.from("posts")
+.delete()
+.eq("id",id);
+
+
+if(error){
+
+alert(
+"❌ پست حذف نشد:\n\n"+
+error.message
+);
+
+return;
+
+}
+
+
+alert(
+"پست با موفقیت حذف شد ✅"
+);
+
+
+await loadPosts();
+
+}
+
+
+/* =========================
+   جلوگیری از نمایش HTML
+========================= */
+
+function escapeHtml(text){
+
+const div =
+document.createElement("div");
+
+div.innerText=text;
+
+return div.innerHTML;
+
+}
+
+
+/* =========================
+   شروع
+========================= */
+
+loadPosts();
 
 </script>
 
-
 </body>
+
 </html>
