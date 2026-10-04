@@ -2,7 +2,6 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
@@ -27,13 +26,11 @@ linear-gradient(135deg,#050716,#17104a);
 overflow-x:hidden;
 }
 
-
 #stars{
 position:fixed;
 inset:0;
 pointer-events:none;
 }
-
 
 .star{
 position:absolute;
@@ -42,7 +39,6 @@ font-size:8px;
 animation:fall linear infinite;
 opacity:.7;
 }
-
 
 @keyframes fall{
 from{
@@ -53,7 +49,6 @@ transform:translateY(110vh);
 }
 }
 
-
 .container{
 width:90%;
 max-width:600px;
@@ -63,92 +58,89 @@ position:relative;
 z-index:2;
 }
 
-
 .card{
-
 background:#ffffff12;
 border-radius:22px;
 padding:20px;
 backdrop-filter:blur(10px);
-
 }
-
 
 h1,h2{
 text-align:center;
 }
 
-
-input,textarea,button{
-
+input,
+textarea,
+button{
 width:100%;
 padding:14px;
 margin-top:12px;
 border-radius:15px;
 border:0;
-
 }
 
-
-input,textarea{
-
+input,
+textarea{
 background:#ffffff18;
 color:white;
-
 }
 
+input::placeholder,
+textarea::placeholder{
+color:#ddd;
+}
 
 textarea{
 height:120px;
+resize:none;
 }
 
-
 button{
-
 background:#7650ff;
 color:white;
 font-weight:bold;
-
+font-size:16px;
+cursor:pointer;
 }
 
+button:active{
+transform:scale(.98);
+}
 
 #preview{
-
 width:120px;
 height:120px;
 border-radius:50%;
 object-fit:cover;
 display:block;
 margin:15px auto;
+border:3px solid #ffffff55;
+background:#ffffff12;
 }
 
+#msg{
+text-align:center;
+min-height:25px;
+margin-top:15px;
+}
 
 </style>
-
 </head>
 
 
 <body>
 
-
 <div id="stars"></div>
-
 
 <div class="container">
 
-
 <div class="card">
-
 
 <h1>☆ Minuit côtier ☆</h1>
 
 <h2>⚙️ تنظیمات</h2>
 
-
-
-<img id="preview">
-
-
+<img id="preview" alt="پروفایل">
 
 <input
 type="file"
@@ -156,51 +148,37 @@ id="imageFile"
 accept="image/*"
 >
 
-
-
 <input
 id="name"
 placeholder="نام سایت"
 >
-
-
 
 <textarea
 id="bio"
 placeholder="بیو سایت"
 ></textarea>
 
-
-
 <button onclick="saveSettings()">
 💾 ذخیره تنظیمات
 </button>
 
-
 <p id="msg"></p>
 
-
 </div>
-
-
 </div>
-
-
 
 
 <script>
 
-
-/* SUPABASE */
-
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
-
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
-
 
 const db =
 supabase.createClient(
@@ -209,13 +187,12 @@ SUPABASE_KEY
 );
 
 
-
-/* STARS */
-
+/* =========================
+   STARS
+========================= */
 
 const starBox =
 document.getElementById("stars");
-
 
 for(let i=0;i<80;i++){
 
@@ -225,157 +202,347 @@ s.className="star";
 
 s.innerText="☆";
 
-s.style.left=Math.random()*100+"%";
+s.style.left =
+Math.random()*100+"%";
 
-s.style.animationDuration=
+s.style.animationDuration =
 (Math.random()*8+7)+"s";
 
-s.style.animationDelay=
+s.style.animationDelay =
 Math.random()*5+"s";
-
 
 starBox.appendChild(s);
 
 }
 
 
+/* =========================
+   VARIABLES
+========================= */
+
+let currentSettings = null;
+
+let imageUrl = "";
 
 
-let imageUrl="";
-
-
+/* =========================
+   PREVIEW NEW IMAGE
+========================= */
 
 document
 .getElementById("imageFile")
 .addEventListener("change",e=>{
 
-
-const file=e.target.files[0];
-
+const file =
+e.target.files[0];
 
 if(file){
 
-document.getElementById("preview")
-.src=
+document.getElementById("preview").src =
 URL.createObjectURL(file);
 
 }
 
-
 });
 
 
+/* =========================
+   LOAD OLD SETTINGS
+========================= */
 
-
-
-async function uploadImage(){
-
-
-const file =
-document.getElementById("imageFile")
-.files[0];
-
-
-if(!file)
-return "";
-
-
-
-const name =
-"profile-"+Date.now();
-
-
-
-const {error}=
-
-await db.storage
-.from("Minuit cotier")
-.upload(name,file);
-
-
-
-if(error){
-
-alert(error.message);
-
-return "";
-
-}
-
-
-
-const {data}=
-
-db.storage
-.from("Minuit cotier")
-.getPublicUrl(name);
-
-
-
-return data.publicUrl;
-
-
-}
-
-
-
-
-
-
-async function saveSettings(){
-
+async function loadSettings(){
 
 const msg =
 document.getElementById("msg");
 
+msg.innerText =
+"در حال دریافت تنظیمات...";
 
 
-msg.innerText="در حال ذخیره...";
-
-
-
-imageUrl =
-await uploadImage();
-
-
-
-const {error}=
-
+const {data,error} =
 await db
 .from("site_settings")
-.insert({
-
-site_name:
-document.getElementById("name").value,
-
-bio:
-document.getElementById("bio").value,
-
-image_url:
-imageUrl
-
-});
-
+.select("*")
+.order("created_at",{ascending:false})
+.limit(1)
+.maybeSingle();
 
 
 if(error){
 
-msg.innerText=
-"خطا: "+error.message;
+console.log(error);
+
+msg.innerText =
+"خطا در دریافت تنظیمات";
+
+return;
+
+}
+
+
+/* اگر تنظیمات قبلی وجود داشت */
+
+if(data){
+
+currentSettings = data;
+
+document.getElementById("name").value =
+data.site_name || "";
+
+document.getElementById("bio").value =
+data.bio || "";
+
+imageUrl =
+data.image_url || "";
+
+
+/* نمایش عکس قبلی */
+
+if(data.image_url){
+
+document.getElementById("preview").src =
+data.image_url;
+
+}
+
+msg.innerText =
+"تنظیمات قبلی بارگذاری شد ✅";
 
 }else{
 
-msg.innerText=
+currentSettings = null;
+
+msg.innerText =
+"هنوز تنظیماتی ذخیره نشده";
+
+}
+
+}
+
+
+/* =========================
+   UPLOAD IMAGE
+========================= */
+
+async function uploadImage(){
+
+const file =
+document
+.getElementById("imageFile")
+.files[0];
+
+
+/* اگر عکس جدید انتخاب نشده */
+
+if(!file){
+
+return imageUrl || "";
+
+}
+
+
+/* اسم یکتا */
+
+const fileName =
+"profile-"+Date.now()+"-"+file.name;
+
+
+/* آپلود */
+
+const {error} =
+await db.storage
+.from("Minuit cotier")
+.upload(
+fileName,
+file,
+{
+upsert:false
+}
+);
+
+
+if(error){
+
+throw new Error(
+"خطا در آپلود عکس: "+error.message
+);
+
+}
+
+
+/* گرفتن لینک عمومی */
+
+const {data} =
+db.storage
+.from("Minuit cotier")
+.getPublicUrl(fileName);
+
+
+return data.publicUrl;
+
+}
+
+
+/* =========================
+   SAVE SETTINGS
+========================= */
+
+async function saveSettings(){
+
+const msg =
+document.getElementById("msg");
+
+msg.innerText =
+"در حال ذخیره...";
+
+
+try{
+
+const name =
+document
+.getElementById("name")
+.value
+.trim();
+
+const bio =
+document
+.getElementById("bio")
+.value
+.trim();
+
+
+/* عکس جدید یا عکس قبلی */
+
+const newImageUrl =
+await uploadImage();
+
+
+/* =========================
+   اگر قبلاً تنظیمات داشت
+   UPDATE
+========================= */
+
+if(currentSettings){
+
+const {error} =
+await db
+.from("site_settings")
+.update({
+
+site_name:name,
+
+bio:bio,
+
+image_url:newImageUrl
+
+})
+.eq(
+"id",
+currentSettings.id
+);
+
+
+if(error){
+
+throw new Error(
+error.message
+);
+
+}
+
+
+/* اطلاعات جدید */
+
+currentSettings.site_name =
+name;
+
+currentSettings.bio =
+bio;
+
+currentSettings.image_url =
+newImageUrl;
+
+imageUrl =
+newImageUrl;
+
+
+}else{
+
+
+/* =========================
+   اولین بار
+   INSERT
+========================= */
+
+const {data,error} =
+await db
+.from("site_settings")
+.insert({
+
+site_name:name,
+
+bio:bio,
+
+image_url:newImageUrl
+
+})
+.select()
+.single();
+
+
+if(error){
+
+throw new Error(
+error.message
+);
+
+}
+
+
+currentSettings =
+data;
+
+imageUrl =
+newImageUrl;
+
+}
+
+
+/* =========================
+   نمایش نتیجه
+========================= */
+
+if(newImageUrl){
+
+document.getElementById("preview").src =
+newImageUrl;
+
+}
+
+
+msg.innerText =
 "ذخیره شد ✅❤️";
 
+
+}catch(error){
+
+console.error(error);
+
+msg.innerText =
+"خطا: "+error.message;
+
+}
+
 }
 
 
-}
+/* =========================
+   START
+========================= */
 
+loadSettings();
 
 </script>
-
 
 </body>
 </html>
