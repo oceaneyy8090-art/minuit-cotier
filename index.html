@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html>
 <head>
-<meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
@@ -9,211 +9,150 @@
 <style>
 html,body{
 margin:0;
-width:100%;
 height:100%;
 overflow:hidden;
 touch-action:none;
-background:#020817;
+background:#020617;
 }
 
 canvas{
 display:block;
-width:100%;
-height:100%;
 }
 </style>
+
 </head>
 
 <body>
 
-<canvas id="space"></canvas>
+<canvas id="sky"></canvas>
+
+
+<audio id="lightMusic" loop>
+<source src="light.mp3" type="audio/mpeg">
+</audio>
+
 
 <script>
 
-const canvas=document.getElementById("space");
+
+const lightMusic=document.getElementById("lightMusic");
+lightMusic.volume=0.25;
+
+const SUPABASE_KEY = "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+const canvas=document.getElementById("sky");
 const ctx=canvas.getContext("2d");
+
 
 let W,H;
 
 function resize(){
- W=canvas.width=innerWidth;
- H=canvas.height=innerHeight;
+W=canvas.width=innerWidth;
+H=canvas.height=innerHeight;
 }
 
 resize();
 onresize=resize;
 
 
+
 let camX=0;
 let camY=0;
 
 
+let stars=[];
+
+
 const colors=[
-"#ff5ca8",
-"#ff8ad8",
-"#66d9ff",
-"#8d7cff",
-"#c89cff"
+"#fff",
+"#7dd3fc",
+"#a78bfa",
+"#f9a8d4",
+"#c7d2fe"
 ];
 
 
-let objects=[];
 
+// ساخت ستاره در هر قسمت جدید
 
-function create(){
+function addStar(){
 
-let r=Math.random();
+stars.push({
 
-let o={
- x:(Math.random()-0.5)*7000,
- y:(Math.random()-0.5)*7000,
- phase:Math.random()*20,
- speed:.2+Math.random()*.4
-};
+x:camX+(Math.random()-0.5)*W*3,
+y:camY+(Math.random()-0.5)*H*3,
 
+vx:(Math.random()-.5)*0.2,
+vy:(Math.random()-.5)*0.2,
 
-if(r<0.7){
+size:2+Math.random()*7,
 
-o.type="star";
-o.text="☆";
-o.size=10+Math.random()*8;
-o.color=
+color:
 colors[
 Math.floor(Math.random()*colors.length)
-];
+]
 
-}
-
-else if(r<0.82){
-
-o.type="magic";
-o.text="💫";
-o.size=18;
-
-}
-
-else if(r<0.92){
-
-o.type="planet";
-o.text="🪐";
-o.size=16;
-
-}
-
-else{
-
-o.type="comet";
+});
 
 }
 
 
-objects.push(o);
 
-}
+// شروع اولیه
 
-
-for(let i=0;i<120;i++){
-create();
-}
+for(let i=0;i<600;i++)
+addStar();
 
 
 
 
-function draw(t){
+function loop(){
 
-let time=t/1000;
+while(stars.length<900)
+addStar();
 
 
-/* پس زمینه */
 
-let bg=ctx.createRadialGradient(
-W/2,H/2,
-20,
-W/2,H/2,
-W
+let bg=
+ctx.createLinearGradient(
+0,0,0,H
 );
 
-bg.addColorStop(0,"#30206b");
-bg.addColorStop(.4,"#14204f");
-bg.addColorStop(1,"#020817");
+bg.addColorStop(0,"#010314");
+bg.addColorStop(.6,"#071a3d");
+bg.addColorStop(1,"#31486d");
+
 
 ctx.fillStyle=bg;
 ctx.fillRect(0,0,W,H);
 
 
 
-objects.forEach(o=>{
+stars.forEach(s=>{
+
+s.x+=s.vx;
+s.y+=s.vy;
 
 
-let floatX=
-Math.sin(time*o.speed+o.phase)*20;
-
-let floatY=
-Math.cos(time*o.speed+o.phase)*20;
+let x=s.x-camX+W/2;
+let y=s.y-camY+H/2;
 
 
-let x=o.x+floatX-camX+W/2;
-let y=o.y+floatY-camY+H/2;
-
-
-if(x<-80||x>W+80||y<-80||y>H+80)
-return;
-
-
-
-/* دنباله دار */
-
-if(o.type==="comet"){
-
-ctx.strokeStyle=
-"rgba(100,220,255,.7)";
-
-ctx.lineWidth=2;
-
-ctx.beginPath();
-
-ctx.moveTo(
-x-35,
-y+18
-);
-
-ctx.lineTo(
-x,
-y
-);
-
-ctx.stroke();
-
-
-ctx.fillStyle="white";
-
-ctx.beginPath();
-
-ctx.arc(
-x,
-y,
-4,
-0,
-Math.PI*2
-);
-
-ctx.fill();
-
-return;
-
-}
+if(
+x<-100||
+x>W+100||
+y<-100||
+y>H+100
+)return;
 
 
 
-ctx.font=o.size+"px Arial";
+ctx.font=s.size+"px Arial";
+ctx.fillStyle=s.color;
 ctx.textAlign="center";
-ctx.textBaseline="middle";
-
-ctx.fillStyle=
-o.color||"white";
 
 ctx.fillText(
-o.text,
+"☆",
 x,
 y
 );
@@ -222,17 +161,19 @@ y
 });
 
 
-requestAnimationFrame(draw);
+
+requestAnimationFrame(loop);
 
 }
 
-requestAnimationFrame(draw);
+loop();
 
 
 
-/* حرکت با انگشت */
 
-let sx,sy,startX,startY;
+// کشیدن صفحه
+
+let sx,sy,ox,oy;
 
 
 canvas.onpointerdown=e=>{
@@ -240,28 +181,28 @@ canvas.onpointerdown=e=>{
 sx=e.clientX;
 sy=e.clientY;
 
-startX=camX;
-startY=camY;
+ox=camX;
+oy=camY;
 
 };
 
 
 canvas.onpointermove=e=>{
 
-if(sx===undefined)return;
+if(sx==null)return;
 
 camX=
-startX-(e.clientX-sx);
+ox-(e.clientX-sx);
 
 camY=
-startY-(e.clientY-sy);
+oy-(e.clientY-sy);
 
 };
 
 
 canvas.onpointerup=()=>{
 
-sx=undefined;
+sx=null;
 
 };
 
