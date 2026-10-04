@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>ورود مدیریت</title>
+
+<style>
+
+body{
+
+margin:0;
+height:100vh;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-family:tahoma;
+
+background:
+linear-gradient(135deg,#080820,#34205e);
+
+color:white;
+
+}
+
+
+.box{
+
+width:90%;
+max-width:350px;
+
+background:#ffffff15;
+
+padding:25px;
+
+border-radius:25px;
+
+text-align:center;
+
+backdrop-filter:blur(10px);
+
+}
+
+
+input,button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:15px;
+
+border:0;
+
+border-radius:15px;
+
+}
+
+
+input{
+
+background:#ffffff20;
+
+color:white;
+
+}
+
+
+button{
+
+background:#8265ff;
+
+color:white;
+
+font-size:16px;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+<h2>
+🔐 ورود مدیریت
+</h2>
+
+
+<input id="email"
+placeholder="ایمیل">
+
+
+<input id="password"
+type="password"
+placeholder="رمز عبور">
+
+
+
+<button onclick="login()">
+
+ورود
+
+</button>
+
+
+<p id="msg"></p>
+
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+async function login(){
+
+
+const email =
+document.getElementById("email").value;
+
+
+const password =
+document.getElementById("password").value;
+
+
+
+const {data,error}=
+
+await db.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+
+if(error){
+
+document.getElementById("msg")
+.innerText=
+"ورود ناموفق ❌";
+
+return;
+
+}
+
+
+
+location.href="dashboard.html";
+
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
