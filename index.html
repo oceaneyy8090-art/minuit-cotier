@@ -1,315 +1,371 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>☆ Minuit côtier ☆</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  min-height:100vh;
-  font-family:Tahoma,Arial,sans-serif;
-  color:white;
-  background:
-    radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
-    radial-gradient(circle at 80% 80%,#182d67,transparent 35%),
-    linear-gradient(135deg,#050716,#0d1230,#17104a);
+margin:0;
+min-height:100vh;
+font-family:Tahoma;
+color:white;
+background:
+radial-gradient(circle at 20% 20%,#493477,transparent 35%),
+radial-gradient(circle at 80% 80%,#12355e,transparent 35%),
+linear-gradient(135deg,#020312,#10164a,#241044);
+overflow-x:hidden;
 }
+
 
 #stars{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
-  pointer-events:none;
-  z-index:0;
+position:fixed;
+inset:0;
+z-index:0;
 }
+
 
 .star{
-  position:absolute;
-  color:white;
-  opacity:.7;
-  text-shadow:0 0 8px #fff;
-  animation:fall linear infinite;
+position:absolute;
+font-size:8px;
+opacity:.8;
+animation:move linear infinite;
 }
 
-@keyframes fall{
-  from{
-    transform:translateY(-30px) rotate(0deg);
-  }
-  to{
-    transform:translateY(110vh) rotate(360deg);
-  }
+
+@keyframes move{
+from{
+transform:translateY(-20px);
 }
+to{
+transform:translateY(110vh);
+}
+}
+
 
 .container{
-  position:relative;
-  z-index:2;
-  width:min(94%,700px);
-  margin:auto;
-  padding:30px 0 60px;
+position:relative;
+z-index:2;
+width:92%;
+max-width:650px;
+margin:auto;
+padding:25px 0;
 }
+
 
 .profile{
-  text-align:center;
-  padding:25px 15px;
+text-align:center;
+background:#ffffff12;
+padding:20px;
+border-radius:25px;
+backdrop-filter:blur(10px);
 }
+
 
 .profile img{
-  width:105px;
-  height:105px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid rgba(255,255,255,.7);
-  box-shadow:0 0 30px rgba(150,100,255,.5);
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
 }
 
-.profile h1{
-  margin:15px 0 5px;
-  font-size:28px;
-  font-style:italic;
+
+.post{
+
+background:#ffffff12;
+margin-top:20px;
+padding:18px;
+border-radius:22px;
 }
 
-.profile p{
-  color:#c9c5e8;
-  margin:8px 0;
+
+.post img,
+.post video{
+
+width:100%;
+border-radius:15px;
 }
 
-.card{
-  background:rgba(12,15,45,.78);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:22px;
-  padding:20px;
-  margin-bottom:18px;
-  box-shadow:0 15px 40px rgba(0,0,0,.3);
-  backdrop-filter:blur(12px);
+
+audio{
+width:100%;
+margin-top:10px;
 }
 
-.post-title{
-  font-size:20px;
-  font-weight:bold;
-  margin-bottom:10px;
+
+button{
+
+border:0;
+border-radius:20px;
+padding:10px 20px;
+background:#ff6fae;
+color:white;
+font-weight:bold;
+
 }
 
-.post-text{
-  color:#ddd;
-  line-height:2;
+
+.heart{
+
+position:fixed;
+font-size:25px;
+animation:heart 1s forwards;
+
 }
 
-.post img{
-  width:100%;
-  border-radius:16px;
-  margin-top:12px;
+
+@keyframes heart{
+
+from{
+transform:translateY(0);
+opacity:1;
 }
 
-.empty{
-  text-align:center;
-  color:#aaa;
-  padding:30px 10px;
+to{
+transform:translateY(-150px);
+opacity:0;
 }
+
+}
+
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div id="stars"></div>
+
 
 <div class="container">
 
-  <div class="profile">
-    <img id="profileImage" src="" alt="Minuit côtier">
-    <h1 id="siteName">☆ Minuit côtier ☆</h1>
-    <p id="siteBio">ساحلِ نیمه‌شب</p>
-  </div>
 
-  <div id="posts">
-    <div class="empty">در حال دریافت پست‌ها... ☆</div>
-  </div>
+<div class="profile">
+
+<img id="avatar">
+
+<h1>☆ Minuit côtier ☆</h1>
+
+<p id="bio"></p>
 
 </div>
 
+
+<div id="posts">
+در حال دریافت پست‌ها...
+</div>
+
+
+</div>
+
+
+
+
 <script>
 
-const SUPABASE_URL =
+
+const URL=
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
-const SUPABASE_KEY =
+
+const KEY=
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-const db = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+
+const db=
+supabase.createClient(URL,KEY);
 
 
-/* ستاره‌ها */
 
-const starsBox =
-document.getElementById("stars");
 
-for(let i=0;i<90;i++){
 
-  const star =
-  document.createElement("span");
+for(let i=0;i<120;i++){
 
-  star.className="star";
-  star.innerText="☆";
+let s=document.createElement("span");
 
-  star.style.left =
-  Math.random()*100+"%";
+s.className="star";
 
-  star.style.top =
-  Math.random()*100+"%";
+s.innerText="☆";
 
-  star.style.fontSize =
-  (Math.random()*7+5)+"px";
+let colors=[
+"#ffd1e8",
+"#9ed8ff",
+"#7ca9ff"
+];
 
-  star.style.animationDuration =
-  (Math.random()*8+7)+"s";
+s.style.color=
+colors[Math.floor(Math.random()*3)];
 
-  star.style.animationDelay =
-  Math.random()*8+"s";
+s.style.left=
+Math.random()*100+"%";
 
-  starsBox.appendChild(star);
+s.style.animationDuration=
+(Math.random()*10+5)+"s";
+
+
+document
+.getElementById("stars")
+.appendChild(s);
+
 }
 
 
-/* تنظیمات سایت */
+
+
+
 
 async function loadSettings(){
 
-  const {data,error} =
-  await db
-  .from("site_settings")
-  .select("site_name,bio,image_url")
-  .limit(1);
+let {data}=await db
+.from("site_settings")
+.select("*")
+.limit(1);
 
-  if(error){
-    console.log(error.message);
-    return;
-  }
 
-  if(!data || !data.length){
-    return;
-  }
+if(data && data[0]){
 
-  const settings =
-  data[0];
+document
+.getElementById("avatar")
+.src=data[0].image_url;
 
-  if(settings.site_name){
-    document.getElementById("siteName")
-      .innerText =
-      "☆ "+settings.site_name+" ☆";
-  }
 
-  if(settings.bio){
-    document.getElementById("siteBio")
-      .innerText =
-      settings.bio;
-  }
+document
+.getElementById("bio")
+.innerText=data[0].bio;
 
-  if(settings.image_url){
-    document.getElementById("profileImage")
-      .src =
-      settings.image_url;
-  }
+}
+
 }
 
 
-/* پست‌ها */
+
+
+
 
 async function loadPosts(){
 
-  const box =
-  document.getElementById("posts");
 
-  const {data,error} =
-  await db
-  .from("posts")
-  .select("*")
-  .order("created_at",{
-    ascending:false
-  });
+let box=
+document.getElementById("posts");
 
-  if(error){
 
-    box.innerHTML =
-      '<div class="empty">خطا در دریافت پست‌ها ❌</div>';
+let {data,error}=await db
+.from("posts")
+.select("*")
+.order("created_at",{ascending:false});
 
-    console.log(error.message);
 
-    return;
-  }
 
-  if(!data || !data.length){
+if(error){
 
-    box.innerHTML =
-      '<div class="empty">هنوز پستی منتشر نشده ☆</div>';
+box.innerHTML=error.message;
+return;
 
-    return;
-  }
-
-  box.innerHTML="";
-
-  data.forEach(post=>{
-
-    const div =
-    document.createElement("div");
-
-    div.className="card post";
-
-    let html="";
-
-    html +=
-      '<div class="post-title">'+
-      escapeHtml(post.title || "بدون عنوان")+
-      '</div>';
-
-    if(post.content){
-
-      html +=
-        '<div class="post-text">'+
-        escapeHtml(post.content)
-          .replace(/\n/g,"<br>")+
-        '</div>';
-    }
-
-    if(post.image_url){
-
-      html +=
-        '<img src="'+
-        escapeHtml(post.image_url)+
-        '" alt="post">';
-    }
-
-    div.innerHTML=html;
-
-    box.appendChild(div);
-  });
 }
 
 
-function escapeHtml(text){
+box.innerHTML="";
 
-  return String(text)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+
+data.forEach(p=>{
+
+
+let div=
+document.createElement("div");
+
+
+div.className="post";
+
+
+div.innerHTML=`
+
+<h2>${p.title||""}</h2>
+
+<p>${p.content||""}</p>
+
+
+${p.image_url?
+`<img src="${p.image_url}">`
+:""}
+
+
+${p.video_url?
+`<video controls src="${p.video_url}"></video>`
+:""}
+
+
+${p.audio_url?
+`<audio controls src="${p.audio_url}"></audio>`
+:""}
+
+
+<br><br>
+
+
+<button onclick="like(this)">
+❤️ لایک
+</button>
+
+`;
+
+
+box.appendChild(div);
+
+
+});
+
+
 }
 
 
-/* شروع */
+
+
+
+
+
+function like(btn){
+
+let h=document.createElement("div");
+
+h.className="heart";
+
+h.innerText="❤️";
+
+
+h.style.left=
+Math.random()*90+"%";
+
+
+document.body.appendChild(h);
+
+
+setTimeout(()=>h.remove(),1000);
+
+}
+
+
+
+
+
 
 loadSettings();
+
 loadPosts();
 
+
 </script>
+
 
 </body>
 </html>
