@@ -2,7 +2,6 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -13,539 +12,364 @@
 <style>
 
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
+  box-sizing:border-box;
 }
 
 html,body{
-width:100%;
-height:100%;
-overflow:hidden;
-background:#02020d;
+  margin:0;
+  min-height:100%;
 }
 
+body{
+  font-family:tahoma,Arial,sans-serif;
+  color:white;
+  overflow-x:hidden;
 
-#space{
-
-position:fixed;
-inset:0;
-
-overflow:hidden;
-
-touch-action:none;
-
-background:
-radial-gradient(circle,#35205f,#050515 70%);
-
+  background:
+    radial-gradient(circle at 20% 10%,rgba(111,80,255,.28),transparent 30%),
+    radial-gradient(circle at 85% 80%,rgba(0,200,255,.18),transparent 30%),
+    linear-gradient(135deg,#03030d,#0b0930,#1a1050);
 }
 
+/* ستاره‌ها */
 
-
-#world{
-
-position:absolute;
-
-width:15000px;
-height:15000px;
-
-left:50%;
-top:50%;
-
-transform:
-translate(-50%,-50%);
-
-will-change:transform;
-
+.stars{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:0;
 }
-
-
-
 
 .star{
+  position:absolute;
+  font-size:9px;
+  animation:moveStar linear infinite;
+  opacity:0;
+  text-shadow:
+    0 0 6px currentColor,
+    0 0 13px currentColor;
+}
 
-position:absolute;
+@keyframes moveStar{
 
-text-shadow:
-0 0 8px currentColor;
+  0%{
+    transform:translateY(110vh) translateX(0) scale(.5);
+    opacity:0;
+  }
 
-opacity:.85;
+  15%{
+    opacity:.9;
+  }
+
+  80%{
+    opacity:.9;
+  }
+
+  100%{
+    transform:translateY(-15vh) translateX(35px) scale(1);
+    opacity:0;
+  }
 
 }
 
+/* صفحه */
 
+.page{
+  position:relative;
+  z-index:1;
 
-.post{
+  width:100%;
+  max-width:650px;
 
-position:absolute;
-
-font-size:38px;
-
-cursor:pointer;
-
-filter:
-drop-shadow(0 0 12px #ffe86a);
-
-animation:pulse 2s infinite;
-
+  margin:auto;
+  padding:20px 15px 50px;
 }
 
-
-
-@keyframes pulse{
-
-50%{
-transform:scale(1.25);
-}
-
-}
-
-
-
+/* پروفایل */
 
 .profile{
-
-position:absolute;
-
-left:7450px;
-top:7400px;
-
-text-align:center;
-
-color:white;
-
+  text-align:center;
+  padding-top:20px;
 }
-
-
 
 .profile img{
+  width:115px;
+  height:115px;
 
-width:120px;
-height:120px;
+  border-radius:50%;
 
-border-radius:50%;
+  object-fit:cover;
 
-object-fit:cover;
+  border:2px solid rgba(255,255,255,.8);
 
-box-shadow:
-0 0 35px #78ddff;
+  box-shadow:
+    0 0 20px #7c6cff,
+    0 0 45px rgba(99,75,255,.5);
 
+  background:#111;
 }
-
-
 
 .profile h1{
+  margin:15px 0 6px;
 
-margin-top:10px;
+  font-size:26px;
 
+  text-shadow:
+    0 0 10px #8b7cff,
+    0 0 25px #624cff;
 }
 
+.profile p{
+  margin:0;
 
+  color:#bdb8dd;
 
-
-#viewer{
-
-display:none;
-
-position:fixed;
-
-inset:0;
-
-background:#000b;
-
-z-index:20;
-
-align-items:center;
-
-justify-content:center;
-
+  font-size:13px;
 }
 
+/* دکمه پنل */
 
+.admin{
+  display:block;
 
-#viewer.show{
+  width:max-content;
 
-display:flex;
+  margin:18px auto 25px;
 
+  padding:10px 18px;
+
+  border-radius:20px;
+
+  color:white;
+  text-decoration:none;
+
+  background:rgba(255,255,255,.09);
+
+  border:1px solid rgba(255,255,255,.14);
+
+  font-size:12px;
 }
 
+/* عنوان پست‌ها */
 
-.box{
+.posts-title{
+  display:flex;
 
-width:90%;
-max-width:500px;
+  align-items:center;
+  justify-content:space-between;
 
-background:#171735;
-
-color:white;
-
-padding:20px;
-
-border-radius:25px;
-
-text-align:center;
-
+  margin:20px 2px 12px;
 }
 
+.posts-title h2{
+  margin:0;
 
-
-.box img,
-.box video{
-
-width:100%;
-
-border-radius:15px;
-
+  font-size:18px;
 }
 
+.posts-title span{
+  color:#8edfff;
 
-.music{
-
-position:fixed;
-
-bottom:20px;
-
-left:20px;
-
-z-index:50;
-
-width:55px;
-
-height:55px;
-
-border-radius:50%;
-
-background:#765cff;
-
-color:white;
-
-border:0;
-
-font-size:25px;
-
+  font-size:12px;
 }
 
+/* پست */
+
+.post{
+  margin-top:15px;
+
+  padding:17px;
+
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.12),
+      rgba(255,255,255,.045)
+    );
+
+  border:1px solid rgba(255,255,255,.11);
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.28);
+}
+
+.post h3{
+  margin:0 0 8px;
+
+  font-size:17px;
+}
+
+.post p{
+  margin:0 0 12px;
+
+  color:#c8c4df;
+
+  font-size:13px;
+
+  line-height:1.8;
+
+  white-space:pre-wrap;
+}
+
+.post img,
+.post video{
+  width:100%;
+
+  max-height:430px;
+
+  object-fit:contain;
+
+  border-radius:17px;
+
+  display:block;
+
+  margin-top:10px;
+
+  background:#020208;
+}
+
+.post audio{
+  width:100%;
+
+  margin-top:12px;
+}
+
+.date{
+  margin-top:10px;
+
+  color:#777493;
+
+  font-size:10px;
+}
+
+.empty{
+  text-align:center;
+
+  padding:35px 15px;
+
+  color:#aaa6c5;
+
+  background:rgba(255,255,255,.05);
+
+  border-radius:22px;
+}
+
+.loading{
+  text-align:center;
+
+  padding:30px;
+
+  color:#aaa6c5;
+}
+
+/* موبایل */
+
+@media(max-width:380px){
+
+  .profile img{
+    width:100px;
+    height:100px;
+  }
+
+  .profile h1{
+    font-size:22px;
+  }
+
+}
 
 </style>
-
 </head>
 
 
 <body>
 
 
-<div id="space">
+<!-- ستاره‌ها -->
 
-<div id="world">
+<div class="stars">
+
+<span class="star" style="left:2%;animation-duration:12s;color:#8fe8ff;">☆</span>
+<span class="star" style="left:6%;animation-duration:17s;animation-delay:2s;color:#ff8fdc;">☆</span>
+<span class="star" style="left:11%;animation-duration:14s;animation-delay:5s;color:#b49cff;">☆</span>
+<span class="star" style="left:16%;animation-duration:19s;animation-delay:1s;color:#fff;">☆</span>
+<span class="star" style="left:21%;animation-duration:13s;animation-delay:7s;color:#70dcff;">☆</span>
+<span class="star" style="left:26%;animation-duration:16s;animation-delay:3s;color:#ff9ee3;">☆</span>
+<span class="star" style="left:31%;animation-duration:11s;animation-delay:6s;color:#aa99ff;">☆</span>
+<span class="star" style="left:36%;animation-duration:18s;animation-delay:2s;color:#82eaff;">☆</span>
+<span class="star" style="left:41%;animation-duration:15s;animation-delay:8s;color:#ff91d8;">☆</span>
+<span class="star" style="left:46%;animation-duration:20s;animation-delay:4s;color:#fff;">☆</span>
+<span class="star" style="left:51%;animation-duration:12s;animation-delay:1s;color:#9f8cff;">☆</span>
+<span class="star" style="left:56%;animation-duration:17s;animation-delay:5s;color:#71ddff;">☆</span>
+<span class="star" style="left:61%;animation-duration:14s;animation-delay:3s;color:#ff9ddd;">☆</span>
+<span class="star" style="left:66%;animation-duration:19s;animation-delay:7s;color:#b29fff;">☆</span>
+<span class="star" style="left:71%;animation-duration:13s;animation-delay:2s;color:#fff;">☆</span>
+<span class="star" style="left:76%;animation-duration:16s;animation-delay:6s;color:#79e4ff;">☆</span>
+<span class="star" style="left:81%;animation-duration:11s;animation-delay:4s;color:#ff8fd8;">☆</span>
+<span class="star" style="left:86%;animation-duration:18s;animation-delay:1s;color:#a996ff;">☆</span>
+<span class="star" style="left:91%;animation-duration:15s;animation-delay:5s;color:#74dfff;">☆</span>
+<span class="star" style="left:96%;animation-duration:20s;animation-delay:8s;color:#ff9fe4;">☆</span>
+
+</div>
 
 
-<div class="profile">
+<main class="page">
 
-<img id="avatar">
 
-<h1 id="name">
+<!-- پروفایل -->
+
+<section class="profile">
+
+<img id="profileImage"
+     src="https://oyowhuyzgjvpoeupoegh.supabase.co/storage/v1/object/public/Minuit%20cotier/InShot_20261002_144159070.jpg"
+     alt="پروفایل">
+
+<h1 id="siteName">
 𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓
 </h1>
 
-<p id="bio"></p>
+<p id="siteBio">
+ساحلِ نیمه‌شب ☆
+</p>
+
+</section>
+
+
+<!-- ورود پنل -->
+
+<a class="admin" href="login.html">
+🔐 ورود به پنل مدیریت
+</a>
+
+
+<!-- عنوان پست‌ها -->
+
+<div class="posts-title">
+
+<h2>💫 پست‌ها</h2>
+
+<span>☆ Minuit côtier ☆</span>
 
 </div>
 
 
+<!-- محل پست‌ها -->
+
+<section id="posts">
+
+<div class="loading">
+در حال دریافت پست‌ها... ✨
 </div>
 
-</div>
+</section>
 
 
-<button class="music" id="musicBtn">
-♫
-</button>
-
-
-
-<div id="viewer">
-
-<div class="box">
-
-<h2 id="title"></h2>
-
-<div id="content"></div>
-
-<button onclick="closePost()">
-بستن
-</button>
-
-</div>
-
-</div>
+</main>
 
 
 <script>
-// =======================
-// حرکت دنیا
-// =======================
-
-const space =
-document.getElementById("space");
-
-const world =
-document.getElementById("world");
-
-
-let x = 0;
-let y = 0;
-
-let down = false;
-
-let oldX = 0;
-let oldY = 0;
-
-
-
-space.addEventListener(
-"pointerdown",
-(e)=>{
-
-down=true;
-
-oldX=e.clientX;
-oldY=e.clientY;
-
-});
-
-
-
-space.addEventListener(
-"pointermove",
-(e)=>{
-
-if(!down) return;
-
-
-x += e.clientX-oldX;
-y += e.clientY-oldY;
-
-
-oldX=e.clientX;
-oldY=e.clientY;
-
-
-
-world.style.transform =
-`
-translate(
-calc(-50% + ${x}px),
-calc(-50% + ${y}px)
-)
-`;
-
-});
-
-
-
-space.addEventListener(
-"pointerup",
-()=>{
-
-down=false;
-
-});
-
-
-
-
-
-// =======================
-// ستاره های زیاد ولی سبک
-// =======================
-
-
-const colors=[
-
-"#ffffff",
-"#8deaff",
-"#ffc5e8",
-"#d5b7ff",
-"#fff18a",
-"#aaffd8"
-
-];
-
-
-
-for(let i=0;i<700;i++){
-
-
-let star =
-document.createElement("span");
-
-
-star.className="star";
-
-
-star.innerHTML =
-Math.random()>0.5
-?
-"☆"
-:
-"✦";
-
-
-
-star.style.left =
-Math.random()*14500+"px";
-
-
-star.style.top =
-Math.random()*14500+"px";
-
-
-
-star.style.color =
-colors[
-Math.floor(
-Math.random()*colors.length
-)
-];
-
-
-
-star.style.fontSize =
-(5+Math.random()*9)+"px";
-
-
-
-world.appendChild(star);
-
-
-}
-
-
-
-
-
-
-
-// =======================
-// ساخت 💫 پست
-// =======================
-
-
-function createPost(post,index){
-
-
-let p =
-document.createElement("div");
-
-
-p.className="post";
-
-
-p.innerHTML="💫";
-
-
-
-p.style.left =
-(1000+(index*900)%13000)
-+"px";
-
-
-
-p.style.top =
-(1200+(index*700)%13000)
-+"px";
-
-
-
-p.onclick=()=>{
-
-openPost(post);
-
-};
-
-
-
-world.appendChild(p);
-
-
-}
-
-
-
-
-
-
-function openPost(post){
-
-
-document
-.getElementById("title")
-.innerText =
-post.title || "💫";
-
-
-
-let html="";
-
-
-if(post.content){
-
-html +=
-"<p>"+post.content+"</p>";
-
-}
-
-
-
-if(post.image_url){
-
-html +=
-`
-<img src="${post.image_url}">
-`;
-
-}
-
-
-
-if(post.video_url){
-
-html +=
-`
-<video controls src="${post.video_url}">
-</video>
-`;
-
-}
-
-
-
-document
-.getElementById("content")
-.innerHTML=html;
-
-
-
-document
-.getElementById("viewer")
-.classList.add("show");
-
-}
-
-
-
-
-
-function closePost(){
-
-document
-.getElementById("viewer")
-.classList.remove("show");
-
-}
-// =======================
-// SUPABASE
-// =======================
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
@@ -553,256 +377,241 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-
 const db =
 supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
 
 
+const postsBox =
+document.getElementById("posts");
+
+const siteName =
+document.getElementById("siteName");
+
+const siteBio =
+document.getElementById("siteBio");
+
+const profileImage =
+document.getElementById("profileImage");
 
 
+/* گرفتن تنظیمات */
 
-// =======================
-// پروفایل
-// =======================
+async function loadSettings(){
 
-async function loadProfile(){
+  const {data,error} =
+    await db
+      .from("site_settings")
+      .select("*")
+      .order("created_at",{ascending:false})
+      .limit(1);
 
+  if(error){
 
-const {data,error}=
+    console.log(error);
 
-await db
-.from("site_settings")
-.select("*")
-.limit(1);
+    return;
+  }
 
+  if(!data || !data.length){
 
+    return;
+  }
 
-if(error){
+  const s=data[0];
 
-console.log(error);
+  if(s.site_name){
 
-return;
+    siteName.textContent =
+      s.site_name;
 
-}
+  }
 
+  if(s.bio){
 
+    siteBio.textContent =
+      s.bio;
 
-if(!data[0]) return;
+  }
 
+  if(s.image_url){
 
-let p=data[0];
+    profileImage.src =
+      s.image_url;
 
-
-
-if(p.image_url){
-
-document
-.getElementById("avatar")
-.src=p.image_url;
-
-}
-
-
-if(p.site_name){
-
-document
-.getElementById("name")
-.innerText=p.site_name;
-
-}
-
-
-if(p.bio){
-
-document
-.getElementById("bio")
-.innerText=p.bio;
-
-}
-
+  }
 
 }
 
 
-
-
-
-
-// =======================
-// پست ها
-// =======================
-
+/* نمایش پست‌ها */
 
 async function loadPosts(){
 
+  const {data,error} =
+    await db
+      .from("posts")
+      .select("*")
+      .order("created_at",{ascending:false});
 
-const {data,error}=
 
-await db
-.from("posts")
-.select("*")
-.order(
-"created_at",
-{
-ascending:false
+  if(error){
+
+    console.error(error);
+
+    postsBox.innerHTML=`
+      <div class="empty">
+        خطا در دریافت پست‌ها ❌
+      </div>
+    `;
+
+    return;
+  }
+
+
+  if(!data || !data.length){
+
+    postsBox.innerHTML=`
+      <div class="empty">
+        هنوز پستی منتشر نشده ☆
+      </div>
+    `;
+
+    return;
+  }
+
+
+  let html="";
+
+
+  data.forEach(function(post){
+
+    html+=`
+
+      <article class="post">
+
+        ${
+          post.title
+          ?
+          `<h3>${escapeHtml(post.title)}</h3>`
+          :
+          ""
+        }
+
+        ${
+          post.content
+          ?
+          `<p>${escapeHtml(post.content)}</p>`
+          :
+          ""
+        }
+
+        ${
+          post.image_url
+          ?
+          `<img
+             src="${post.image_url}"
+             alt="تصویر پست"
+             loading="lazy">
+          `
+          :
+          ""
+        }
+
+        ${
+          post.video_url
+          ?
+          `<video
+             src="${post.video_url}"
+             controls
+             preload="metadata">
+          </video>
+          `
+          :
+          ""
+        }
+
+        ${
+          post.music_url
+          ?
+          `<audio
+             src="${post.music_url}"
+             controls>
+          </audio>
+          `
+          :
+          ""
+        }
+
+        ${
+          post.created_at
+          ?
+          `<div class="date">
+             ${formatDate(post.created_at)}
+           </div>`
+          :
+          ""
+        }
+
+      </article>
+
+    `;
+
+  });
+
+
+  postsBox.innerHTML=html;
+
 }
-);
 
 
+/* امنیت متن */
 
-if(error){
+function escapeHtml(text){
 
-console.log(error);
+  return String(text)
 
-return;
+    .replace(/&/g,"&amp;")
 
-}
+    .replace(/</g,"&lt;")
 
+    .replace(/>/g,"&gt;")
 
+    .replace(/"/g,"&quot;")
 
-data.forEach(
-(post,index)=>{
-
-createPost(
-post,
-index
-);
-
-});
+    .replace(/'/g,"&#039;");
 
 }
 
 
+/* تاریخ */
 
-loadProfile();
+function formatDate(date){
+
+  try{
+
+    return new Date(date)
+      .toLocaleDateString("fa-IR");
+
+  }catch{
+
+    return "";
+
+  }
+
+}
+
+
+/* اجرا */
+
+loadSettings();
 
 loadPosts();
 
-
-
-
-
-
-
-
-// =======================
-// موزیک قوی تر
-// =======================
-
-
-let audioContext;
-
-let musicOn=false;
-
-
-const musicBtn =
-document.getElementById(
-"musicBtn"
-);
-
-
-
-musicBtn.onclick=()=>{
-
-
-if(musicOn)
-return;
-
-
-musicOn=true;
-
-
-audioContext =
-new AudioContext();
-
-
-
-playMusic();
-
-
-};
-
-
-
-
-
-function playMusic(){
-
-
-const notes=[
-
-261.6,
-329.6,
-392,
-440,
-392,
-329
-
-];
-
-let i=0;
-
-
-
-setInterval(()=>{
-
-
-let osc =
-audioContext
-.createOscillator();
-
-
-let gain =
-audioContext
-.createGain();
-
-
-
-osc.type="sine";
-
-
-osc.frequency.value =
-notes[i];
-
-
-i++;
-
-if(i>=notes.length)
-i=0;
-
-
-
-gain.gain.value =
-0.12;   // صدای بیشتر
-
-
-
-osc.connect(gain);
-
-gain.connect(
-audioContext.destination
-);
-
-
-
-osc.start();
-
-
-osc.stop(
-audioContext.currentTime+0.7
-);
-
-
-
-},700);
-
-
-
-}
 </script>
+
 
 </body>
 </html>
