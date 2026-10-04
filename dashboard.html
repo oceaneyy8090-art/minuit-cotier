@@ -29,6 +29,7 @@ body{
     linear-gradient(135deg,#03030d,#09082a,#17104a);
 }
 
+
 /* ستاره‌ها */
 
 .stars{
@@ -41,10 +42,12 @@ body{
 
 .star{
   position:absolute;
-  color:#fff;
+  color:white;
   font-size:8px;
   opacity:.8;
+
   animation:float linear infinite;
+
   text-shadow:
     0 0 5px currentColor,
     0 0 10px currentColor;
@@ -72,21 +75,27 @@ body{
 
 }
 
+
 /* صفحه */
 
 .page{
   position:relative;
   z-index:1;
+
   width:100%;
   max-width:700px;
+
   margin:auto;
+
   padding:22px 16px 40px;
 }
+
 
 /* هدر */
 
 .header{
   text-align:center;
+
   padding:25px 10px 18px;
 }
 
@@ -101,14 +110,19 @@ body{
 
 .subtitle{
   margin-top:8px;
+
   color:#bbb7df;
+
   font-size:13px;
 }
 
-/* کارت خوش آمد */
+
+/* خوش آمد */
 
 .welcome{
+
   padding:22px;
+
   border-radius:28px;
 
   background:
@@ -127,34 +141,51 @@ body{
 
 .welcome h2{
   margin:0 0 8px;
+
   font-size:20px;
 }
 
 .welcome p{
   margin:0;
+
   color:#bdb9d8;
+
   font-size:13px;
 }
 
-/* منوی اصلی */
+
+/* منو */
 
 .menu{
+
   display:grid;
+
   grid-template-columns:1fr 1fr;
+
   gap:14px;
+
   margin-top:18px;
 }
 
+
+/* کارت */
+
 .menu-card{
+
   position:relative;
+
   min-height:145px;
 
   display:flex;
+
   flex-direction:column;
+
   justify-content:center;
+
   align-items:center;
 
   text-decoration:none;
+
   color:white;
 
   border-radius:25px;
@@ -179,42 +210,72 @@ body{
   overflow:hidden;
 }
 
+
 .menu-card::before{
+
   content:"";
+
   position:absolute;
+
   width:90px;
   height:90px;
+
   border-radius:50%;
+
   background:rgba(125,95,255,.16);
+
   filter:blur(20px);
 }
 
+
 .menu-card:hover{
+
   transform:translateY(-4px);
+
   border-color:rgba(160,145,255,.55);
 
   box-shadow:
     0 15px 45px rgba(92,72,255,.22);
 }
 
+
+/* آیکون */
+
 .icon{
+
   position:relative;
+
   font-size:36px;
+
   margin-bottom:12px;
 }
 
+
+/* عنوان */
+
 .title{
+
   position:relative;
+
   font-size:16px;
+
   font-weight:bold;
 }
 
+
+/* توضیح */
+
 .desc{
+
   position:relative;
+
   margin-top:6px;
+
   color:#aaa6c7;
+
   font-size:11px;
 }
+
 
 /* رنگ آیکون‌ها */
 
@@ -234,14 +295,24 @@ body{
   text-shadow:0 0 18px #a77cff;
 }
 
+.website .icon{
+  text-shadow:0 0 18px #65e6ff;
+}
+
+
 /* پایین */
 
 .footer{
+
   text-align:center;
+
   margin-top:28px;
+
   color:#777392;
+
   font-size:11px;
 }
+
 
 @media(max-width:380px){
 
@@ -260,15 +331,18 @@ body{
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<!-- ستاره‌های سبک -->
+
+<!-- ستاره‌ها -->
 
 <div class="stars">
 
-<span class="star" style="left:4%;animation-duration:11s;animation-delay:0s;color:#9bdcff;">☆</span>
+<span class="star" style="left:4%;animation-duration:11s;color:#9bdcff;">☆</span>
 <span class="star" style="left:10%;animation-duration:15s;animation-delay:2s;color:#ff9de2;">☆</span>
 <span class="star" style="left:17%;animation-duration:12s;animation-delay:5s;color:#b8a7ff;">☆</span>
 <span class="star" style="left:24%;animation-duration:18s;animation-delay:1s;color:#ffffff;">☆</span>
@@ -288,28 +362,29 @@ body{
 
 <main class="page">
 
+
 <header class="header">
 
-  <div class="logo">
-    𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓
-  </div>
+<div class="logo">
+𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓
+</div>
 
-  <div class="subtitle">
-    پنل مدیریت
-  </div>
+<div class="subtitle">
+پنل مدیریت
+</div>
 
 </header>
 
 
 <section class="welcome">
 
-  <h2>
-    خوش اومدی 🌙
-  </h2>
+<h2>
+خوش اومدی 🌙
+</h2>
 
-  <p>
-    همه چیز مربوط به سایتت از اینجا مدیریت میشه.
-  </p>
+<p>
+همه چیز مربوط به سایتت از اینجا مدیریت میشه.
+</p>
 
 </section>
 
@@ -317,90 +392,114 @@ body{
 <section class="menu">
 
 
-  <a
-    class="menu-card profile"
-    href="settings.html">
+<!-- پروفایل -->
 
-    <div class="icon">
-      👤
-    </div>
+<a class="menu-card profile" href="settings.html">
 
-    <div class="title">
-      پروفایل
-    </div>
+<div class="icon">
+👤
+</div>
 
-    <div class="desc">
-      عکس و نام کانال
-    </div>
+<div class="title">
+پروفایل
+</div>
 
-  </a>
+<div class="desc">
+عکس و نام کانال
+</div>
 
-
-  <a
-    class="menu-card settings"
-    href="settings.html">
-
-    <div class="icon">
-      ⚙️
-    </div>
-
-    <div class="title">
-      تنظیمات
-    </div>
-
-    <div class="desc">
-      مدیریت سایت
-    </div>
-
-  </a>
+</a>
 
 
-  <a
-    class="menu-card posts"
-    href="posts.html">
+<!-- تنظیمات -->
 
-    <div class="icon">
-      💫
-    </div>
+<a class="menu-card settings" href="settings.html">
 
-    <div class="title">
-      پست‌ها
-    </div>
+<div class="icon">
+⚙️
+</div>
 
-    <div class="desc">
-      عکس، فیلم و آهنگ
-    </div>
+<div class="title">
+تنظیمات
+</div>
 
-  </a>
+<div class="desc">
+مدیریت سایت
+</div>
+
+</a>
 
 
-  <a
-    class="menu-card dashboard"
-    href="dashboard.html">
+<!-- پست‌ها -->
 
-    <div class="icon">
-      📊
-    </div>
+<a class="menu-card posts" href="posts.html">
 
-    <div class="title">
-      داشبورد
-    </div>
+<div class="icon">
+💫
+</div>
 
-    <div class="desc">
-      آمار و مدیریت
-    </div>
+<div class="title">
+پست‌ها
+</div>
 
-  </a>
+<div class="desc">
+عکس، فیلم و آهنگ
+</div>
+
+</a>
+
+
+<!-- داشبورد -->
+
+<a class="menu-card dashboard" href="dashboard.html">
+
+<div class="icon">
+📊
+</div>
+
+<div class="title">
+داشبورد
+</div>
+
+<div class="desc">
+آمار و مدیریت
+</div>
+
+</a>
+
+
+<!-- مشاهده سایت -->
+
+<a class="menu-card website"
+   href="index.html">
+
+<div class="icon">
+🌐
+</div>
+
+<div class="title">
+مشاهده سایت
+</div>
+
+<div class="desc">
+رفتن به صفحه اصلی
+</div>
+
+</a>
 
 
 </section>
 
 
 <div class="footer">
-  ☆ Minuit côtier ☆
+
+☆ Minuit côtier ☆
+
 </div>
+
 
 </main>
 
 </body>
+
 </html>
