@@ -2,91 +2,85 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#000;
-  font-family:Arial,sans-serif;
-  color:white;
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    touch-action:none;
+    font-family:Arial,sans-serif;
 }
 
-#sky{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  background:#000;
-  touch-action:none;
+canvas{
+    display:block;
+    width:100%;
+    height:100%;
+    background:#000;
 }
 
 #postWindow{
-  position:fixed;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:min(88%,420px);
-  max-height:80vh;
-  overflow:auto;
-  padding:24px;
-  border-radius:24px;
-  background:rgba(7,7,25,.96);
-  border:1px solid rgba(255,255,255,.16);
-  box-shadow:0 0 50px rgba(90,70,255,.25);
-  display:none;
-  z-index:20;
+    display:none;
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(88%,420px);
+    max-height:80vh;
+    overflow:auto;
+    background:rgba(8,8,15,.97);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:22px;
+    padding:22px;
+    box-sizing:border-box;
+    color:white;
+    text-align:center;
+    z-index:20;
+    box-shadow:0 0 35px rgba(160,120,255,.25);
 }
 
-#postTitle{
-  margin:0 0 12px;
-  font-size:22px;
+#postWindow h2{
+    margin:5px 0 15px;
+    font-size:23px;
 }
 
 #postText{
-  white-space:pre-wrap;
-  line-height:1.8;
-  color:#ddd;
+    color:#ddd;
+    line-height:1.8;
+    white-space:pre-wrap;
 }
 
 #closePost{
-  position:absolute;
-  right:14px;
-  top:10px;
-  border:0;
-  background:none;
-  color:white;
-  font-size:26px;
+    position:absolute;
+    top:10px;
+    right:12px;
+    width:38px;
+    height:38px;
+    border:0;
+    border-radius:50%;
+    background:#171722;
+    color:white;
+    font-size:20px;
 }
 
 #likeButton{
-  margin-top:20px;
-  border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.06);
-  color:white;
-  border-radius:30px;
-  padding:10px 20px;
-  font-size:20px;
+    margin-top:20px;
+    width:64px;
+    height:52px;
+    border:0;
+    border-radius:18px;
+    background:#15151f;
+    color:white;
+    font-size:30px;
 }
 
-#hint{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  color:rgba(255,255,255,.45);
-  font-size:12px;
-  z-index:5;
-  pointer-events:none;
+#likeButton.liked{
+    color:#ff4fa3;
+    text-shadow:0 0 12px #ff4fa3,0 0 25px #ff4fa3;
 }
 </style>
 </head>
@@ -95,623 +89,885 @@ html,body{
 
 <canvas id="sky"></canvas>
 
-<div id="hint">کشیدن صفحه = حرکت در آسمان ✦</div>
-
 <div id="postWindow">
-  <button id="closePost">×</button>
-  <h2 id="postTitle"></h2>
-  <div id="postText"></div>
-  <button id="likeButton">♡</button>
+    <button id="closePost">×</button>
+    <h2 id="postTitle"></h2>
+    <div id="postText"></div>
+    <button id="likeButton">♡</button>
 </div>
 
 <script>
-const canvas = document.getElementById("sky");
-const ctx = canvas.getContext("2d");
 
-let W = innerWidth;
-let H = innerHeight;
+const canvas=document.getElementById("sky");
+const ctx=canvas.getContext("2d");
+
+let W=innerWidth;
+let H=innerHeight;
 
 function resize(){
-  W = canvas.width = innerWidth;
-  H = canvas.height = innerHeight;
+    W=innerWidth;
+    H=innerHeight;
+
+    const dpr=Math.min(devicePixelRatio||1,1.5);
+
+    canvas.width=W*dpr;
+    canvas.height=H*dpr;
+
+    canvas.style.width=W+"px";
+    canvas.style.height=H+"px";
+
+    ctx.setTransform(dpr,0,0,dpr,0,0);
 }
-resize();
+
 addEventListener("resize",resize);
+resize();
+
 
 /* =========================
-   CAMERA
+   دوربین
 ========================= */
 
-let cameraX = 0;
-let cameraY = 0;
+let camX=0;
+let camY=0;
 
-let dragging = false;
-let lastX = 0;
-let lastY = 0;
+let targetX=0;
+let targetY=0;
 
-canvas.addEventListener("pointerdown",e=>{
-  dragging = true;
-  lastX = e.clientX;
-  lastY = e.clientY;
-  canvas.setPointerCapture(e.pointerId);
-});
+let dragging=false;
 
-canvas.addEventListener("pointermove",e=>{
-  if(!dragging) return;
+let startX=0;
+let startY=0;
 
-  cameraX += e.clientX-lastX;
-  cameraY += e.clientY-lastY;
+let startCamX=0;
+let startCamY=0;
 
-  lastX = e.clientX;
-  lastY = e.clientY;
-});
-
-canvas.addEventListener("pointerup",()=>{
-  dragging=false;
-});
-
-canvas.addEventListener("pointercancel",()=>{
-  dragging=false;
-});
 
 /* =========================
-   STARS
+   رنگ‌ها
 ========================= */
 
-const WORLD = 24000;
-const STAR_COUNT = 3000;
-
-const starColors = [
-  "#ffffff",
-  "#ffd6f6",
-  "#b9d8ff",
-  "#d5b8ff",
-  "#8ffcff",
-  "#ffb9e8"
+const colors=[
+    "#ffffff",
+    "#ffd5ef",
+    "#ff9ed6",
+    "#ffb8e5",
+    "#d3baff",
+    "#b59cff",
+    "#a9d9ff",
+    "#78c8ff",
+    "#9df3ff",
+    "#e3c8ff",
+    "#f4b9ff",
+    "#c5ffe3"
 ];
 
-const stars=[];
-
-for(let i=0;i<STAR_COUNT;i++){
-  stars.push({
-    x:(Math.random()-.5)*WORLD,
-    y:(Math.random()-.5)*WORLD,
-    size:13+Math.random()*4,
-    color:starColors[Math.floor(Math.random()*starColors.length)],
-    phase:Math.random()*Math.PI*2,
-    speed:.0005+Math.random()*.0015
-  });
-}
 
 /* =========================
-   POSTS
+   آسمان
+========================= */
+
+const WORLD=24000;
+const stars=[];
+
+for(let i=0;i<3000;i++){
+
+    stars.push({
+        x:(Math.random()-.5)*WORLD,
+        y:(Math.random()-.5)*WORLD,
+        size:13+Math.random()*4,
+
+        color:
+            colors[
+                Math.floor(
+                    Math.random()*colors.length
+                )
+            ],
+
+        vx:(Math.random()-.5)*.8,
+        vy:(Math.random()-.5)*.8,
+
+        phase:
+            Math.random()*Math.PI*2
+    });
+}
+
+
+/* =========================
+   پست‌ها
 ========================= */
 
 const posts=[
-  {
-    id:1,
-    x:0,
-    y:0,
-    title:"پست اول 🌛",
-    text:"به Minuit côtier خوش اومدی ✨\n\nاین اولین پست آزمایشی کاناله."
-  }
+
+    {
+        id:1,
+        x:0,
+        y:0,
+        title:"پست اول 🌛",
+        text:
+            "به Minuit côtier خوش اومدی ✨\n\n"+
+            "این اولین پست آزمایشی کاناله."
+    }
+
 ];
 
-/* =========================
-   BUTTERFLIES
-   FORMATION:
-   1 → 2 → 4 → 5
-========================= */
 
-function createButterflies(post){
+/* ==================================================
+   پروانه‌ها
+================================================== */
 
-  /*
-     هر پروانه یک جای ثابت نسبت به
-     مسیر مشترک دارد.
+const butterflies=[];
 
-     جلو:
-             🦋
 
-     پشت:
-          🦋   🦋
+function createButterflies(){
 
-     پشت‌تر:
-       🦋  🦋  🦋  🦋
+    butterflies.length=0;
 
-     انتها:
-    🦋 🦲 🦲 🦲 🦲
-  */
+    for(const post of posts){
 
-  return [
+        const formation=[
 
-    // ردیف اول: 1
-    {side:0, row:0, gap:0},
+            {x:0,y:-175},
 
-    // ردیف دوم: 2
-    {side:-1, row:1, gap:1},
-    {side:1, row:1, gap:1},
+            {x:-85,y:-85},
+            {x:85,y:-85},
 
-    // ردیف سوم: 4
-    {side:-3, row:2, gap:2},
-    {side:-1, row:2, gap:2},
-    {side:1, row:2, gap:2},
-    {side:3, row:2, gap:2},
+            {x:-150,y:15},
+            {x:-50,y:15},
+            {x:50,y:15},
+            {x:150,y:15}
 
-    // ردیف چهارم: 5
-    {side:-4, row:3, gap:3},
-    {side:-2, row:3, gap:3},
-    {side:0, row:3, gap:3},
-    {side:2, row:3, gap:3},
-    {side:4, row:3, gap:3}
+        ];
 
-  ].map((b,i)=>({
-    ...b,
-    index:i,
-    phase:Math.random()*Math.PI*2
-  }));
+        for(let i=0;i<formation.length;i++){
+
+            butterflies.push({
+
+                postId:post.id,
+
+                index:i,
+
+                baseX:formation[i].x,
+                baseY:formation[i].y,
+
+                phase:
+                    Math.random()*Math.PI*2,
+
+                phase2:
+                    Math.random()*Math.PI*2,
+
+                /*
+                   حرکت خیلی آرام
+                */
+
+                speed:
+                    0.000025+
+                    Math.random()*0.000015,
+
+                size:
+                    17+
+                    Math.random()*3,
+
+                color:[
+                    "#ffd6f6",
+                    "#ff9edc",
+                    "#c9a8ff",
+                    "#9edcff",
+                    "#b8f5ff",
+                    "#f4c8ff",
+                    "#ffffff"
+                ][i]
+            });
+        }
+    }
 }
 
-for(const post of posts){
-  post.butterflies=createButterflies(post);
-  post.pathOffset=Math.random()*Math.PI*2;
-}
 
-/* =========================
-   BUTTERFLY PATH
-========================= */
-
-function butterflyPosition(post,time,b){
-
-  /*
-     یک مسیر مشترک و خمیده دور ماه.
-
-     هیچ پروانه‌ای مسیر جداگانه ندارد.
-     همه همان مسیر را دنبال می‌کنند.
-  */
-
-  const baseSpeed=.000035;
-
-  const progress =
-    time*baseSpeed +
-    post.pathOffset;
-
-  /*
-     مسیر خمیده:
-     اول جلو می‌رود،
-     بعد آرام برمی‌گردد.
-  */
-
-  const wave =
-    Math.sin(progress)*0.95;
-
-  const centerAngle =
-    wave*1.15;
-
-  /*
-     فاصله بین ردیف‌ها
-  */
-
-  const rowDistance = 55;
-
-  /*
-     فاصله بین دو پروانه کنار هم
-  */
-
-  const sideDistance = 58;
-
-  /*
-     مسیر اصلی دور ماه
-  */
-
-  const rx = 210;
-  const ry = 145;
-
-  const centerX =
-    post.x +
-    Math.cos(centerAngle)*rx;
-
-  const centerY =
-    post.y +
-    Math.sin(centerAngle)*ry;
-
-  /*
-     جهت مسیر برای خم شدن صف
-  */
-
-  const tangentX =
-    -Math.sin(centerAngle)*rx;
-
-  const tangentY =
-    Math.cos(centerAngle)*ry;
-
-  const tangentLength =
-    Math.hypot(tangentX,tangentY)||1;
-
-  const tx=tangentX/tangentLength;
-  const ty=tangentY/tangentLength;
-
-  /*
-     بردار عمودی نسبت به مسیر
-  */
-
-  const nx=-ty;
-  const ny=tx;
-
-  /*
-     هر ردیف کمی عقب‌تر از ردیف جلویی.
-     بنابراین شکل ۱→۲→۴→۵ حفظ می‌شود.
-  */
-
-  const behind =
-    b.row*rowDistance;
-
-  const side =
-    b.side*sideDistance;
-
-  return {
-    x:centerX - tx*behind + nx*side,
-    y:centerY - ty*behind + ny*side
-  };
-}
-
-/* =========================
-   DRAW
-========================= */
-
-let activePost=null;
-let likedPosts=new Set();
-
-function drawStars(time){
-
-  for(const s of stars){
-
-    const x =
-      s.x +
-      cameraX +
-      Math.sin(time*s.speed+s.phase)*2;
-
-    const y =
-      s.y +
-      cameraY +
-      Math.cos(time*s.speed+s.phase)*2;
-
-    if(
-      x < -30 ||
-      x > W+30 ||
-      y < -30 ||
-      y > H+30
-    ) continue;
-
-    const twinkle =
-      .65+
-      Math.sin(time*.002+s.phase)*.25;
-
-    ctx.save();
-
-    ctx.globalAlpha=twinkle;
-
-    ctx.shadowBlur=7;
-    ctx.shadowColor=s.color;
-
-    ctx.fillStyle=s.color;
-
-    ctx.font=
-      `${s.size}px Arial`;
-
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-
-    ctx.fillText("☆",x,y);
-
-    ctx.restore();
-  }
-}
-
-/* =========================
-   BUTTERFLIES
-========================= */
+/* ==================================================
+   پروانه‌ها
+================================================== */
 
 function drawButterflies(time){
 
-  for(const post of posts){
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
 
-    if(!post.butterflies) continue;
+    for(const b of butterflies){
 
-    for(const b of post.butterflies){
+        const post=posts.find(
+            p=>p.id===b.postId
+        );
 
-      const p =
-        butterflyPosition(post,time,b);
+        if(!post) continue;
 
-      const sx =
-        p.x + cameraX;
 
-      const sy =
-        p.y + cameraY;
+        /*
+           چرخش بسیار آهسته
+        */
 
-      if(
-        sx < -50 ||
-        sx > W+50 ||
-        sy < -50 ||
-        sy > H+50
-      ) continue;
+        const orbit=
+            time*b.speed+
+            b.phase;
 
-      /*
-         حرکت خیلی ظریف بال‌ها،
-         ولی خود دسته کاملاً یکپارچه است.
-      */
 
-      const flutter =
-        Math.sin(time*.004+b.index*.3)*2;
+        /*
+           فاصله از ماه
+        */
 
-      ctx.save();
+        const radius=115;
 
-      ctx.translate(
-        sx,
-        sy+flutter
-      );
 
-      ctx.font="19px Arial";
-      ctx.textAlign="center";
-      ctx.textBaseline="middle";
+        /*
+           مرکز دسته
+        */
 
-      ctx.shadowBlur=8;
-      ctx.shadowColor="#d9a8ff";
+        let centerX=
+            Math.cos(orbit)*radius;
 
-      ctx.fillText("🦋",0,0);
+        let centerY=
+            Math.sin(orbit)*radius;
 
-      ctx.restore();
+
+        /*
+           حرکت طبیعی خیلی کم
+        */
+
+        centerX+=
+            Math.sin(
+                time*0.00045+
+                b.phase2
+            )*15;
+
+        centerY+=
+            Math.cos(
+                time*0.0004+
+                b.phase
+            )*15;
+
+
+        /*
+           چرخش خیلی کم فرم
+        */
+
+        const rotation=
+            Math.sin(
+                time*0.00025+
+                b.phase
+            )*0.18;
+
+
+        const cosR=Math.cos(rotation);
+        const sinR=Math.sin(rotation);
+
+
+        /*
+           حرکت مستقل بسیار نرم
+        */
+
+        const localX=
+            b.baseX+
+            Math.sin(
+                time*0.0007+
+                b.phase
+            )*9;
+
+        const localY=
+            b.baseY+
+            Math.cos(
+                time*0.0006+
+                b.phase2
+            )*8;
+
+
+        const rotatedX=
+            localX*cosR-
+            localY*sinR;
+
+        const rotatedY=
+            localX*sinR+
+            localY*cosR;
+
+
+        const worldX=
+            post.x+
+            centerX+
+            rotatedX;
+
+        const worldY=
+            post.y+
+            centerY+
+            rotatedY;
+
+
+        const x=
+            worldX-
+            camX+
+            W/2;
+
+        const y=
+            worldY-
+            camY+
+            H/2;
+
+
+        if(
+            x<-100 ||
+            x>W+100 ||
+            y<-100 ||
+            y>H+100
+        ){
+            continue;
+        }
+
+
+        /*
+           بال زدن خیلی آرام
+        */
+
+        const flap=
+            Math.sin(
+                time*0.006+
+                b.phase
+            );
+
+
+        const size=
+            b.size+
+            flap*1.2;
+
+
+        ctx.globalAlpha=.9;
+
+        ctx.fillStyle=b.color;
+
+        ctx.shadowColor=b.color;
+
+        ctx.shadowBlur=7;
+
+        ctx.font=
+            `${size}px Arial`;
+
+        ctx.fillText(
+            "🦋",
+            x,
+            y
+        );
+
+        ctx.shadowBlur=0;
     }
-  }
+
+    ctx.globalAlpha=1;
 }
 
-/* =========================
-   POSTS
-========================= */
+
+/* ==================================================
+   ماه
+================================================== */
 
 function drawPosts(){
 
-  for(const post of posts){
-
-    const x=post.x+cameraX;
-    const y=post.y+cameraY;
-
-    if(
-      x<-100 ||
-      x>W+100 ||
-      y<-100 ||
-      y>H+100
-    ) continue;
-
-    /*
-       پروانه‌ها اول رسم می‌شوند
-       و ماه بعد از آن‌ها می‌آید.
-       پس 🌛 همیشه واضح دیده می‌شود.
-    */
-
-    ctx.save();
-
-    ctx.font="40px Arial";
     ctx.textAlign="center";
     ctx.textBaseline="middle";
 
-    ctx.shadowBlur=18;
-    ctx.shadowColor="#b59cff";
+    for(const post of posts){
 
-    ctx.fillText("🌛",x,y);
+        const x=
+            post.x-
+            camX+
+            W/2;
 
-    ctx.restore();
-  }
+        const y=
+            post.y-
+            camY+
+            H/2;
+
+
+        if(
+            x<-80 ||
+            x>W+80 ||
+            y<-80 ||
+            y>H+80
+        ){
+            continue;
+        }
+
+
+        ctx.font="34px Arial";
+
+        ctx.shadowColor="#fff";
+        ctx.shadowBlur=9;
+
+        ctx.fillText(
+            "🌛",
+            x,
+            y
+        );
+
+        ctx.shadowBlur=0;
+    }
 }
 
-/* =========================
-   LIKE STARS
-========================= */
 
-const flyingStars=[];
+/* ==================================================
+   ستاره‌های لایک — دقیقاً 100 عدد
+================================================== */
 
-function createLikeStars(post){
+const likeStars=[];
 
-  const sx=post.x+cameraX;
-  const sy=post.y+cameraY;
+function createLikeStars(){
 
-  for(let i=0;i<100;i++){
+    if(!activePost) return;
 
-    const angle =
-      Math.random()*Math.PI*2;
+    const startX=
+        activePost.x-
+        camX+
+        W/2;
 
-    const speed =
-      1.5+Math.random()*3;
+    const startY=
+        activePost.y-
+        camY+
+        H/2;
 
-    flyingStars.push({
-      x:sx,
-      y:sy,
-      vx:Math.cos(angle)*speed,
-      vy:Math.sin(angle)*speed,
-      life:1,
-      size:10+Math.random()*8,
-      color:
-        starColors[
-          Math.floor(
-            Math.random()*starColors.length
-          )
-        ]
-    });
-  }
+
+    for(let i=0;i<100;i++){
+
+        const angle=
+            Math.random()*Math.PI*2;
+
+        const speed=
+            1.5+
+            Math.random()*4;
+
+
+        likeStars.push({
+
+            x:startX,
+            y:startY,
+
+            vx:
+                Math.cos(angle)*speed,
+
+            vy:
+                Math.sin(angle)*speed,
+
+            size:
+                13+
+                Math.random()*5,
+
+            color:
+                colors[
+                    Math.floor(
+                        Math.random()*colors.length
+                    )
+                ],
+
+            life:
+                100+
+                Math.random()*100
+        });
+    }
 }
+
 
 function drawLikeStars(){
 
-  for(let i=flyingStars.length-1;i>=0;i--){
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
 
-    const s=flyingStars[i];
+    for(
+        let i=likeStars.length-1;
+        i>=0;
+        i--
+    ){
 
-    s.x+=s.vx;
-    s.y+=s.vy;
+        const s=likeStars[i];
 
-    s.vx*=.985;
-    s.vy*=.985;
+        s.x+=s.vx;
+        s.y+=s.vy;
 
-    s.life-=.012;
+        s.vx*=.998;
+        s.vy*=.998;
 
-    if(s.life<=0){
-      flyingStars.splice(i,1);
-      continue;
+        s.life--;
+
+        if(s.life<=0){
+
+            likeStars.splice(i,1);
+
+            continue;
+        }
+
+
+        ctx.globalAlpha=
+            Math.min(1,s.life/35);
+
+        ctx.fillStyle=s.color;
+
+        ctx.shadowColor=s.color;
+        ctx.shadowBlur=5;
+
+        ctx.font=
+            `normal ${s.size}px Arial`;
+
+        ctx.fillText(
+            "☆",
+            s.x,
+            s.y
+        );
+
+        ctx.shadowBlur=0;
     }
 
-    ctx.save();
+    ctx.globalAlpha=1;
+}
 
-    ctx.globalAlpha=s.life;
 
-    ctx.fillStyle=s.color;
+/* ==================================================
+   پس‌زمینه
+================================================== */
 
-    ctx.shadowBlur=8;
-    ctx.shadowColor=s.color;
+function drawBackground(){
 
-    ctx.font=`${s.size}px Arial`;
+    ctx.fillStyle="#000";
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+}
+
+
+/* ==================================================
+   ستاره‌ها
+================================================== */
+
+function drawStars(time){
 
     ctx.textAlign="center";
     ctx.textBaseline="middle";
 
-    ctx.fillText(
-      "☆",
-      s.x,
-      s.y
-    );
+    for(const s of stars){
 
-    ctx.restore();
-  }
-}
+        s.x+=s.vx;
+        s.y+=s.vy;
 
-/* =========================
-   ANIMATION
-========================= */
 
-function animate(time){
+        if(s.x>WORLD/2)
+            s.x=-WORLD/2;
 
-  ctx.clearRect(
-    0,
-    0,
-    W,
-    H
-  );
+        if(s.x<-WORLD/2)
+            s.x=WORLD/2;
 
-  drawStars(time);
+        if(s.y>WORLD/2)
+            s.y=-WORLD/2;
 
-  drawButterflies(time);
+        if(s.y<-WORLD/2)
+            s.y=WORLD/2;
 
-  drawPosts();
 
-  drawLikeStars();
+        const x=
+            s.x-
+            camX+
+            W/2;
 
-  requestAnimationFrame(animate);
-}
+        const y=
+            s.y-
+            camY+
+            H/2;
 
-requestAnimationFrame(animate);
 
-/* =========================
-   POST CLICK
-========================= */
+        if(
+            x<-40 ||
+            x>W+40 ||
+            y<-40 ||
+            y>H+40
+        ){
+            continue;
+        }
 
-function findPostAt(x,y){
 
-  for(const post of posts){
+        const alpha=
+            .88+
+            Math.sin(
+                time*.002+
+                s.phase
+            )*.10;
 
-    const px=post.x+cameraX;
-    const py=post.y+cameraY;
 
-    const d=
-      Math.hypot(
-        x-px,
-        y-py
-      );
+        ctx.globalAlpha=alpha;
 
-    if(d<55){
-      return post;
+        ctx.fillStyle=s.color;
+
+        ctx.shadowColor=s.color;
+        ctx.shadowBlur=5;
+
+        ctx.font=
+            `normal ${s.size}px Arial`;
+
+        ctx.fillText(
+            "☆",
+            x,
+            y
+        );
+
+        ctx.shadowBlur=0;
     }
-  }
 
-  return null;
+    ctx.globalAlpha=1;
 }
 
-let moved=false;
 
-canvas.addEventListener("pointerdown",()=>{
-  moved=false;
-});
+/* ==================================================
+   پیدا کردن پست
+================================================== */
 
-canvas.addEventListener("pointermove",()=>{
-  moved=true;
-});
+let activePost=null;
 
-canvas.addEventListener("click",e=>{
+function findPost(x,y){
 
-  if(moved) return;
+    for(
+        let i=posts.length-1;
+        i>=0;
+        i--
+    ){
 
-  const post=
-    findPostAt(
-      e.clientX,
-      e.clientY
-    );
+        const post=posts[i];
 
-  if(post){
+        const px=
+            post.x-
+            camX+
+            W/2;
+
+        const py=
+            post.y-
+            camY+
+            H/2;
+
+
+        if(
+            Math.hypot(
+                x-px,
+                y-py
+            )<52
+        ){
+            return post;
+        }
+    }
+
+    return null;
+}
+
+
+/* ==================================================
+   لمس
+================================================== */
+
+let downX=0;
+let downY=0;
+
+canvas.addEventListener(
+    "pointerdown",
+    e=>{
+
+        downX=e.clientX;
+        downY=e.clientY;
+
+        dragging=true;
+
+        startX=e.clientX;
+        startY=e.clientY;
+
+        startCamX=camX;
+        startCamY=camY;
+
+        canvas.setPointerCapture(
+            e.pointerId
+        );
+    }
+);
+
+
+canvas.addEventListener(
+    "pointermove",
+    e=>{
+
+        if(!dragging) return;
+
+        const dx=
+            e.clientX-startX;
+
+        const dy=
+            e.clientY-startY;
+
+
+        targetX=
+            startCamX-
+            dx*1.5;
+
+        targetY=
+            startCamY-
+            dy*1.5;
+    }
+);
+
+
+canvas.addEventListener(
+    "pointerup",
+    e=>{
+
+        const distance=
+            Math.hypot(
+                e.clientX-downX,
+                e.clientY-downY
+            );
+
+
+        dragging=false;
+
+
+        if(distance<12){
+
+            const post=
+                findPost(
+                    e.clientX,
+                    e.clientY
+                );
+
+
+            if(post)
+                openPost(post);
+        }
+
+
+        try{
+            canvas.releasePointerCapture(
+                e.pointerId
+            );
+        }catch(err){}
+    }
+);
+
+
+/* ==================================================
+   باز کردن پست
+================================================== */
+
+function openPost(post){
 
     activePost=post;
 
     document.getElementById(
-      "postTitle"
+        "postTitle"
     ).textContent=post.title;
 
     document.getElementById(
-      "postText"
+        "postText"
     ).textContent=post.text;
 
-    document.getElementById(
-      "likeButton"
-    ).textContent=
-      likedPosts.has(post.id)
-      ?"♥"
-      :"♡";
+
+    const like=
+        document.getElementById(
+            "likeButton"
+        );
+
+
+    like.classList.remove("liked");
+    like.textContent="♡";
+
 
     document.getElementById(
-      "postWindow"
+        "postWindow"
     ).style.display="block";
-  }
-});
+}
 
-/* =========================
-   CLOSE
-========================= */
 
-document.getElementById(
-  "closePost"
-).onclick=()=>{
-
-  document.getElementById(
-    "postWindow"
-  ).style.display="none";
-};
-
-/* =========================
-   LIKE
-========================= */
+/* ==================================================
+   بستن
+================================================== */
 
 document.getElementById(
-  "likeButton"
-).onclick=()=>{
+    "closePost"
+).addEventListener(
+    "click",
+    ()=>{
 
-  if(!activePost) return;
+        document.getElementById(
+            "postWindow"
+        ).style.display="none";
 
-  if(likedPosts.has(activePost.id))
-    return;
+        activePost=null;
+    }
+);
 
-  likedPosts.add(activePost.id);
 
-  document.getElementById(
+/* ==================================================
+   لایک
+================================================== */
+
+document.getElementById(
     "likeButton"
-  ).textContent="♥";
+).addEventListener(
+    "click",
+    function(){
 
-  createLikeStars(activePost);
-};
+        if(!activePost) return;
+
+        this.classList.add("liked");
+
+        this.textContent="♥";
+
+        createLikeStars();
+    }
+);
+
+
+/* ==================================================
+   شروع
+================================================== */
+
+createButterflies();
+
+
+/* ==================================================
+   انیمیشن
+================================================== */
+
+function animate(time){
+
+    if(!dragging){
+
+        targetX+=.10;
+        targetY+=.04;
+    }
+
+
+    camX+=
+        (targetX-camX)*.06;
+
+    camY+=
+        (targetY-camY)*.06;
+
+
+    drawBackground();
+
+    drawStars(time);
+
+    drawButterflies(time);
+
+    drawPosts();
+
+    drawLikeStars();
+
+
+    requestAnimationFrame(
+        animate
+    );
+}
+
+
+requestAnimationFrame(animate);
+
 </script>
 
 </body>
