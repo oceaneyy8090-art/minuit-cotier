@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>مدیریت رسانه</title>
+
+<style>
+
+body{
+margin:0;
+font-family:tahoma;
+background:linear-gradient(135deg,#080820,#34205e);
+color:white;
+}
+
+.box{
+
+width:90%;
+max-width:500px;
+margin:25px auto;
+background:#ffffff15;
+padding:20px;
+border-radius:25px;
+
+}
+
+input,button{
+
+width:100%;
+padding:14px;
+margin-top:12px;
+border:0;
+border-radius:15px;
+
+}
+
+
+input{
+background:#ffffff20;
+color:white;
+}
+
+
+button{
+
+background:#8265ff;
+color:white;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h2>
+🎵 رسانه
+</h2>
+
+
+<input id="url"
+placeholder="لینک عکس / فیلم / موزیک">
+
+
+<button onclick="copyUrl()">
+
+ذخیره لینک
+
+</button>
+
+
+<p id="msg"></p>
+
+
+</div>
+
+
+
+<script>
+
+
+function copyUrl(){
+
+let u=
+document.getElementById("url").value;
+
+
+if(!u){
+
+msg.innerText="لینک خالی است";
+
+return;
+
+}
+
+
+msg.innerText=
+"آماده استفاده در پست 💫";
+
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
