@@ -6,115 +6,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>مدیریت پست‌ها</title>
+<title>💫 مدیریت پست‌ها</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
 body{
-
 margin:0;
 font-family:tahoma;
-
-background:
-linear-gradient(135deg,#080820,#34205e);
-
+background:linear-gradient(135deg,#080820,#34205e);
 color:white;
-
 }
-
 
 .box{
-
 width:90%;
 max-width:600px;
-
 margin:20px auto;
-
 background:#ffffff15;
-
 padding:20px;
-
 border-radius:25px;
-
 }
-
-
 
 input,textarea,button{
-
 width:100%;
-
 padding:13px;
-
 margin-top:10px;
-
 border:0;
-
 border-radius:15px;
-
 }
-
 
 input,textarea{
-
 background:#ffffff20;
-
 color:white;
-
 }
-
 
 button{
-
 background:#8265ff;
-
 color:white;
-
 }
-
 
 .card{
-
 background:#ffffff15;
-
 padding:15px;
-
 margin-top:20px;
-
 border-radius:20px;
-
 }
 
-
-
-.card img,
-.card video{
-
+.card img{
 width:100%;
-
 border-radius:15px;
-
 }
-
-
 
 .delete{
-
 background:#ff3d5a;
-
 }
-
-
-
-.edit{
-
-background:#00bfff;
-
-}
-
-
 
 </style>
 
@@ -126,43 +72,27 @@ background:#00bfff;
 
 <div class="box">
 
-
-<h2>
-💫 مدیریت پست‌ها
-</h2>
+<h2>💫 مدیریت پست‌ها</h2>
 
 
-<input id="title"
-placeholder="عنوان">
+<input id="title" placeholder="عنوان">
 
 
-<textarea id="content"
-placeholder="متن پست"></textarea>
+<textarea id="content" placeholder="متن پست"></textarea>
 
 
-<input id="image"
-placeholder="لینک عکس">
-
-
-<input id="video"
-placeholder="لینک فیلم">
-
+<input id="file" type="file" accept="image/*">
 
 
 <button onclick="savePost()">
-
-💫 انتشار
-
+انتشار 💫
 </button>
-
 
 
 <div id="posts"></div>
 
 
 </div>
-
-
 
 
 
@@ -185,7 +115,46 @@ SUPABASE_KEY
 
 
 
-let editId=null;
+async function uploadImage(file){
+
+if(!file) return "";
+
+
+const name =
+Date.now()+"-"+file.name;
+
+
+const {error}=
+
+await db.storage
+.from("Minuit cotier")
+.upload(
+name,
+file
+);
+
+
+if(error){
+
+alert(error.message);
+return "";
+
+}
+
+
+
+const {data}=
+
+db.storage
+.from("Minuit cotier")
+.getPublicUrl(name);
+
+
+
+return data.publicUrl;
+
+
+}
 
 
 
@@ -193,7 +162,27 @@ let editId=null;
 async function savePost(){
 
 
-let post={
+const file =
+document.getElementById("file").files[0];
+
+
+let image_url="";
+
+
+if(file){
+
+image_url =
+await uploadImage(file);
+
+}
+
+
+
+const {error}=
+
+await db
+.from("posts")
+.insert({
 
 title:
 title.value,
@@ -202,65 +191,34 @@ content:
 content.value,
 
 image_url:
-image.value,
+image_url
 
-video_url:
-video.value
-
-};
+});
 
 
 
-let result;
+if(error){
 
-
-
-if(editId){
-
-
-result =
-await db
-.from("posts")
-.update(post)
-.eq("id",editId);
-
-
-
-editId=null;
-
-
-}else{
-
-
-result =
-await db
-.from("posts")
-.insert(post);
-
-
-}
-
-
-
-if(result.error){
-
-alert(result.error.message);
-
+alert(error.message);
 return;
 
 }
 
 
-alert("ذخیره شد ✅");
+
+alert("پست اضافه شد ✅");
 
 
-clearForm();
+title.value="";
+content.value="";
+file.value="";
+content.value="";
+
 
 loadPosts();
 
 
 }
-
 
 
 
@@ -275,25 +233,16 @@ await db
 .select("*")
 .order(
 "created_at",
-{
-ascending:false
-}
+{ascending:false}
 );
 
 
 
-if(error){
-
-console.log(error);
-
-return;
-
-}
+if(error) return;
 
 
 
 let html="";
-
 
 
 data.forEach(p=>{
@@ -303,39 +252,14 @@ html+=`
 
 <div class="card">
 
+<h3>${p.title || ""}</h3>
 
-<h3>
-${p.title || "بدون عنوان"}
-</h3>
-
-
-<p>
-${p.content || ""}
-</p>
+<p>${p.content || ""}</p>
 
 
 ${p.image_url ?
 `<img src="${p.image_url}">`
 :""}
-
-
-
-${p.video_url ?
-`<video controls src="${p.video_url}"></video>`
-:""}
-
-
-
-<button class="edit"
-onclick="editPost('${p.id}',
-'${p.title}',
-'${p.content}',
-'${p.image_url}',
-'${p.video_url}')">
-
-ویرایش ✏️
-
-</button>
 
 
 
@@ -345,7 +269,6 @@ onclick="deletePost('${p.id}')">
 حذف 🗑️
 
 </button>
-
 
 
 </div>
@@ -362,37 +285,7 @@ posts.innerHTML=html;
 
 
 
-
-
-function editPost(
-id,t,c,i,v
-){
-
-editId=id;
-
-title.value=t;
-
-content.value=c;
-
-image.value=i;
-
-video.value=v;
-
-
-window.scrollTo(0,0);
-
-}
-
-
-
-
-
 async function deletePost(id){
-
-
-if(!confirm("حذف شود؟"))
-return;
-
 
 
 const {error}=
@@ -410,7 +303,6 @@ id
 if(error){
 
 alert(error.message);
-
 return;
 
 }
@@ -420,20 +312,6 @@ loadPosts();
 
 
 }
-
-
-
-
-
-function clearForm(){
-
-title.value="";
-content.value="";
-image.value="";
-video.value="";
-
-}
-
 
 
 
