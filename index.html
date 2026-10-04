@@ -23,6 +23,7 @@ canvas{
     background:#000;
 }
 
+/* پنجره پست */
 #postWindow{
     display:none;
     position:fixed;
@@ -52,6 +53,25 @@ canvas{
     color:#ddd;
     line-height:1.8;
     white-space:pre-wrap;
+}
+
+#postMedia img{
+    max-width:100%;
+    max-height:300px;
+    border-radius:16px;
+    margin-top:15px;
+}
+
+#postMedia video{
+    width:100%;
+    max-height:300px;
+    border-radius:16px;
+    margin-top:15px;
+}
+
+#postMedia audio{
+    width:100%;
+    margin-top:15px;
 }
 
 #closePost{
@@ -90,13 +110,35 @@ canvas{
 <canvas id="sky"></canvas>
 
 <div id="postWindow">
+
     <button id="closePost">×</button>
+
     <h2 id="postTitle"></h2>
+
     <div id="postText"></div>
+
+    <div id="postMedia"></div>
+
     <button id="likeButton">♡</button>
+
 </div>
 
 <script>
+
+/* ==================================================
+   Supabase
+================================================== */
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+
+/* ==================================================
+   Canvas
+================================================== */
 
 const canvas=document.getElementById("sky");
 const ctx=canvas.getContext("2d");
@@ -105,6 +147,7 @@ let W=innerWidth;
 let H=innerHeight;
 
 function resize(){
+
     W=innerWidth;
     H=innerHeight;
 
@@ -123,9 +166,9 @@ addEventListener("resize",resize);
 resize();
 
 
-/* =========================
+/* ==================================================
    دوربین
-========================= */
+================================================== */
 
 let camX=0;
 let camY=0;
@@ -142,9 +185,9 @@ let startCamX=0;
 let startCamY=0;
 
 
-/* =========================
+/* ==================================================
    رنگ‌ها
-========================= */
+================================================== */
 
 const colors=[
     "#ffffff",
@@ -162,9 +205,9 @@ const colors=[
 ];
 
 
-/* =========================
+/* ==================================================
    آسمان
-========================= */
+================================================== */
 
 const WORLD=24000;
 const stars=[];
@@ -172,8 +215,10 @@ const stars=[];
 for(let i=0;i<3000;i++){
 
     stars.push({
+
         x:(Math.random()-.5)*WORLD,
         y:(Math.random()-.5)*WORLD,
+
         size:13+Math.random()*4,
 
         color:
@@ -192,23 +237,144 @@ for(let i=0;i<3000;i++){
 }
 
 
-/* =========================
+/* ==================================================
    پست‌ها
-========================= */
+================================================== */
 
-const posts=[
+let posts=[];
 
-    {
-        id:1,
-        x:0,
-        y:0,
-        title:"پست اول 🌛",
-        text:
-            "به Minuit côtier خوش اومدی ✨\n\n"+
-            "این اولین پست آزمایشی کاناله."
+
+/* ==================================================
+   جای پست‌ها
+   هر پست یک جای ثابت در آسمان دارد
+================================================== */
+
+function getPostPosition(id,index){
+
+    const n=Number(id)||index+1;
+
+    const angle=
+        n*2.399963229728653;
+
+    const radius=
+        500+
+        Math.sqrt(index)*650;
+
+    return {
+
+        x:
+            Math.cos(angle)*radius,
+
+        y:
+            Math.sin(angle)*radius
+
+    };
+}
+
+
+/* ==================================================
+   گرفتن پست‌ها از Supabase
+================================================== */
+
+async function loadPosts(){
+
+    try{
+
+        const response=await fetch(
+            SUPABASE_URL+
+            "/rest/v1/posts?select=*&order=created_at.asc",
+            {
+                method:"GET",
+
+                headers:{
+                    "apikey":SUPABASE_KEY,
+                    "Authorization":
+                        "Bearer "+SUPABASE_KEY
+                }
+            }
+        );
+
+
+        if(!response.ok){
+
+            const errorText=
+                await response.text();
+
+            console.error(
+                "Supabase error:",
+                errorText
+            );
+
+            return;
+        }
+
+
+        const data=
+            await response.json();
+
+
+        posts=data.map(
+            (item,index)=>{
+
+                const position=
+                    getPostPosition(
+                        item.id,
+                        index
+                    );
+
+
+                return {
+
+                    id:item.id,
+
+                    x:position.x,
+
+                    y:position.y,
+
+                    title:
+                        item.title ||
+                        item.Title ||
+                        "بدون عنوان 🌛",
+
+                    text:
+                        item.content ||
+                        "",
+
+                    image_url:
+                        item.image_url ||
+                        "",
+
+                    video_url:
+                        item.video_url ||
+                        "",
+
+                    music_url:
+                        item.music_url ||
+                        "",
+
+                    created_at:
+                        item.created_at || ""
+                };
+            }
+        );
+
+
+        createButterflies();
+
+
+        console.log(
+            "Posts loaded:",
+            posts
+        );
+
+    }catch(error){
+
+        console.error(
+            "خطا در دریافت پست‌ها:",
+            error
+        );
     }
-
-];
+}
 
 
 /* ==================================================
@@ -238,6 +404,7 @@ function createButterflies(){
 
         ];
 
+
         for(let i=0;i<formation.length;i++){
 
             butterflies.push({
@@ -254,10 +421,6 @@ function createButterflies(){
 
                 phase2:
                     Math.random()*Math.PI*2,
-
-                /*
-                   حرکت خیلی آرام
-                */
 
                 speed:
                     0.000025+
@@ -283,7 +446,7 @@ function createButterflies(){
 
 
 /* ==================================================
-   پروانه‌ها
+   رسم پروانه‌ها
 ================================================== */
 
 function drawButterflies(time){
@@ -300,25 +463,13 @@ function drawButterflies(time){
         if(!post) continue;
 
 
-        /*
-           چرخش بسیار آهسته
-        */
-
         const orbit=
             time*b.speed+
             b.phase;
 
 
-        /*
-           فاصله از ماه
-        */
-
         const radius=115;
 
-
-        /*
-           مرکز دسته
-        */
 
         let centerX=
             Math.cos(orbit)*radius;
@@ -327,15 +478,12 @@ function drawButterflies(time){
             Math.sin(orbit)*radius;
 
 
-        /*
-           حرکت طبیعی خیلی کم
-        */
-
         centerX+=
             Math.sin(
                 time*0.00045+
                 b.phase2
             )*15;
+
 
         centerY+=
             Math.cos(
@@ -343,10 +491,6 @@ function drawButterflies(time){
                 b.phase
             )*15;
 
-
-        /*
-           چرخش خیلی کم فرم
-        */
 
         const rotation=
             Math.sin(
@@ -359,16 +503,13 @@ function drawButterflies(time){
         const sinR=Math.sin(rotation);
 
 
-        /*
-           حرکت مستقل بسیار نرم
-        */
-
         const localX=
             b.baseX+
             Math.sin(
                 time*0.0007+
                 b.phase
             )*9;
+
 
         const localY=
             b.baseY+
@@ -419,10 +560,6 @@ function drawButterflies(time){
         }
 
 
-        /*
-           بال زدن خیلی آرام
-        */
-
         const flap=
             Math.sin(
                 time*0.006+
@@ -460,7 +597,7 @@ function drawButterflies(time){
 
 
 /* ==================================================
-   ماه
+   ماه‌های پست
 ================================================== */
 
 function drawPosts(){
@@ -494,6 +631,7 @@ function drawPosts(){
         ctx.font="34px Arial";
 
         ctx.shadowColor="#fff";
+
         ctx.shadowBlur=9;
 
         ctx.fillText(
@@ -513,14 +651,17 @@ function drawPosts(){
 
 const likeStars=[];
 
+
 function createLikeStars(){
 
     if(!activePost) return;
+
 
     const startX=
         activePost.x-
         camX+
         W/2;
+
 
     const startY=
         activePost.y-
@@ -532,6 +673,7 @@ function createLikeStars(){
 
         const angle=
             Math.random()*Math.PI*2;
+
 
         const speed=
             1.5+
@@ -573,6 +715,7 @@ function drawLikeStars(){
     ctx.textAlign="center";
     ctx.textBaseline="middle";
 
+
     for(
         let i=likeStars.length-1;
         i>=0;
@@ -589,6 +732,7 @@ function drawLikeStars(){
 
         s.life--;
 
+
         if(s.life<=0){
 
             likeStars.splice(i,1);
@@ -603,10 +747,12 @@ function drawLikeStars(){
         ctx.fillStyle=s.color;
 
         ctx.shadowColor=s.color;
+
         ctx.shadowBlur=5;
 
         ctx.font=
             `normal ${s.size}px Arial`;
+
 
         ctx.fillText(
             "☆",
@@ -614,8 +760,10 @@ function drawLikeStars(){
             s.y
         );
 
+
         ctx.shadowBlur=0;
     }
+
 
     ctx.globalAlpha=1;
 }
@@ -647,6 +795,7 @@ function drawStars(time){
     ctx.textAlign="center";
     ctx.textBaseline="middle";
 
+
     for(const s of stars){
 
         s.x+=s.vx;
@@ -670,6 +819,7 @@ function drawStars(time){
             s.x-
             camX+
             W/2;
+
 
         const y=
             s.y-
@@ -700,10 +850,12 @@ function drawStars(time){
         ctx.fillStyle=s.color;
 
         ctx.shadowColor=s.color;
+
         ctx.shadowBlur=5;
 
         ctx.font=
             `normal ${s.size}px Arial`;
+
 
         ctx.fillText(
             "☆",
@@ -711,8 +863,10 @@ function drawStars(time){
             y
         );
 
+
         ctx.shadowBlur=0;
     }
+
 
     ctx.globalAlpha=1;
 }
@@ -724,6 +878,7 @@ function drawStars(time){
 
 let activePost=null;
 
+
 function findPost(x,y){
 
     for(
@@ -734,10 +889,12 @@ function findPost(x,y){
 
         const post=posts[i];
 
+
         const px=
             post.x-
             camX+
             W/2;
+
 
         const py=
             post.y-
@@ -755,6 +912,7 @@ function findPost(x,y){
         }
     }
 
+
     return null;
 }
 
@@ -765,6 +923,7 @@ function findPost(x,y){
 
 let downX=0;
 let downY=0;
+
 
 canvas.addEventListener(
     "pointerdown",
@@ -781,6 +940,7 @@ canvas.addEventListener(
         startCamX=camX;
         startCamY=camY;
 
+
         canvas.setPointerCapture(
             e.pointerId
         );
@@ -794,8 +954,10 @@ canvas.addEventListener(
 
         if(!dragging) return;
 
+
         const dx=
             e.clientX-startX;
+
 
         const dy=
             e.clientY-startY;
@@ -804,6 +966,7 @@ canvas.addEventListener(
         targetX=
             startCamX-
             dx*1.5;
+
 
         targetY=
             startCamY-
@@ -841,9 +1004,11 @@ canvas.addEventListener(
 
 
         try{
+
             canvas.releasePointerCapture(
                 e.pointerId
             );
+
         }catch(err){}
     }
 );
@@ -857,13 +1022,73 @@ function openPost(post){
 
     activePost=post;
 
+
     document.getElementById(
         "postTitle"
-    ).textContent=post.title;
+    ).textContent=
+        post.title;
+
 
     document.getElementById(
         "postText"
-    ).textContent=post.text;
+    ).textContent=
+        post.text;
+
+
+    const media=
+        document.getElementById(
+            "postMedia"
+        );
+
+
+    media.innerHTML="";
+
+
+    /* عکس */
+
+    if(post.image_url){
+
+        const img=
+            document.createElement("img");
+
+        img.src=post.image_url;
+
+        img.alt="تصویر پست";
+
+        media.appendChild(img);
+    }
+
+
+    /* ویدیو */
+
+    if(post.video_url){
+
+        const video=
+            document.createElement("video");
+
+        video.src=post.video_url;
+
+        video.controls=true;
+
+        video.playsInline=true;
+
+        media.appendChild(video);
+    }
+
+
+    /* موسیقی */
+
+    if(post.music_url){
+
+        const audio=
+            document.createElement("audio");
+
+        audio.src=post.music_url;
+
+        audio.controls=true;
+
+        media.appendChild(audio);
+    }
 
 
     const like=
@@ -873,6 +1098,7 @@ function openPost(post){
 
 
     like.classList.remove("liked");
+
     like.textContent="♡";
 
 
@@ -883,7 +1109,7 @@ function openPost(post){
 
 
 /* ==================================================
-   بستن
+   بستن پست
 ================================================== */
 
 document.getElementById(
@@ -913,9 +1139,11 @@ document.getElementById(
 
         if(!activePost) return;
 
+
         this.classList.add("liked");
 
         this.textContent="♥";
+
 
         createLikeStars();
     }
@@ -926,7 +1154,7 @@ document.getElementById(
    شروع
 ================================================== */
 
-createButterflies();
+loadPosts();
 
 
 /* ==================================================
@@ -938,12 +1166,14 @@ function animate(time){
     if(!dragging){
 
         targetX+=.10;
+
         targetY+=.04;
     }
 
 
     camX+=
         (targetX-camX)*.06;
+
 
     camY+=
         (targetY-camY)*.06;
@@ -966,7 +1196,9 @@ function animate(time){
 }
 
 
-requestAnimationFrame(animate);
+requestAnimationFrame(
+    animate
+);
 
 </script>
 
