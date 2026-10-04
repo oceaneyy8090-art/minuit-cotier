@@ -2,183 +2,161 @@
 <html lang="fa" dir="rtl">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>تنظیمات | Minuit côtier</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>تنظیمات کانال</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
-*{
-box-sizing:border-box;
-}
-
 body{
+
 margin:0;
-min-height:100vh;
-font-family:Tahoma;
-color:white;
+font-family:tahoma;
+
 background:
-radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
-linear-gradient(135deg,#050716,#17104a);
-overflow-x:hidden;
-}
+linear-gradient(135deg,#080820,#34205e);
 
-#stars{
-position:fixed;
-inset:0;
-pointer-events:none;
-}
-
-.star{
-position:absolute;
 color:white;
-font-size:8px;
-animation:fall linear infinite;
-opacity:.7;
+
 }
 
-@keyframes fall{
-from{
-transform:translateY(-20px);
-}
-to{
-transform:translateY(110vh);
-}
-}
 
-.container{
+.box{
+
 width:90%;
-max-width:600px;
-margin:auto;
-padding:30px 0;
-position:relative;
-z-index:2;
-}
+max-width:500px;
 
-.card{
-background:#ffffff12;
-border-radius:22px;
+margin:25px auto;
+
+background:#ffffff15;
+
 padding:20px;
-backdrop-filter:blur(10px);
+
+border-radius:25px;
+
 }
 
-h1,h2{
-text-align:center;
-}
 
-input,
-textarea,
-button{
+
+input,textarea,button{
+
 width:100%;
+
 padding:14px;
+
 margin-top:12px;
-border-radius:15px;
+
 border:0;
+
+border-radius:15px;
+
 }
 
-input,
-textarea{
-background:#ffffff18;
+
+
+input,textarea{
+
+background:#ffffff20;
+
 color:white;
+
 }
 
-input::placeholder,
-textarea::placeholder{
-color:#ddd;
-}
-
-textarea{
-height:120px;
-resize:none;
-}
 
 button{
-background:#7650ff;
+
+background:#8265ff;
+
 color:white;
-font-weight:bold;
-font-size:16px;
-cursor:pointer;
+
 }
 
-button:active{
-transform:scale(.98);
-}
 
-#preview{
+
+img{
+
 width:120px;
-height:120px;
-border-radius:50%;
-object-fit:cover;
-display:block;
-margin:15px auto;
-border:3px solid #ffffff55;
-background:#ffffff12;
-}
 
-#msg{
-text-align:center;
-min-height:25px;
-margin-top:15px;
+height:120px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+display:block;
+
+margin:auto;
+
+box-shadow:0 0 30px #70ddff;
+
 }
 
 </style>
+
 </head>
 
 
 <body>
 
-<div id="stars"></div>
 
-<div class="container">
+<div class="box">
 
-<div class="card">
 
-<h1>☆ Minuit côtier ☆</h1>
+<h2>
+⚙️ تنظیمات کانال
+</h2>
 
-<h2>⚙️ تنظیمات</h2>
 
-<img id="preview" alt="پروفایل">
+<img id="preview">
 
-<input
-type="file"
-id="imageFile"
-accept="image/*"
->
 
-<input
-id="name"
-placeholder="نام سایت"
->
 
-<textarea
-id="bio"
-placeholder="بیو سایت"
-></textarea>
+<input id="name"
+placeholder="نام کانال">
+
+
+
+<input id="image"
+placeholder="لینک عکس پروفایل">
+
+
+
+<textarea id="bio"
+placeholder="بیو کانال"></textarea>
+
+
 
 <button onclick="saveSettings()">
-💾 ذخیره تنظیمات
+
+ذخیره تغییرات 💾
+
 </button>
+
+
 
 <p id="msg"></p>
 
+
 </div>
-</div>
+
+
+
 
 
 <script>
 
-/* =========================
-   SUPABASE
-========================= */
 
 const SUPABASE_URL =
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
+
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
 
 const db =
 supabase.createClient(
@@ -187,362 +165,152 @@ SUPABASE_KEY
 );
 
 
-/* =========================
-   STARS
-========================= */
-
-const starBox =
-document.getElementById("stars");
-
-for(let i=0;i<80;i++){
-
-let s=document.createElement("span");
-
-s.className="star";
-
-s.innerText="☆";
-
-s.style.left =
-Math.random()*100+"%";
-
-s.style.animationDuration =
-(Math.random()*8+7)+"s";
-
-s.style.animationDelay =
-Math.random()*5+"s";
-
-starBox.appendChild(s);
-
-}
 
 
-/* =========================
-   VARIABLES
-========================= */
-
-let currentSettings = null;
-
-let imageUrl = "";
-
-
-/* =========================
-   PREVIEW NEW IMAGE
-========================= */
-
-document
-.getElementById("imageFile")
-.addEventListener("change",e=>{
-
-const file =
-e.target.files[0];
-
-if(file){
-
-document.getElementById("preview").src =
-URL.createObjectURL(file);
-
-}
-
-});
-
-
-/* =========================
-   LOAD OLD SETTINGS
-========================= */
 
 async function loadSettings(){
 
-const msg =
-document.getElementById("msg");
 
-msg.innerText =
-"در حال دریافت تنظیمات...";
+const {data,error}=
 
-
-const {data,error} =
 await db
 .from("site_settings")
 .select("*")
-.order("created_at",{ascending:false})
-.limit(1)
-.maybeSingle();
+.limit(1);
+
 
 
 if(error){
 
 console.log(error);
 
-msg.innerText =
-"خطا در دریافت تنظیمات";
-
 return;
 
 }
 
 
-/* اگر تنظیمات قبلی وجود داشت */
 
-if(data){
-
-currentSettings = data;
-
-document.getElementById("name").value =
-data.site_name || "";
-
-document.getElementById("bio").value =
-data.bio || "";
-
-imageUrl =
-data.image_url || "";
+if(!data[0])
+return;
 
 
-/* نمایش عکس قبلی */
 
-if(data.image_url){
+let s=data[0];
 
-document.getElementById("preview").src =
-data.image_url;
 
-}
+name.value =
+s.site_name || "";
 
-msg.innerText =
-"تنظیمات قبلی بارگذاری شد ✅";
 
-}else{
+image.value =
+s.image_url || "";
 
-currentSettings = null;
 
-msg.innerText =
-"هنوز تنظیماتی ذخیره نشده";
+bio.value =
+s.bio || "";
 
-}
+
+preview.src =
+s.image_url || "";
 
 }
 
 
-/* =========================
-   UPLOAD IMAGE
-========================= */
 
-async function uploadImage(){
+image.oninput=()=>{
 
-const file =
-document
-.getElementById("imageFile")
-.files[0];
+preview.src=image.value;
+
+};
 
 
-/* اگر عکس جدید انتخاب نشده */
-
-if(!file){
-
-return imageUrl || "";
-
-}
 
 
-/* اسم یکتا */
-
-const fileName =
-"profile-"+Date.now()+"-"+file.name;
-
-
-/* آپلود */
-
-const {error} =
-await db.storage
-.from("Minuit cotier")
-.upload(
-fileName,
-file,
-{
-upsert:false
-}
-);
-
-
-if(error){
-
-throw new Error(
-"خطا در آپلود عکس: "+error.message
-);
-
-}
-
-
-/* گرفتن لینک عمومی */
-
-const {data} =
-db.storage
-.from("Minuit cotier")
-.getPublicUrl(fileName);
-
-
-return data.publicUrl;
-
-}
-
-
-/* =========================
-   SAVE SETTINGS
-========================= */
 
 async function saveSettings(){
 
-const msg =
-document.getElementById("msg");
-
-msg.innerText =
-"در حال ذخیره...";
 
 
-try{
+const newData={
 
-const name =
-document
-.getElementById("name")
-.value
-.trim();
+site_name:
+name.value,
 
-const bio =
-document
-.getElementById("bio")
-.value
-.trim();
+image_url:
+image.value,
 
+bio:
+bio.value
 
-/* عکس جدید یا عکس قبلی */
-
-const newImageUrl =
-await uploadImage();
+};
 
 
-/* =========================
-   اگر قبلاً تنظیمات داشت
-   UPDATE
-========================= */
 
-if(currentSettings){
+const {data}=
 
-const {error} =
 await db
 .from("site_settings")
-.update({
+.select("id")
+.limit(1);
 
-site_name:name,
 
-bio:bio,
 
-image_url:newImageUrl
+let result;
 
-})
+
+
+if(data && data[0]){
+
+
+result=
+await db
+.from("site_settings")
+.update(newData)
 .eq(
 "id",
-currentSettings.id
+data[0].id
 );
 
-
-if(error){
-
-throw new Error(
-error.message
-);
-
-}
-
-
-/* اطلاعات جدید */
-
-currentSettings.site_name =
-name;
-
-currentSettings.bio =
-bio;
-
-currentSettings.image_url =
-newImageUrl;
-
-imageUrl =
-newImageUrl;
 
 
 }else{
 
 
-/* =========================
-   اولین بار
-   INSERT
-========================= */
-
-const {data,error} =
+result=
 await db
 .from("site_settings")
-.insert({
-
-site_name:name,
-
-bio:bio,
-
-image_url:newImageUrl
-
-})
-.select()
-.single();
+.insert(newData);
 
 
-if(error){
-
-throw new Error(
-error.message
-);
 
 }
 
 
-currentSettings =
-data;
 
-imageUrl =
-newImageUrl;
+if(result.error){
 
-}
+msg.innerText=
+"خطا ❌";
+
+}else{
 
 
-/* =========================
-   نمایش نتیجه
-========================= */
-
-if(newImageUrl){
-
-document.getElementById("preview").src =
-newImageUrl;
+msg.innerText=
+"ذخیره شد ✅";
 
 }
 
 
-msg.innerText =
-"ذخیره شد ✅❤️";
-
-
-}catch(error){
-
-console.error(error);
-
-msg.innerText =
-"خطا: "+error.message;
-
-}
-
 }
 
 
-/* =========================
-   START
-========================= */
 
 loadSettings();
 
+
 </script>
 
+
 </body>
+
 </html>
