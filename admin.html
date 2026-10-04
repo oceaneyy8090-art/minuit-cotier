@@ -2,10 +2,15 @@
 <html lang="fa" dir="rtl">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>مدیریت | Minuit côtier</title>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0"
+>
+
+<title>پنل مدیریت | Minuit côtier</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -16,67 +21,273 @@ box-sizing:border-box;
 }
 
 body{
+
 margin:0;
+
 min-height:100vh;
-font-family:Tahoma,Arial,sans-serif;
+
+font-family:
+Tahoma,
+Arial,
+sans-serif;
+
 color:white;
 
 background:
-radial-gradient(circle at 20% 20%,#30206b,transparent 35%),
-radial-gradient(circle at 80% 70%,#35105e,transparent 35%),
-linear-gradient(135deg,#050716,#17104a);
 
-padding:20px;
+radial-gradient(
+circle at 15% 20%,
+#392878,
+transparent 35%
+),
+
+radial-gradient(
+circle at 85% 70%,
+#3a145f,
+transparent 35%
+),
+
+linear-gradient(
+135deg,
+#040511,
+#17104a,
+#24145c
+);
+
+padding:18px;
+
 }
 
 .container{
+
 width:100%;
-max-width:800px;
+
+max-width:900px;
+
 margin:auto;
+
 }
 
-h1{
+
+/* HEADER */
+
+.header{
+
+background:#ffffff10;
+
+border:1px solid #ffffff18;
+
+border-radius:25px;
+
+padding:20px;
+
+backdrop-filter:blur(15px);
+
+box-shadow:
+0 15px 50px #0005;
+
+margin-bottom:15px;
+
+}
+
+.logo{
+
 text-align:center;
-margin:10px 0 25px;
-}
 
-.top{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-}
+font-size:25px;
 
-.top button{
-flex:1;
-padding:14px;
-border:0;
-border-radius:15px;
-background:#7650ff;
-color:white;
 font-weight:bold;
-font-size:15px;
+
+margin-bottom:18px;
+
 }
+
+.headerButtons{
+
+display:grid;
+
+grid-template-columns:
+repeat(2,1fr);
+
+gap:10px;
+
+}
+
+.headerButtons button{
+
+border:0;
+
+border-radius:15px;
+
+padding:13px;
+
+font-size:14px;
+
+font-weight:bold;
+
+color:white;
+
+background:#7650ff;
+
+}
+
+.headerButtons button:active{
+
+transform:scale(.97);
+
+}
+
+
+/* STATS */
+
+.stats{
+
+display:grid;
+
+grid-template-columns:
+repeat(2,1fr);
+
+gap:12px;
+
+margin-bottom:15px;
+
+}
+
+.stat{
+
+background:#ffffff10;
+
+border:1px solid #ffffff15;
+
+border-radius:20px;
+
+padding:18px;
+
+text-align:center;
+
+backdrop-filter:blur(12px);
+
+}
+
+.statNumber{
+
+font-size:28px;
+
+font-weight:bold;
+
+margin-bottom:5px;
+
+}
+
+.statText{
+
+color:#bbb;
+
+font-size:13px;
+
+}
+
+
+/* SEARCH */
+
+.searchBox{
+
+background:#ffffff10;
+
+border:1px solid #ffffff15;
+
+border-radius:20px;
+
+padding:15px;
+
+margin-bottom:18px;
+
+}
+
+.searchBox input{
+
+width:100%;
+
+padding:14px;
+
+border:0;
+
+outline:none;
+
+border-radius:14px;
+
+background:#ffffff12;
+
+color:white;
+
+font-size:15px;
+
+}
+
+.searchBox input::placeholder{
+
+color:#aaa;
+
+}
+
+
+/* POSTS */
 
 .posts{
+
 display:flex;
+
 flex-direction:column;
+
 gap:18px;
+
 }
 
 .post{
 
-background:#ffffff12;
+background:#ffffff10;
 
-border:1px solid #ffffff18;
+border:
+1px solid #ffffff18;
 
-border-radius:22px;
+border-radius:23px;
 
 padding:18px;
 
-backdrop-filter:blur(12px);
+backdrop-filter:blur(14px);
 
 box-shadow:
-0 10px 40px #0005;
+0 10px 35px #0004;
+
+}
+
+.postHeader{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+gap:10px;
+
+margin-bottom:10px;
+
+}
+
+.postNumber{
+
+font-size:13px;
+
+color:#cfc5ff;
+
+}
+
+.postDate{
+
+font-size:11px;
+
+color:#888;
 
 }
 
@@ -106,17 +317,17 @@ display:block;
 
 width:100%;
 
-max-height:350px;
+max-height:400px;
 
 object-fit:cover;
 
-border-radius:17px;
+border-radius:18px;
 
 margin-top:14px;
 
 }
 
-video{
+.post video{
 
 display:block;
 
@@ -126,13 +337,13 @@ max-height:400px;
 
 margin-top:14px;
 
-border-radius:17px;
+border-radius:18px;
 
 background:#000;
 
 }
 
-audio{
+.post audio{
 
 width:100%;
 
@@ -144,21 +355,14 @@ margin-top:14px;
 
 margin-top:12px;
 
-font-size:13px;
-
 color:#cfc5ff;
 
-}
-
-.date{
-
-margin-top:12px;
-
-font-size:12px;
-
-color:#aaa;
+font-size:13px;
 
 }
+
+
+/* DELETE */
 
 .delete{
 
@@ -172,7 +376,7 @@ border:0;
 
 border-radius:15px;
 
-background:#d9365b;
+background:#c9365b;
 
 color:white;
 
@@ -188,16 +392,10 @@ transform:scale(.97);
 
 }
 
-.loading{
 
-text-align:center;
+/* EMPTY */
 
-padding:40px;
-
-color:#ccc;
-
-}
-
+.loading,
 .empty{
 
 text-align:center;
@@ -206,15 +404,16 @@ padding:40px;
 
 background:#ffffff0d;
 
-border-radius:20px;
+border-radius:22px;
 
 color:#bbb;
 
 }
 
-.error{
 
-text-align:center;
+/* ERROR */
+
+.error{
 
 padding:25px;
 
@@ -226,6 +425,33 @@ color:#ffb0b0;
 
 line-height:2;
 
+text-align:center;
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+.headerButtons{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+.stats{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+.logo{
+
+font-size:21px;
+
+}
+
 }
 
 </style>
@@ -235,93 +461,289 @@ line-height:2;
 
 <body>
 
+
 <div class="container">
 
-<h1>☆ مدیریت پست‌ها ☆</h1>
+
+<!-- HEADER -->
+
+<div class="header">
 
 
-<div class="top">
+<div class="logo">
+
+☆ Minuit côtier ☆
+
+<br>
+
+<span style="
+font-size:14px;
+color:#aaa;
+">
+
+پنل مدیریت
+
+</span>
+
+</div>
+
+
+<div class="headerButtons">
+
+
+<button onclick="goHome()">
+
+🏠 سایت
+
+</button>
+
+
+<button onclick="goSettings()">
+
+⚙️ تنظیمات
+
+</button>
+
+
+<button onclick="goPublish()">
+
+➕ پست جدید
+
+</button>
+
 
 <button onclick="loadPosts()">
+
 🔄 بروزرسانی
+
 </button>
 
-<button onclick="location.href='publish.html'">
-➕ پست جدید
-</button>
 
 </div>
 
 
-<div id="posts" class="posts">
+</div>
+
+
+
+<!-- STATS -->
+
+<div class="stats">
+
+
+<div class="stat">
+
+<div
+id="postCount"
+class="statNumber"
+>
+
+0
+
+</div>
+
+<div class="statText">
+
+📚 تعداد پست‌ها
+
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div
+id="mediaCount"
+class="statNumber"
+>
+
+0
+
+</div>
+
+<div class="statText">
+
+🎨 فایل‌های رسانه‌ای
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- SEARCH -->
+
+<div class="searchBox">
+
+<input
+
+id="search"
+
+placeholder="🔎 جست‌وجوی پست..."
+
+oninput="searchPosts()"
+
+>
+
+</div>
+
+
+
+<!-- POSTS -->
+
+<div
+id="posts"
+class="posts"
+>
 
 <div class="loading">
+
 در حال دریافت پست‌ها... ⏳
-</div>
 
 </div>
 
 </div>
+
+
+</div>
+
 
 
 <script>
 
+
 /* =========================
-   SUPABASE
+SUPABASE
 ========================= */
 
+
 const SUPABASE_URL =
+
 "https://oyowhuyzgjvpoeupoegh.supabase.co";
 
 
 const SUPABASE_KEY =
+
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
 
 const db =
+
 supabase.createClient(
+
 SUPABASE_URL,
+
 SUPABASE_KEY
+
 );
+
 
 
 /* =========================
-   دریافت پست‌ها
+VARIABLES
 ========================= */
+
+
+let allPosts=[];
+
+
+
+/* =========================
+NAVIGATION
+========================= */
+
+
+function goHome(){
+
+location.href="index.html";
+
+}
+
+
+function goSettings(){
+
+location.href="settings.html";
+
+}
+
+
+function goPublish(){
+
+location.href="publish.html";
+
+}
+
+
+
+/* =========================
+LOAD POSTS
+========================= */
+
 
 async function loadPosts(){
 
-const box =
+
+const box=
+
 document.getElementById("posts");
 
 
-box.innerHTML =
+box.innerHTML=
+
 `
+
 <div class="loading">
+
 در حال دریافت پست‌ها... ⏳
+
 </div>
+
 `;
 
 
-const {data,error} =
+const {data,error}=
+
 await db
+
 .from("posts")
+
 .select("*")
+
 .order(
+
 "created_at",
-{ascending:false}
+
+{
+
+ascending:false
+
+}
+
 );
+
 
 
 if(error){
 
-box.innerHTML =
+
+box.innerHTML=
+
 `
+
 <div class="error">
+
 ❌ خطا در دریافت پست‌ها
+
 <br>
+
 ${escapeHtml(error.message)}
+
 </div>
+
 `;
 
 return;
@@ -329,13 +751,91 @@ return;
 }
 
 
-if(!data || data.length===0){
 
-box.innerHTML =
+allPosts=data || [];
+
+
+updateStats();
+
+
+renderPosts(allPosts);
+
+
+}
+
+
+
+/* =========================
+STATS
+========================= */
+
+
+function updateStats(){
+
+
+document
+
+.getElementById("postCount")
+
+.innerText=
+
+allPosts.length;
+
+
+let media=0;
+
+
+allPosts.forEach(post=>{
+
+if(post.image_url)
+media++;
+
+if(post.video_url)
+media++;
+
+if(post.audio_url)
+media++;
+
+});
+
+
+document
+
+.getElementById("mediaCount")
+
+.innerText=
+
+media;
+
+}
+
+
+
+/* =========================
+RENDER
+========================= */
+
+
+function renderPosts(posts){
+
+
+const box=
+
+document.getElementById("posts");
+
+
+if(!posts.length){
+
+box.innerHTML=
+
 `
+
 <div class="empty">
-هنوز هیچ پستی نداری 🌙
+
+چیزی پیدا نشد 🌙
+
 </div>
+
 `;
 
 return;
@@ -346,210 +846,406 @@ return;
 box.innerHTML="";
 
 
-data.forEach(post=>{
+posts.forEach(
 
-const div =
+(post,index)=>{
+
+
+const div=
+
 document.createElement("div");
+
 
 div.className="post";
 
 
-/* عنوان */
+
+/* HEADER */
+
+
+const postHeader=
+
+document.createElement("div");
+
+
+postHeader.className=
+
+"postHeader";
+
+
+const number=
+
+document.createElement("div");
+
+
+number.className=
+
+"postNumber";
+
+
+number.innerText=
+
+"پست شماره "+
+
+(index+1);
+
+
+const date=
+
+document.createElement("div");
+
+
+date.className=
+
+"postDate";
+
+
+if(post.created_at){
+
+date.innerText=
+
+new Date(
+
+post.created_at
+
+).toLocaleString(
+
+"fa-IR"
+
+);
+
+}
+
+
+postHeader.appendChild(number);
+
+postHeader.appendChild(date);
+
+div.appendChild(postHeader);
+
+
+
+/* TITLE */
+
 
 if(post.title){
 
-const title =
+const title=
+
 document.createElement("div");
+
 
 title.className="title";
 
-title.innerText =
+
+title.innerText=
+
 post.title;
+
 
 div.appendChild(title);
 
 }
 
 
-/* متن */
+
+/* CONTENT */
+
 
 if(post.content){
 
-const content =
+const content=
+
 document.createElement("div");
 
-content.className="content";
 
-content.innerText =
+content.className=
+
+"content";
+
+
+content.innerText=
+
 post.content;
+
 
 div.appendChild(content);
 
 }
 
 
-/* عکس */
+
+/* IMAGE */
+
 
 if(post.image_url){
 
-const img =
+const img=
+
 document.createElement("img");
 
-img.src =
+
+img.src=
+
 post.image_url;
 
-img.alt =
-post.title || "تصویر پست";
+
+img.alt=
+
+"تصویر پست";
+
 
 img.loading="lazy";
+
 
 div.appendChild(img);
 
 }
 
 
-/* ویدیو */
+
+/* VIDEO */
+
 
 if(post.video_url){
 
-const video =
+const video=
+
 document.createElement("video");
 
-video.src =
+
+video.src=
+
 post.video_url;
+
 
 video.controls=true;
 
+
 video.playsInline=true;
+
 
 div.appendChild(video);
 
 }
 
 
-/* صدا */
+
+/* AUDIO */
+
 
 if(post.audio_url){
 
-const audio =
+const audio=
+
 document.createElement("audio");
 
-audio.src =
+
+audio.src=
+
 post.audio_url;
 
+
 audio.controls=true;
+
 
 div.appendChild(audio);
 
 }
 
 
-/* نوع محتوا */
+
+/* MEDIA TYPES */
+
 
 let types=[];
 
+
 if(post.image_url)
+
 types.push("🖼️ عکس");
 
+
 if(post.video_url)
+
 types.push("🎬 ویدیو");
 
+
 if(post.audio_url)
+
 types.push("🎵 صدا");
 
 
 if(types.length){
 
-const media =
+const media=
+
 document.createElement("div");
+
 
 media.className="media";
 
-media.innerText =
+
+media.innerText=
+
 types.join("  •  ");
+
 
 div.appendChild(media);
 
 }
 
 
-/* تاریخ */
 
-if(post.created_at){
-
-const date =
-document.createElement("div");
-
-date.className="date";
-
-date.innerText =
-"تاریخ: "+
-new Date(
-post.created_at
-).toLocaleString("fa-IR");
-
-div.appendChild(date);
-
-}
+/* DELETE */
 
 
-/* دکمه حذف */
+const deleteButton=
 
-const deleteButton =
 document.createElement("button");
 
-deleteButton.className="delete";
 
-deleteButton.innerText =
+deleteButton.className=
+
+"delete";
+
+
+deleteButton.innerText=
+
 "🗑️ حذف این پست";
 
 
-deleteButton.onclick =
-function(){
+deleteButton.onclick=
 
-deletePost(post.id);
-
-};
+()=>deletePost(post.id);
 
 
 div.appendChild(deleteButton);
 
 
+
 box.appendChild(div);
 
-});
+
+}
+
+);
 
 }
 
 
+
 /* =========================
-   حذف پست
+SEARCH
 ========================= */
+
+
+function searchPosts(){
+
+
+const value=
+
+document
+
+.getElementById("search")
+
+.value
+
+.trim()
+
+.toLowerCase();
+
+
+if(!value){
+
+renderPosts(allPosts);
+
+return;
+
+}
+
+
+const filtered=
+
+allPosts.filter(post=>{
+
+
+const title=
+
+(post.title || "")
+
+.toLowerCase();
+
+
+const content=
+
+(post.content || "")
+
+.toLowerCase();
+
+
+return (
+
+title.includes(value)
+
+||
+
+content.includes(value)
+
+);
+
+});
+
+
+renderPosts(filtered);
+
+}
+
+
+
+/* =========================
+DELETE
+========================= */
+
 
 async function deletePost(id){
 
-const answer =
+
+const answer=
+
 confirm(
+
 "مطمئنی می‌خوای این پست حذف بشه؟\n\nاین کار قابل برگشت نیست."
+
 );
 
 
 if(!answer)
+
 return;
 
 
-const {error} =
+
+const {error}=
+
 await db
+
 .from("posts")
+
 .delete()
+
 .eq("id",id);
+
 
 
 if(error){
 
 alert(
-"❌ پست حذف نشد:\n\n"+
+
+"❌ حذف نشد:\n\n"+
+
 error.message
+
 );
 
 return;
@@ -557,39 +1253,52 @@ return;
 }
 
 
+
 alert(
-"پست با موفقیت حذف شد ✅"
+
+"پست حذف شد ✅"
+
 );
 
 
-await loadPosts();
+loadPosts();
 
 }
 
 
+
 /* =========================
-   جلوگیری از نمایش HTML
+ESCAPE
 ========================= */
+
 
 function escapeHtml(text){
 
-const div =
+
+const div=
+
 document.createElement("div");
 
+
 div.innerText=text;
+
 
 return div.innerHTML;
 
 }
 
 
+
 /* =========================
-   شروع
+START
 ========================= */
+
 
 loadPosts();
 
+
 </script>
+
 
 </body>
 
