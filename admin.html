@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت | Minuit côtier</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+min-height:100vh;
+background:linear-gradient(135deg,#08091f,#17144b,#32236b);
+color:white;
+font-family:Arial,sans-serif;
+direction:rtl;
+}
+
+.container{
+width:92%;
+max-width:600px;
+margin:auto;
+padding:30px 0;
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
+}
+
+.box{
+background:rgba(20,20,50,.9);
+padding:22px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 5px 25px rgba(0,0,0,.3);
+}
+
+input,textarea{
+width:100%;
+padding:14px;
+margin:8px 0 15px;
+border:0;
+border-radius:12px;
+background:#29284b;
+color:white;
+font-size:15px;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
+}
+
+button{
+width:100%;
+padding:14px;
+border:0;
+border-radius:12px;
+background:#6c5ce7;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+margin-top:8px;
+}
+
+.logout{
+background:#a83250;
+}
+
+.hidden{
+display:none;
+}
+
+.message{
+text-align:center;
+padding:12px;
+border-radius:12px;
+margin-top:12px;
+background:rgba(255,255,255,.1);
+}
+
+.post{
+background:#17172d;
+padding:15px;
+border-radius:15px;
+margin-top:15px;
+}
+
+.post img{
+width:100%;
+border-radius:12px;
+margin-top:10px;
+}
+
+.star{
+position:fixed;
+top:-30px;
+color:white;
+pointer-events:none;
+animation:fall linear infinite;
+z-index:-1;
+}
+
+@keyframes fall{
+from{transform:translateY(-30px)}
+to{transform:translateY(110vh)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>☆ پنل مدیریت ☆</h1>
+
+<div id="loginBox" class="box">
+
+<h2>ورود مدیر</h2>
+
+<input
+id="email"
+type="email"
+placeholder="ایمیل"
+>
+
+<input
+id="password"
+type="password"
+placeholder="رمز عبور"
+>
+
+<button onclick="login()">
+ورود
+</button>
+
+<div id="loginMessage" class="message"></div>
+
+</div>
+
+
+<div id="adminBox" class="hidden">
+
+<div class="box">
+
+<h2>☆ افزودن پست</h2>
+
+<input
+id="title"
+type="text"
+placeholder="عنوان پست"
+>
+
+<textarea
+id="content"
+placeholder="متن پست"
+></textarea>
+
+<input
+id="imageUrl"
+type="text"
+placeholder="لینک عکس (اختیاری)"
+>
+
+<button onclick="addPost()">
+انتشار پست
+</button>
+
+<div id="postMessage" class="message"></div>
+
+</div>
+
+
+<div class="box">
+
+<h2>پست‌های من</h2>
+
+<div id="posts">
+در حال بارگذاری...
+</div>
+
+</div>
+
+
+<button
+class="logout"
+onclick="logout()"
+>
+خروج از پنل
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_dU9-NzHm2dS8c20VqCAtrw_hph0-hb7";
+
+
+/* ستاره‌ها */
+
+for(let i=0;i<40;i++){
+
+const star=document.createElement("div");
+
+star.className="star";
+
+star.innerHTML="☆";
+
+star.style.left=
+Math.random()*100+"%";
+
+star.style.fontSize=
+(10+Math.random()*18)+"px";
+
+star.style.animationDuration=
+(4+Math.random()*7)+"s";
+
+star.style.animationDelay=
+Math.random()*6+"s";
+
+document.body.appendChild(star);
+
+}
+
+
+/* ورود */
+
+async function login(){
+
+const email=
+document.getElementById("email").value;
+
+const password=
+document.getElementById("password").value;
+
+const message=
+document.getElementById("loginMessage");
+
+if(!email||!password){
+
+message.innerText=
+"ایمیل و رمز را وارد کن.";
+
+return;
+
+}
+
+message.innerText=
+"در حال ورود...";
+
+try{
+
+const response=await fetch(
+
+SUPABASE_URL+
+"/auth/v1/token?grant_type=password",
+
+{
+
+method:"POST",
+
+headers:{
+
+"apikey":SUPABASE_KEY,
+
+"Content-Type":
+"application/json"
+
+},
+
+body:JSON.stringify({
+
+email:email,
+
+password:password
+
+})
+
+}
+
+);
+
+const data=
+await response.json();
+
+if(!response.ok){
+
+message.innerText=
+data.msg||
+data.error_description||
+"ورود ناموفق بود.";
+
+return;
+
+}
+
+localStorage.setItem(
+"access_token",
+data.access_token
+);
+
+localStorage.setItem(
+"refresh_token",
+data.refresh_token
+);
+
+document.getElementById(
+"loginBox"
+).classList.add("hidden");
+
+document.getElementById(
+"adminBox"
+).classList.remove("hidden");
+
+loadPosts();
+
+}
+
+catch(error){
+
+message.innerText=
+"خطا: "+error.message;
+
+}
+
+}
+
+
+/* افزودن پست */
+
+async function addPost(){
+
+const title=
+document.getElementById("title").value;
+
+const content=
+document.getElementById("content").value;
+
+const image_url=
+document.getElementById("imageUrl").value;
+
+const message=
+document.getElementById("postMessage");
+
+const token=
+localStorage.getItem("access_token");
+
+if(!token){
+
+message.innerText=
+"اول وارد پنل شو.";
+
+return;
+
+}
+
+if(!title&&!content){
+
+message.innerText=
+"عنوان یا متن پست را وارد کن.";
+
+return;
+
+}
+
+message.innerText=
+"در حال انتشار...";
+
+try{
+
+const response=await fetch(
+
+SUPABASE_URL+
+"/rest/v1/posts",
+
+{
+
+method:"POST",
+
+headers:{
+
+"apikey":SUPABASE_KEY,
+
+"Authorization":
+"Bearer "+token,
+
+"Content-Type":
+"application/json",
+
+"Prefer":
+"return=representation"
+
+},
+
+body:JSON.stringify({
+
+Title:title,
+
+content:content,
+
+image_url:image_url
+
+})
+
+}
+
+);
+
+const data=
+await response.json();
+
+if(!response.ok){
+
+message.innerText=
+"خطا: "+
+(data.message||
+JSON.stringify(data));
+
+return;
+
+}
+
+message.innerText=
+"✅ پست منتشر شد.";
+
+document.getElementById(
+"title"
+).value="";
+
+document.getElementById(
+"content"
+).value="";
+
+document.getElementById(
+"imageUrl"
+).value="";
+
+loadPosts();
+
+}
+
+catch(error){
+
+message.innerText=
+"خطا: "+error.message;
+
+}
+
+}
+
+
+/* نمایش پست‌ها */
+
+async function loadPosts(){
+
+const token=
+localStorage.getItem("access_token");
+
+if(!token)return;
+
+const response=await fetch(
+
+SUPABASE_URL+
+"/rest/v1/posts?select=*&order=created_at.desc",
+
+{
+
+headers:{
+
+"apikey":SUPABASE_KEY,
+
+"Authorization":
+"Bearer "+token
+
+}
+
+}
+
+);
+
+const data=
+await response.json();
+
+const box=
+document.getElementById("posts");
+
+if(!Array.isArray(data)){
+
+box.innerHTML=
+"خطا در دریافت پست‌ها.";
+
+return;
+
+}
+
+if(data.length===0){
+
+box.innerHTML=
+"هنوز پستی نداری.";
+
+return;
+
+}
+
+box.innerHTML=
+data.map(post=>`
+
+<div class="post">
+
+<h3>
+${post.Title||post.title||""}
+</h3>
+
+<p>
+${post.content||""}
+</p>
+
+${
+post.image_url
+?
+`<img src="${post.image_url}">`
+:
+""
+}
+
+</div>
+
+`).join("");
+
+}
+
+
+/* خروج */
+
+function logout(){
+
+localStorage.removeItem(
+"access_token"
+);
+
+localStorage.removeItem(
+"refresh_token"
+);
+
+location.reload();
+
+}
+
+
+/* بررسی ورود قبلی */
+
+if(localStorage.getItem("access_token")){
+
+document.getElementById(
+"loginBox"
+).classList.add("hidden");
+
+document.getElementById(
+"adminBox"
+).classList.remove("hidden");
+
+loadPosts();
+
+}
+
+</script>
+
+</body>
+  </html>
