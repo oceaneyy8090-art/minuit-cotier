@@ -1,37 +1,24 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
-
 <style>
 
 html,body{
-
 margin:0;
-
 height:100%;
-
 overflow:hidden;
-
 touch-action:none;
-
 background:#020617;
-
 }
-
-
 
 canvas{
-
 display:block;
-
 }
-
 
 
 #musicBtn{
@@ -48,13 +35,13 @@ height:55px;
 
 border-radius:50%;
 
-border:0;
+border:none;
 
-background:#071a3d;
+background:#ffffff22;
 
 color:white;
 
-font-size:22px;
+font-size:25px;
 
 z-index:20;
 
@@ -74,11 +61,11 @@ left:50%;
 
 transform:translate(-50%,-50%);
 
-width:80%;
-
 background:#071a3d;
 
 color:white;
+
+width:80%;
 
 padding:20px;
 
@@ -92,26 +79,15 @@ z-index:10;
 
 
 
-#postImage{
-
-width:100%;
-
-border-radius:15px;
-
-}
-
-
-
 #like{
 
-font-size:40px;
+font-size:35px;
 
-cursor:pointer;
+color:white;
 
 }
 
 </style>
-
 
 </head>
 
@@ -119,75 +95,41 @@ cursor:pointer;
 <body>
 
 
-
 <canvas id="sky"></canvas>
 
 
+<audio id="lightMusic" loop>
 
-<audio id="music" loop>
-
-<source src="music.mp3" type="audio/mpeg">
+<source src="light.mp3" type="audio/mpeg">
 
 </audio>
 
 
-
-<button id="musicBtn" onclick="toggleMusic()">
-
-🎵
-
-</button>
-
+<button id="musicBtn">🔇</button>
 
 
 
 <div id="postBox">
 
+<button onclick="closePost()">بستن</button>
 
-<button onclick="closePost()">
+<h2 id="postTitle">🌛 پست</h2>
 
-بستن
-
-</button>
-
-
-<h2 id="postTitle"></h2>
-
-
-<img id="postImage">
-
-
-<p id="postContent"></p>
+<p id="postText">
+محتوای پست
+</p>
 
 
 <div id="like">
-
 ♡
+</div>
+
 
 </div>
 
 
-
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
-
-const SUPABASE_URL =
-"https://oyowhuyzgjvpoeupoegh.supabase.co";
-
-
-const SUPABASE_KEY =
-"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
-
-
-const supabaseClient =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
 
 
 const canvas=document.getElementById("sky");
@@ -207,10 +149,49 @@ H=canvas.height=innerHeight;
 
 }
 
+
 resize();
 
 onresize=resize;
 
+
+
+
+const music=document.getElementById("lightMusic");
+
+music.volume=0.25;
+
+
+
+let musicOn=false;
+
+
+document.getElementById("musicBtn").onclick=()=>{
+
+
+if(musicOn){
+
+music.pause();
+
+musicOn=false;
+
+musicBtn.innerHTML="🔇";
+
+
+}else{
+
+
+music.play();
+
+musicOn=true;
+
+musicBtn.innerHTML="🎵";
+
+
+}
+
+
+};
 
 
 
@@ -221,28 +202,18 @@ let camY=0;
 
 
 
-
 let stars=[];
 
 let effects=[];
-
-let posts=[];
-
-let activePost=null;
-
 
 
 
 const colors=[
 
 "#ffffff",
-
 "#7dd3fc",
-
 "#a78bfa",
-
 "#f9a8d4",
-
 "#c7d2fe"
 
 ];
@@ -250,25 +221,20 @@ const colors=[
 
 
 
-
-
-
-// ساخت ستاره در هر نقطه از فضا
-
 function addStar(x,y){
 
 
 stars.push({
 
 
-x:x ?? camX+(Math.random()-0.5)*W*5,
+x:x,
 
-y:y ?? camY+(Math.random()-0.5)*H*5,
+y:y,
 
 
-vx:(Math.random()-0.5)*0.2,
+vx:(Math.random()-.5)*0.25,
 
-vy:(Math.random()-0.5)*0.2,
+vy:(Math.random()-.5)*0.25,
 
 
 size:2+Math.random()*7,
@@ -288,82 +254,61 @@ Math.floor(Math.random()*colors.length)
 
 
 
-
-
-// پر کردن کهکشان اولیه
-
 for(let i=0;i<3000;i++){
 
 
 addStar(
 
-(Math.random()-0.5)*12000,
+(Math.random()-0.5)*10000,
 
-(Math.random()-0.5)*12000
+(Math.random()-0.5)*10000
 
 );
 
 
 }
-// گرفتن پست ها از Supabase
+let posts=[
 
-async function loadPosts(){
+{
+x:300,
+y:200,
+title:"اولین پست 🌛",
+text:"اینجا متن پست قرار می‌گیرد ✨"
+},
 
-
-const {data,error}=await supabaseClient
-
-.from("posts")
-
-.select("*");
-
-
-
-if(error){
-
-console.log(error);
-
-return;
-
+{
+x:-500,
+y:600,
+title:"پست دوم 🌛",
+text:"یک پست دیگر در آسمان شب"
 }
 
+];
 
 
-posts=data.map((p,i)=>({
-
-
-x:i*600-500,
-
-y:i*400-300,
-
-
-icon:"🌛",
-
-
-title:p.title || "پست جدید",
-
-
-content:p.content || "",
-
-
-image:p.image_url || ""
-
-
-}));
-
-
-}
-
-
-loadPosts();
-
-
-
-
-
+let activePost=null;
 
 
 
 function draw(){
+
+
+
+// ساخت ستاره در هرجای جدیدی که می‌ری
+
+while(stars.length<4000){
+
+addStar(
+
+camX+(Math.random()-0.5)*W*6,
+
+camY+(Math.random()-0.5)*H*6
+
+);
+
+}
+
+
 
 
 
@@ -374,8 +319,7 @@ bg.addColorStop(0,"#010314");
 
 bg.addColorStop(.5,"#071a3d");
 
-bg.addColorStop(1,"#312e81");
-
+bg.addColorStop(1,"#31486d");
 
 
 ctx.fillStyle=bg;
@@ -386,9 +330,7 @@ ctx.fillRect(0,0,W,H);
 
 
 
-
-
-// حرکت ستاره ها
+// ستاره‌ها
 
 stars.forEach(s=>{
 
@@ -413,6 +355,7 @@ ctx.fillStyle=s.color;
 ctx.fillText("☆",x,y);
 
 
+
 });
 
 
@@ -420,8 +363,7 @@ ctx.fillText("☆",x,y);
 
 
 
-
-// نمایش ماه پست ها 🌛
+// پست‌ها 🌛
 
 posts.forEach(p=>{
 
@@ -431,12 +373,11 @@ let x=p.x-camX+W/2;
 let y=p.y-camY+H/2;
 
 
-
-ctx.font="35px Arial";
+ctx.font="25px Arial";
 
 
 ctx.fillText(
-p.icon,
+"🌛",
 x,
 y
 );
@@ -449,7 +390,7 @@ y
 
 
 
-// افکت 💫
+// انفجار لایک
 
 effects.forEach((e,i)=>{
 
@@ -460,24 +401,21 @@ e.y+=e.vy;
 
 
 
-ctx.font="20px Arial";
+ctx.font="18px Arial";
 
 ctx.fillStyle=e.color;
 
 
 ctx.fillText(
-
 "☆",
-
 e.x-camX+W/2,
-
 e.y-camY+H/2
-
 );
 
 
 
 e.life--;
+
 
 
 if(e.life<=0){
@@ -487,8 +425,8 @@ effects.splice(i,1);
 }
 
 
-});
 
+});
 
 
 
@@ -498,8 +436,15 @@ requestAnimationFrame(draw);
 }
 
 
+
 draw();
-// باز کردن پست با 🌛
+
+
+
+
+
+
+// لمس 🌛
 
 canvas.onclick=e=>{
 
@@ -513,7 +458,14 @@ let y=p.y-camY+H/2;
 
 
 
-if(Math.hypot(e.clientX-x,e.clientY-y)<60){
+if(
+
+Math.hypot(
+e.clientX-x,
+e.clientY-y
+)<45
+
+){
 
 
 activePost=p;
@@ -521,33 +473,20 @@ activePost=p;
 
 document.getElementById("postTitle").innerHTML=p.title;
 
-document.getElementById("postContent").innerHTML=p.content;
 
-
-
-let img=document.getElementById("postImage");
-
-
-if(p.image){
-
-img.src=p.image;
-
-img.style.display="block";
-
-}
-
-else{
-
-img.style.display="none";
-
-}
-
+document.getElementById("postText").innerHTML=p.text;
 
 
 document.getElementById("postBox").style.display="block";
 
 
+// پخش موزیک
+
+music.play();
+
+
 }
+
 
 
 });
@@ -559,10 +498,14 @@ document.getElementById("postBox").style.display="block";
 
 
 
-
 function closePost(){
 
+
 document.getElementById("postBox").style.display="none";
+
+
+music.pause();
+
 
 }
 
@@ -571,16 +514,13 @@ document.getElementById("postBox").style.display="none";
 
 
 
+// لایک ♡
 
-// لایک 💫
 
 document.getElementById("like").onclick=()=>{
 
 
-if(!activePost)return;
-
-
-document.getElementById("like").innerHTML="❤️";
+document.getElementById("like").style.color="red";
 
 
 
@@ -595,16 +535,18 @@ x:activePost.x,
 y:activePost.y,
 
 
-vx:(Math.random()-0.5)*10,
+vx:(Math.random()-0.5)*12,
 
-vy:(Math.random()-0.5)*10,
+vy:(Math.random()-0.5)*12,
 
 
-life:80,
+life:90,
 
 
 color:
-colors[Math.floor(Math.random()*colors.length)]
+colors[
+Math.floor(Math.random()*colors.length)
+]
 
 
 });
@@ -613,43 +555,27 @@ colors[Math.floor(Math.random()*colors.length)]
 }
 
 
+
 };
-
-
-
-
-
-
-
-
-// حرکت در فضا ⭐
+// حرکت در آسمان
 
 let sx=null;
-
 let sy=null;
 
 let ox=0;
-
 let oy=0;
-
 
 
 
 canvas.onpointerdown=e=>{
 
-
 sx=e.clientX;
-
 sy=e.clientY;
 
-
 ox=camX;
-
 oy=camY;
 
-
 };
-
 
 
 
@@ -667,34 +593,7 @@ camY=oy-(e.clientY-sy);
 
 
 
-
-// ساخت ستاره در جای جدید
-
-for(let i=0;i<50;i++){
-
-
-addStar(
-
-camX+(Math.random()-0.5)*W*4,
-
-camY+(Math.random()-0.5)*H*4
-
-);
-
-
-}
-
-
-
-if(stars.length>6000){
-
-stars.splice(0,1500);
-
-}
-
-
 };
-
 
 
 
@@ -702,6 +601,7 @@ stars.splice(0,1500);
 canvas.onpointerup=()=>{
 
 sx=null;
+sy=null;
 
 };
 
@@ -709,53 +609,97 @@ sx=null;
 
 
 
+// ---------- آماده برای Supabase ----------
+
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
 
 
-// موزیک 🎵
 
-const music=document.getElementById("music");
+// گرفتن پست‌های واقعی
 
-let playing=false;
-
+async function getPosts(){
 
 
-function toggleMusic(){
+try{
 
 
-if(playing){
+let result=await fetch(
+
+SUPABASE_URL+
+"/rest/v1/posts?select=*",
+
+{
+
+headers:{
+
+"apikey":SUPABASE_KEY,
+
+"Authorization":
+"Bearer "+SUPABASE_KEY
+
+}
+
+}
+
+);
 
 
-music.pause();
 
-document.getElementById("musicBtn").innerHTML="🔇";
+let data=await result.json();
 
-playing=false;
+
+
+
+// تبدیل هر پست به 🌛
+
+posts=data.map((p,i)=>{
+
+
+return{
+
+
+x:(Math.random()-0.5)*5000,
+
+y:(Math.random()-0.5)*5000,
+
+
+title:p.title || "پست 🌛",
+
+
+text:p.content || ""
+
+
+};
+
+
+});
+
+
+
+}catch(err){
+
+
+console.log(err);
 
 
 }
 
-else{
-
-
-music.play().catch(()=>{});
-
-document.getElementById("musicBtn").innerHTML="🎵";
-
-playing=true;
-
-
-}
-
 
 }
 
 
 
+
+getPosts();
 
 </script>
 
-
 </body>
-
 </html>
