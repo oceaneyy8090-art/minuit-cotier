@@ -1427,6 +1427,217 @@ requestAnimationFrame(
 );
 
 </script>
+<!-- ورود با Google -->
+<style>
+#googleLoginBox{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:99999;
+    text-align:center;
+}
+
+#googleLoginBtn,
+#logoutBtn{
+    border:1px solid rgba(255,255,255,.4);
+    border-radius:25px;
+    padding:11px 18px;
+    color:white;
+    background:rgba(20,15,60,.75);
+    backdrop-filter:blur(10px);
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 0 15px rgba(150,100,255,.35);
+}
+
+#userInfo{
+    color:white;
+    font-size:12px;
+    margin-top:7px;
+}
+</style>
+
+<div id="googleLoginBox">
+    <button id="googleLoginBtn">
+        ☆ ورود با Google ☆
+    </button>
+
+    <button id="logoutBtn" style="display:none;">
+        خروج
+    </button>
+
+    <div id="userInfo"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+"https://oyowhuyzgjvpoeupoegh.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* ورود با Google */
+
+document.getElementById("googleLoginBtn").onclick =
+async function(){
+
+    const { error } =
+    await supabaseClient.auth.signInWithOAuth({
+
+        provider:"google",
+
+        options:{
+            redirectTo:
+            "https://oceaneyy8090-art.github.io/minuit-cotier/"
+        }
+
+    });
+
+    if(error){
+        alert(error.message);
+    }
+
+};
+
+
+/* خروج */
+
+document.getElementById("logoutBtn").onclick =
+async function(){
+
+    await supabaseClient.auth.signOut();
+
+};
+
+
+/* وضعیت کاربر */
+
+async function updateLogin(){
+
+    const { data } =
+    await supabaseClient.auth.getSession();
+
+    const session = data.session;
+
+    const loginBtn =
+    document.getElementById("googleLoginBtn");
+
+    const logoutBtn =
+    document.getElementById("logoutBtn");
+
+    const userInfo =
+    document.getElementById("userInfo");
+
+
+    if(session){
+
+        loginBtn.style.display = "none";
+
+        logoutBtn.style.display = "inline-block";
+
+        userInfo.textContent =
+        "☆ " +
+        (session.user.user_metadata?.name ||
+         session.user.email ||
+         "کاربر");
+
+        /* ستاره‌های ورود */
+
+        for(let i=0;i<25;i++){
+
+            const star =
+            document.createElement("div");
+
+            star.textContent = "☆";
+
+            star.style.position = "fixed";
+            star.style.left =
+            (45 + Math.random()*10) + "%";
+
+            star.style.top =
+            (45 + Math.random()*10) + "%";
+
+            star.style.color =
+            [
+                "#ff7bd5",
+                "#7ddcff",
+                "#b98cff",
+                "#ffffff"
+            ][Math.floor(Math.random()*4)];
+
+            star.style.fontSize =
+            (12 + Math.random()*20) + "px";
+
+            star.style.zIndex = "100000";
+
+            star.style.pointerEvents = "none";
+
+            document.body.appendChild(star);
+
+            const x =
+            (Math.random()-0.5)*500;
+
+            const y =
+            (Math.random()-0.5)*500;
+
+            star.animate(
+                [
+                    {
+                        transform:"translate(0,0) scale(1)",
+                        opacity:1
+                    },
+                    {
+                        transform:
+                        `translate(${x}px,${y}px) scale(0)`,
+                        opacity:0
+                    }
+                ],
+                {
+                    duration:1000 +
+                    Math.random()*1000,
+                    easing:"ease-out"
+                }
+            );
+
+            setTimeout(()=>{
+                star.remove();
+            },2200);
+        }
+
+    }else{
+
+        loginBtn.style.display =
+        "inline-block";
+
+        logoutBtn.style.display =
+        "none";
+
+        userInfo.textContent = "";
+
+    }
+
+}
+
+
+supabaseClient.auth.onAuthStateChange(
+    function(){
+        updateLogin();
+    }
+);
+
+updateLogin();
+
+</script>
 
 </body>
 </html>
