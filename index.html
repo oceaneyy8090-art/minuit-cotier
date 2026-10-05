@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 *{
 box-sizing:border-box;
 -webkit-tap-highlight-color:transparent;
@@ -20,307 +18,328 @@ box-sizing:border-box;
 
 html,body{
 margin:0;
-padding:0;
-min-height:100%;
-background:#02030d;
-color:white;
+width:100%;
+height:100%;
+overflow:hidden;
+background:
+radial-gradient(circle at 50% 20%,#25205f 0%,#11153b 35%,#050719 75%,#02030d 100%);
 font-family:Arial,sans-serif;
+color:white;
 }
 
 body{
-overflow-x:hidden;
-background:
-radial-gradient(circle at 50% 20%,#25205c 0%,#090b29 38%,#02030d 78%);
+touch-action:none;
 }
 
-body.en{
-font-family:"Cormorant Garamond",serif;
+#sky{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+z-index:1;
 }
 
-button,input,textarea,select{
-font:inherit;
+#ui{
+position:fixed;
+inset:0;
+z-index:10;
+pointer-events:none;
 }
 
 button{
+border:0;
+outline:0;
+color:white;
+font-family:inherit;
 cursor:pointer;
 }
 
-#stars{
-position:fixed;
-inset:0;
-overflow:hidden;
-pointer-events:none;
-z-index:0;
-}
-
-.bgStar{
+#profileButton{
+pointer-events:auto;
 position:absolute;
-color:#fff;
-opacity:.65;
-animation:floatStar linear infinite;
-text-shadow:0 0 8px currentColor;
-}
-
-@keyframes floatStar{
-0%{
-transform:translateY(110vh) rotate(0deg);
-opacity:0;
-}
-15%{opacity:.8}
-85%{opacity:.8}
-100%{
-transform:translateY(-15vh) rotate(360deg);
-opacity:0;
-}
-}
-
-#app{
-position:relative;
-z-index:2;
-min-height:100vh;
-}
-
-.topbar{
-position:sticky;
-top:0;
-z-index:20;
-height:64px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:10px 14px;
-background:rgba(3,4,18,.65);
-backdrop-filter:blur(15px);
-border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.brand{
-font-size:21px;
-font-weight:bold;
-letter-spacing:.5px;
-}
-
-.profileBtn{
-width:43px;
-height:43px;
+top:18px;
+right:18px;
+width:48px;
+height:48px;
 border-radius:50%;
-border:1px solid rgba(255,255,255,.2);
-background:rgba(255,255,255,.08);
-color:white;
 overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:20px;
+background:rgba(20,18,55,.8);
+border:1px solid rgba(255,255,255,.25);
+box-shadow:0 0 20px rgba(130,100,255,.35);
 }
 
-.profileBtn img{
+#profileButton img{
 width:100%;
 height:100%;
 object-fit:cover;
-}
-
-.page{
-display:none;
-padding:20px 15px 100px;
-min-height:calc(100vh - 64px);
-}
-
-.page.active{
 display:block;
 }
 
-.hero{
-text-align:center;
-padding:35px 10px 20px;
+#profileButton span{
+font-size:22px;
 }
 
-.heroAvatar{
-width:76px;
-height:76px;
-border-radius:50%;
-margin:auto;
-border:2px solid rgba(255,255,255,.35);
-box-shadow:0 0 25px rgba(150,110,255,.35);
-overflow:hidden;
+#topTitle{
+position:absolute;
+top:25px;
+left:50%;
+transform:translateX(-50%);
+font-family:Georgia,serif;
+font-size:18px;
+white-space:nowrap;
+text-shadow:0 0 15px #927dff;
+opacity:.9;
+}
+
+#nav{
+pointer-events:auto;
+position:absolute;
+bottom:12px;
+left:50%;
+transform:translateX(-50%);
+width:calc(100% - 20px);
+max-width:520px;
+height:68px;
+border-radius:25px;
+background:rgba(7,8,28,.78);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.12);
 display:flex;
 align-items:center;
-justify-content:center;
-background:rgba(255,255,255,.08);
-font-size:32px;
-}
-
-.heroAvatar img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
-
-.heroName{
-margin-top:13px;
-font-size:24px;
-font-weight:bold;
-}
-
-.subtitle{
-opacity:.65;
-font-size:13px;
-margin-top:5px;
-}
-
-.card{
-background:rgba(255,255,255,.07);
-border:1px solid rgba(255,255,255,.1);
-border-radius:22px;
-padding:16px;
-margin:14px auto;
-max-width:600px;
-box-shadow:0 15px 50px rgba(0,0,0,.2);
-backdrop-filter:blur(12px);
-}
-
-.nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-z-index:30;
-display:flex;
 justify-content:space-around;
-padding:8px 4px;
-background:rgba(2,3,15,.9);
-backdrop-filter:blur(18px);
-border-top:1px solid rgba(255,255,255,.1);
+box-shadow:0 0 30px rgba(0,0,0,.35);
 }
 
-.nav button{
-background:none;
-border:0;
-color:#aaa;
-font-size:11px;
+.navBtn{
+background:transparent;
+min-width:55px;
+height:55px;
+border-radius:18px;
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:3px;
-padding:5px;
+justify-content:center;
+gap:2px;
+font-size:11px;
+opacity:.82;
 }
 
-.nav button span{
-font-size:21px;
+.navBtn .emoji{
+font-size:23px;
 }
 
-.nav button.active{
-color:white;
+.navBtn.active{
+background:rgba(117,91,255,.18);
+opacity:1;
 }
 
-.action{
+.page{
+pointer-events:auto;
+position:absolute;
+inset:0;
+display:none;
+z-index:20;
+padding:75px 15px 95px;
+overflow:auto;
+background:rgba(3,4,17,.88);
+backdrop-filter:blur(15px);
+}
+
+.page.show{
+display:block;
+}
+
+.pageBox{
 width:100%;
-border:0;
-border-radius:16px;
-padding:13px;
-margin-top:10px;
-background:linear-gradient(135deg,#5948bb,#8d5cff);
-color:white;
-font-weight:bold;
+max-width:560px;
+margin:auto;
+padding:20px;
+border-radius:28px;
+background:rgba(13,15,43,.86);
+border:1px solid rgba(255,255,255,.1);
+box-shadow:0 0 35px rgba(0,0,0,.4);
 }
 
-.action.secondary{
-background:rgba(255,255,255,.09);
-}
-
-.input{
-width:100%;
-border:1px solid rgba(255,255,255,.12);
-border-radius:15px;
-padding:12px;
-margin-top:9px;
-outline:none;
-background:rgba(0,0,0,.2);
-color:white;
-}
-
-textarea.input{
-min-height:110px;
-resize:vertical;
-}
-
-.file{
-margin-top:10px;
-width:100%;
-padding:10px;
-border-radius:14px;
-background:rgba(255,255,255,.07);
-color:#ddd;
-}
-
-.sectionTitle{
+.pageTitle{
+font-family:Georgia,serif;
+font-size:24px;
+margin-bottom:18px;
 text-align:center;
-font-size:20px;
-margin:10px 0 20px;
 }
 
-.post{
-position:relative;
-overflow:hidden;
-}
-
-.postHead{
-display:flex;
-align-items:center;
-gap:9px;
-}
-
-.postAvatar{
+.closeBtn{
+position:absolute;
+top:18px;
+left:18px;
 width:40px;
 height:40px;
 border-radius:50%;
-overflow:hidden;
-background:rgba(255,255,255,.08);
-display:flex;
+background:rgba(255,255,255,.1);
+font-size:20px;
+}
+
+input,
+textarea,
+select{
+width:100%;
+border:1px solid rgba(255,255,255,.12);
+background:rgba(255,255,255,.06);
+color:white;
+border-radius:16px;
+padding:13px;
+margin-bottom:10px;
+font-size:14px;
+outline:none;
+}
+
+textarea{
+min-height:100px;
+resize:none;
+}
+
+input::placeholder,
+textarea::placeholder{
+color:rgba(255,255,255,.45);
+}
+
+label{
+display:block;
+font-size:12px;
+opacity:.7;
+margin:8px 4px 5px;
+}
+
+.mainBtn{
+width:100%;
+padding:14px;
+border-radius:17px;
+background:linear-gradient(135deg,#6756e9,#8b61d9);
+font-size:15px;
+margin-top:5px;
+box-shadow:0 8px 25px rgba(100,80,220,.25);
+}
+
+.dangerBtn{
+width:100%;
+padding:13px;
+border-radius:16px;
+background:rgba(255,65,95,.13);
+border:1px solid rgba(255,80,110,.25);
+margin-top:10px;
+}
+
+.smallBtn{
+padding:9px 13px;
+border-radius:13px;
+background:rgba(255,255,255,.09);
+font-size:12px;
+}
+
+.fileBox{
+padding:13px;
+border:1px dashed rgba(255,255,255,.2);
+border-radius:17px;
+margin-bottom:10px;
+}
+
+.fileBox input{
+margin:0;
+padding:0;
+border:0;
+background:none;
+}
+
+.emojiRow{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:8px;
+}
+
+#status{
+text-align:center;
+font-size:12px;
+margin:10px 0;
+min-height:18px;
+opacity:.8;
+}
+
+#postModal{
+position:fixed;
+inset:0;
+z-index:100;
+display:none;
 align-items:center;
 justify-content:center;
-flex:none;
+padding:18px;
+background:rgba(0,0,0,.62);
+backdrop-filter:blur(10px);
 }
 
-.postAvatar img{
+#postModal.show{
+display:flex;
+}
+
+.postCard{
 width:100%;
-height:100%;
-object-fit:cover;
+max-width:480px;
+max-height:82vh;
+overflow:auto;
+border-radius:28px;
+background:
+linear-gradient(145deg,rgba(26,23,70,.97),rgba(8,10,31,.97));
+border:1px solid rgba(255,255,255,.13);
+box-shadow:0 0 45px rgba(0,0,0,.6);
+padding:18px;
 }
 
-.postUser{
-font-weight:bold;
-font-size:14px;
+.postHeader{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:14px;
+}
+
+.authorAvatar{
+width:42px;
+height:42px;
+border-radius:50%;
+object-fit:cover;
+background:#17183b;
+}
+
+.authorName{
+font-size:13px;
 }
 
 .postTime{
 font-size:10px;
 opacity:.5;
-margin-top:2px;
+margin-top:3px;
 }
 
 .postTitle{
-font-size:20px;
-font-weight:bold;
-margin:15px 0 7px;
+font-family:Georgia,serif;
+font-size:23px;
+margin:10px 0;
 }
 
 .postText{
+font-size:14px;
+line-height:2;
 white-space:pre-wrap;
-line-height:1.8;
 opacity:.9;
 }
 
 .postMedia{
 width:100%;
-max-height:500px;
-object-fit:cover;
-border-radius:17px;
-margin-top:13px;
-background:#000;
+max-height:360px;
+object-fit:contain;
+border-radius:18px;
+margin-top:12px;
+background:#050611;
 }
 
-.postVideo.circle{
+.postMedia.circle{
 width:230px;
 height:230px;
 border-radius:50%;
@@ -329,444 +348,419 @@ margin:14px auto;
 object-fit:cover;
 }
 
-.audio{
+audio{
 width:100%;
-margin-top:13px;
-}
-
-.postActions{
-display:flex;
-align-items:center;
-gap:9px;
-margin-top:13px;
-}
-
-.likeBtn{
-border:0;
-background:rgba(255,255,255,.07);
-border-radius:14px;
-color:white;
-padding:8px 12px;
-}
-
-.likeBtn.liked{
-color:#ff75bc;
-}
-
-.deleteBtn{
-margin-right:auto;
-border:0;
-background:rgba(255,80,110,.1);
-color:#ff8ba5;
-border-radius:12px;
-padding:7px 10px;
-}
-
-.likeNames{
-font-size:11px;
-opacity:.6;
-margin-top:7px;
-}
-
-.commentBox{
-display:flex;
-gap:7px;
 margin-top:12px;
 }
 
-.commentBox input{
-flex:1;
+.actions{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:14px;
+padding-top:12px;
+border-top:1px solid rgba(255,255,255,.08);
 }
 
-.commentBtn{
-border:0;
-border-radius:12px;
-padding:0 13px;
-background:rgba(255,255,255,.1);
-color:white;
+.likeBtn{
+padding:9px 15px;
+border-radius:15px;
+background:rgba(255,255,255,.07);
+font-size:15px;
 }
 
-.comments{
-margin-top:10px;
+.likeBtn.liked{
+background:rgba(255,70,130,.15);
+color:#ff8db9;
+}
+
+.commentBox{
+margin-top:15px;
 }
 
 .comment{
-padding:8px 10px;
-border-radius:12px;
-background:rgba(255,255,255,.05);
-margin-top:6px;
+padding:9px 0;
+border-bottom:1px solid rgba(255,255,255,.06);
 font-size:12px;
-}
-
-.comment b{
-color:#d7c8ff;
-}
-
-.path{
-text-align:center;
-font-size:24px;
-opacity:.8;
-padding:4px;
-}
-
-.empty{
-text-align:center;
-opacity:.5;
-padding:50px 10px;
-}
-
-.modal{
-position:fixed;
-inset:0;
-z-index:100;
-display:none;
-align-items:center;
-justify-content:center;
-padding:20px;
-background:rgba(0,0,0,.75);
-backdrop-filter:blur(8px);
-}
-
-.modal.show{
-display:flex;
-}
-
-.modalBox{
-width:100%;
-max-width:420px;
-background:#0c0d27;
-border:1px solid rgba(255,255,255,.12);
-border-radius:25px;
-padding:20px;
-}
-
-.close{
-float:left;
-border:0;
-background:none;
-color:#aaa;
-font-size:24px;
-}
-
-.loginLogo{
-text-align:center;
-font-size:42px;
-margin:15px;
-}
-
-.loginTitle{
-text-align:center;
-font-size:24px;
-}
-
-.small{
-font-size:11px;
-opacity:.55;
 line-height:1.7;
 }
 
-.preview{
-width:100%;
-max-height:250px;
-object-fit:cover;
-border-radius:15px;
-margin-top:10px;
-display:none;
+.comment b{
+font-size:11px;
+opacity:.7;
 }
 
-.emojiRow{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-gap:8px;
-margin-top:8px;
+.deletePostBtn{
+margin-right:auto;
+padding:9px 12px;
+border-radius:13px;
+background:rgba(255,50,80,.13);
+color:#ff8ba1;
+font-size:11px;
 }
 
-.emojiRow input{
+#loginPage{
+z-index:30;
+}
+
+.loginInfo{
 text-align:center;
-font-size:22px;
+font-size:12px;
+opacity:.65;
+line-height:1.8;
+margin-bottom:15px;
 }
 
-.profileBig{
-width:110px;
-height:110px;
+.profilePreview{
+width:90px;
+height:90px;
 border-radius:50%;
 object-fit:cover;
 display:block;
-margin:10px auto;
-background:rgba(255,255,255,.08);
-}
-
-.toast{
-position:fixed;
-bottom:90px;
-left:50%;
-transform:translateX(-50%) translateY(20px);
-background:#11132f;
-border:1px solid rgba(255,255,255,.15);
-padding:10px 16px;
-border-radius:14px;
-z-index:200;
-opacity:0;
-pointer-events:none;
-transition:.3s;
-font-size:12px;
-}
-
-.toast.show{
-opacity:1;
-transform:translateX(-50%) translateY(0);
-}
-
-.burst{
-position:fixed;
-z-index:150;
-pointer-events:none;
-font-size:17px;
-animation:burst 1.3s ease-out forwards;
-}
-
-@keyframes burst{
-0%{
-transform:translate(0,0) scale(.5) rotate(0);
-opacity:1;
-}
-100%{
-transform:translate(var(--x),var(--y)) scale(1.4) rotate(500deg);
-opacity:0;
-}
-}
-
-#loginRequired{
-text-align:center;
+margin:0 auto 15px;
+border:2px solid rgba(255,255,255,.2);
 }
 
 .hidden{
 display:none!important;
 }
 
-label{
-display:block;
+#toast{
+position:fixed;
+left:50%;
+bottom:92px;
+transform:translateX(-50%) translateY(20px);
+z-index:200;
+padding:11px 17px;
+border-radius:15px;
+background:rgba(15,15,35,.92);
+border:1px solid rgba(255,255,255,.12);
 font-size:12px;
-opacity:.7;
-margin-top:13px;
+opacity:0;
+transition:.25s;
+pointer-events:none;
 }
+
+#toast.show{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+
 </style>
 </head>
 
 <body>
 
-<div id="stars"></div>
+<canvas id="sky"></canvas>
 
-<div id="app">
+<div id="ui">
 
-<header class="topbar">
-<div class="brand">𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</div>
-<button class="profileBtn" id="profileBtn" onclick="go('profile')">🌛</button>
-</header>
-
-<!-- HOME -->
-<section class="page active" id="home">
-
-<div class="hero">
-<div class="heroAvatar" id="heroAvatar">🌛</div>
-<div class="heroName">𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</div>
-<div class="subtitle">یه گوشه‌ی کوچیک برای چیزای قشنگ</div>
+<div id="topTitle">
+𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓 ☆
 </div>
 
-<div id="feed">
-<div class="empty">دارم چیزایی که گذاشتی رو پیدا می‌کنم... 🌛</div>
+<button id="profileButton" onclick="openProfile()">
+<span>🌛</span>
+</button>
+
+<div id="nav">
+
+<button class="navBtn active" onclick="goHome()">
+<span class="emoji">☆</span>
+<span>خونه‌مون</span>
+</button>
+
+<button class="navBtn" onclick="openProfile()">
+<span class="emoji">🌛</span>
+<span>گوشه‌م</span>
+</button>
+
+<button class="navBtn" onclick="openCreate()">
+<span class="emoji">＋</span>
+<span>بذار یه چیز</span>
+</button>
+
+<button class="navBtn" onclick="openChat()">
+<span class="emoji">💬</span>
+<span>گپ بزنیم</span>
+</button>
+
+<button class="navBtn" onclick="openSettings()">
+<span class="emoji">⚙</span>
+<span>یه کم دستکاری</span>
+</button>
+
 </div>
 
-</section>
-
-<!-- PROFILE -->
-<section class="page" id="profile">
-
-<div class="sectionTitle">گوشه‌م 🌙</div>
-
-<div class="card" id="profileLoggedOut">
-<div class="loginLogo">🌛</div>
-<div class="loginTitle">اول بیا داخل</div>
-<p class="small" style="text-align:center">
-برای تغییر پروفایل و گذاشتن چیزای خودت، باید وارد بشی.
-</p>
-<button class="action" onclick="openLogin()">ورود</button>
 </div>
 
-<div class="card hidden" id="profileLoggedIn">
-
-<img class="profileBig" id="profileImage" src="" alt="">
-
-<div style="text-align:center;font-size:20px" id="profileName">
-گوگولی
-</div>
-
-<div class="small" style="text-align:center;margin-top:5px" id="profileEmail"></div>
-
-<label>عکس پروفایل</label>
-<input class="file" id="avatarFile" type="file" accept="image/*">
-<button class="action" onclick="uploadAvatar()">ذخیره عکس پروفایل</button>
-
-<button class="action secondary" onclick="logout()">فعلاً برم</button>
-</div>
-
-</section>
 
 <!-- CREATE -->
-<section class="page" id="create">
 
-<div class="sectionTitle">بذار یه چیز ✨</div>
+<div class="page" id="createPage">
 
-<div class="card" id="loginRequired">
-<div style="font-size:42px">🌛</div>
-<p>برای گذاشتن پست اول باید وارد بشی.</p>
-<button class="action" onclick="openLogin()">ورود</button>
+<button class="closeBtn" onclick="closePages()">×</button>
+
+<div class="pageBox">
+
+<div class="pageTitle">
+بذار یه چیز ☆
 </div>
-
-<div class="card hidden" id="composer">
 
 <label>عنوان</label>
-<input class="input" id="postTitle" placeholder="یه اسم کوچولو برای پست">
+<input id="postTitle" placeholder="یه اسم کوچولو برای پست...">
 
 <label>متن</label>
-<textarea class="input" id="postContent" placeholder="هرچی دلت می‌خواد..."></textarea>
+<textarea id="postContent" placeholder="اینجا بنویس..."></textarea>
 
 <label>عکس</label>
-<input class="file" id="imageFile" type="file" accept="image/*">
-<img id="imagePreview" class="preview">
-
-<label>ویدیو</label>
-<input class="file" id="videoFile" type="file" accept="video/*">
-
-<div class="small">
-برای ویدیو یکی رو انتخاب کن:
-</div>
-
-<div class="emojiRow">
-<button class="action secondary" onclick="setVideoStyle('square')">مربع 🎬</button>
-<button class="action secondary" onclick="setVideoStyle('circle')">دایره 🎥</button>
-<input class="input" id="postEmoji" value="🌛" maxlength="4">
+<div class="fileBox">
+<input id="postImage" type="file" accept="image/*">
 </div>
 
 <label>موزیک</label>
-<input class="file" id="musicFile" type="file" accept="audio/*">
+<div class="fileBox">
+<input id="postMusic" type="file" accept="audio/*">
+</div>
 
-<label>ایموجی مسیر پست‌ها</label>
-<input class="input" id="pathEmoji" value="💫" maxlength="4">
+<label>ویدیو</label>
+<div class="fileBox">
+<input id="postVideo" type="file" accept="video/*">
+</div>
+
+<label>مدل ویدیو</label>
+
+<div class="emojiRow">
+
+<button
+type="button"
+class="smallBtn"
+id="videoNormal"
+onclick="setVideoStyle('normal')">
+□ معمولی
+</button>
+
+<button
+type="button"
+class="smallBtn"
+id="videoCircle"
+onclick="setVideoStyle('circle')">
+○ گرد
+</button>
+
+<button
+type="button"
+class="smallBtn"
+onclick="setVideoStyle('normal')">
+☆
+</button>
+
+</div>
+
+<label>ایموجی خود پست</label>
+<input id="postEmoji" placeholder="مثلاً 🌛 یا 💫">
+
+<label>ایموجی مسیر</label>
+<input id="pathEmoji" placeholder="مثلاً ☆ یا 💜">
 
 <label>ایموجی عنوان</label>
-<input class="input" id="titleEmoji" value="🌛" maxlength="4">
+<input id="titleEmoji" placeholder="مثلاً ✦ یا ♡">
 
-<button class="action" onclick="createPost()">بذارمش ✨</button>
+<div id="status"></div>
+
+<button
+class="mainBtn"
+id="sendPostBtn"
+onclick="sendPost()">
+ارسال ☆
+</button>
 
 </div>
-</section>
-
-<!-- POSTS -->
-<section class="page" id="postsPage">
-<div class="sectionTitle">چیزایی که گذاشتم 📝</div>
-<div id="myPosts"></div>
-</section>
-
-<!-- CHAT -->
-<section class="page" id="chat">
-<div class="sectionTitle">گپ بزنیم 💬</div>
-
-<div class="card">
-<div style="font-size:45px;text-align:center">🌙</div>
-<p style="text-align:center">
-اینجا قراره جای گپ شبونه‌مون باشه.
-</p>
-<p class="small" style="text-align:center">
-ظاهر بخش گفتگو آماده‌ست؛ دیتابیس پیام‌ها رو جداگانه اضافه می‌کنیم.
-</p>
 </div>
-</section>
+
+
+<!-- PROFILE -->
+
+<div class="page" id="profilePage">
+
+<button class="closeBtn" onclick="closePages()">×</button>
+
+<div class="pageBox">
+
+<div class="pageTitle">گوشه‌م 🌛</div>
+
+<img
+id="profilePreview"
+class="profilePreview"
+src=""
+alt="profile">
+
+<input
+id="profileName"
+placeholder="اسم تو...">
+
+<textarea
+id="profileBio"
+placeholder="یه چیزی درباره خودت..."></textarea>
+
+<label>عکس پروفایل</label>
+
+<div class="fileBox">
+<input
+id="profileFile"
+type="file"
+accept="image/*">
+</div>
+
+<button
+class="mainBtn"
+onclick="saveProfile()">
+ذخیره ☆
+</button>
+
+<button
+class="mainBtn"
+onclick="openLogin()">
+ورود / ثبت‌نام
+</button>
+
+<button
+class="dangerBtn"
+onclick="logout()">
+فعلاً برم
+</button>
+
+</div>
+</div>
+
 
 <!-- SETTINGS -->
-<section class="page" id="settings">
-<div class="sectionTitle">یه کم دستکاری ⚙️</div>
 
-<div class="card">
+<div class="page" id="settingsPage">
 
-<label>زبان</label>
+<button class="closeBtn" onclick="closePages()">×</button>
 
-<select class="input" id="language" onchange="changeLanguage(this.value)">
-<option value="fa">فارسی</option>
-<option value="en">English</option>
-</select>
+<div class="pageBox">
 
-<p class="small">
-این انتخاب فقط برای خودت ذخیره میشه و روی زبان بقیه کاربران تأثیری نداره.
-</p>
+<div class="pageTitle">یه کم دستکاری ⚙</div>
+
+<label>ایموجی پست</label>
+<input id="settingPostEmoji">
+
+<label>ایموجی مسیر</label>
+<input id="settingPathEmoji">
+
+<label>ایموجی عنوان</label>
+<input id="settingTitleEmoji">
+
+<button
+class="mainBtn"
+onclick="saveSettings()">
+ذخیره تنظیمات ☆
+</button>
 
 </div>
-</section>
+</div>
 
-<nav class="nav">
 
-<button onclick="go('home')" id="navHome" class="active">
-<span>🏠</span>
-خونه‌مون
-</button>
+<!-- CHAT -->
 
-<button onclick="go('profile')" id="navProfile">
-<span>🌙</span>
-گوشه‌م
-</button>
+<div class="page" id="chatPage">
 
-<button onclick="go('create')" id="navCreate">
-<span>✨</span>
-بذار یه چیز
-</button>
+<button class="closeBtn" onclick="closePages()">×</button>
 
-<button onclick="go('postsPage')" id="navPosts">
-<span>📝</span>
-چیزایی که گذاشتم
-</button>
+<div class="pageBox">
 
-<button onclick="go('chat')" id="navChat">
-<span>💬</span>
-گپ بزنیم
-</button>
+<div class="pageTitle">
+گپ بزنیم 💬
+</div>
 
-<button onclick="go('settings')" id="navSettings">
-<span>⚙️</span>
-یه کم دستکاری
-</button>
-
-</nav>
+<div style="text-align:center;opacity:.65;font-size:13px;line-height:2">
+این قسمت فعلاً گوشه‌ی گپ ماست ☆<br>
+بعداً پیام‌های واقعی رو همین‌جا وصل می‌کنیم.
+</div>
 
 </div>
+</div>
+
 
 <!-- LOGIN -->
-<div class="modal" id="loginModal">
 
-<div class="modalBox">
+<div class="page" id="loginPage">
 
-<button class="close" onclick="closeLogin()">×</button>
+<button class="closeBtn" onclick="closePages()">×</button>
 
-<div class="loginLogo">🌛</div>
-<div class="loginTitle">بیا توی گوشه‌مون</div>
+<div class="pageBox">
 
-<input class="input" id="email" type="email" placeholder="ایمیلت">
+<div class="pageTitle">
+ورود به گوشه‌م ☆
+</div>
 
-<input class="input" id="password" type="password" placeholder="رمزت">
+<div class="loginInfo">
+برای گذاشتن پست، لایک و حذف پست خودت باید وارد بشی.
+</div>
 
-<button class="action" onclick="emailLogin()">ورود با ایمیل</button>
+<input
+id="loginEmail"
+type="email"
+placeholder="ایمیل">
 
-<button class="action secondary" onclick="emailSignup()">ساخت حساب</button>
+<input
+id="loginPassword"
+type="password"
+placeholder="رمز">
 
-<button class="action secondary" onclick="googleLogin()">
+<button
+class="mainBtn"
+onclick="emailLogin()">
+ورود
+</button>
+
+<button
+class="mainBtn"
+onclick="emailSignup()">
+ساخت حساب
+</button>
+
+<button
+class="mainBtn"
+onclick="googleLogin()">
 ورود با Google
 </button>
 
+<div id="loginStatus"
+style="text-align:center;font-size:12px;margin-top:12px">
+</div>
+
 </div>
 </div>
 
-<div class="toast" id="toast"></div>
+
+<!-- POST MODAL -->
+
+<div id="postModal">
+
+<div class="postCard">
+
+<button
+class="closeBtn"
+style="position:relative;top:0;left:0;float:left"
+onclick="closePost()">
+×
+</button>
+
+<div id="postDetail"></div>
+
+</div>
+
+</div>
+
+
+<div id="toast"></div>
+
 
 <script>
+
 /* =========================
    SUPABASE
 ========================= */
@@ -777,65 +771,45 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
-const db = window.supabase.createClient(
+const supabaseClient =
+window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
 const BUCKET = "Minuit cotier";
 
-let currentUser = null;
-let videoStyle = "square";
 
 /* =========================
-   BACKGROUND STARS
+   STATE
 ========================= */
 
-function createStars(){
+let currentUser = null;
+let currentSession = null;
 
-const container =
-document.getElementById("stars");
+let posts = [];
 
-for(let i=0;i<160;i++){
+let videoStyle = "normal";
 
-const s =
-document.createElement("span");
+let worldOffsetX = 0;
+let worldOffsetY = 0;
 
-s.className="bgStar";
-s.textContent="☆";
+let dragging = false;
+let moved = false;
 
-s.style.left =
-Math.random()*100+"%";
+let startX = 0;
+let startY = 0;
 
-s.style.fontSize =
-(5+Math.random()*12)+"px";
+let lastX = 0;
+let lastY = 0;
 
-s.style.animationDuration =
-(8+Math.random()*18)+"s";
+let likeStars = [];
 
-s.style.animationDelay =
-(-Math.random()*20)+"s";
+let selectedPost = null;
 
-const colors=[
-"#fff",
-"#ff8fd8",
-"#8fdcff",
-"#b899ff",
-"#ffd6f7"
-];
-
-s.style.color =
-colors[Math.floor(Math.random()*colors.length)];
-
-container.appendChild(s);
-}
-
-}
-
-createStars();
 
 /* =========================
-   TOAST
+   HELPERS
 ========================= */
 
 function toast(text){
@@ -843,7 +817,7 @@ function toast(text){
 const el =
 document.getElementById("toast");
 
-el.textContent=text;
+el.textContent = text;
 el.classList.add("show");
 
 setTimeout(()=>{
@@ -852,450 +826,564 @@ el.classList.remove("show");
 
 }
 
-/* =========================
-   NAVIGATION
-========================= */
 
-function go(page){
+function closePages(){
 
 document.querySelectorAll(".page")
-.forEach(x=>x.classList.remove("active"));
+.forEach(p=>p.classList.remove("show"));
 
-const target =
-document.getElementById(page);
-
-if(target){
-target.classList.add("active");
 }
 
-document.querySelectorAll(".nav button")
-.forEach(x=>x.classList.remove("active"));
 
-const map={
-home:"navHome",
-profile:"navProfile",
-create:"navCreate",
-postsPage:"navPosts",
-chat:"navChat",
-settings:"navSettings"
-};
+function goHome(){
 
-if(map[page]){
-document.getElementById(map[page])
-.classList.add("active");
+closePages();
+
 }
 
-if(page==="profile"){
-updateProfilePage();
-}
 
-if(page==="create"){
-updateComposer();
-}
+function openCreate(){
 
-if(page==="postsPage"){
-loadMyPosts();
+closePages();
+
+document
+.getElementById("createPage")
+.classList.add("show");
+
+if(!currentUser){
+toast("اول وارد شو 🌛");
 }
 
 }
 
-/* =========================
-   LOGIN
-========================= */
 
-function openLogin(){
+function openProfile(){
 
-document.getElementById("loginModal")
+closePages();
+
+document
+.getElementById("profilePage")
+.classList.add("show");
+
+loadProfileUI();
+
+}
+
+
+function openSettings(){
+
+closePages();
+
+document
+.getElementById("settingsPage")
+.classList.add("show");
+
+loadSettingsUI();
+
+}
+
+
+function openChat(){
+
+closePages();
+
+document
+.getElementById("chatPage")
 .classList.add("show");
 
 }
 
-function closeLogin(){
-
-document.getElementById("loginModal")
-.classList.remove("show");
-
-}
-
-async function emailLogin(){
-
-const email =
-document.getElementById("email").value.trim();
-
-const password =
-document.getElementById("password").value;
-
-if(!email || !password){
-toast("ایمیل و رمز رو وارد کن 🌙");
-return;
-}
-
-const {error}=await db.auth.signInWithPassword({
-email,
-password
-});
-
-if(error){
-
-toast(error.message);
-
-return;
-}
-
-closeLogin();
-toast("خوش اومدی 🌙");
-
-}
-
-async function emailSignup(){
-
-const email =
-document.getElementById("email").value.trim();
-
-const password =
-document.getElementById("password").value;
-
-if(!email || !password){
-toast("ایمیل و رمز رو وارد کن 🌙");
-return;
-}
-
-const {error}=await db.auth.signUp({
-email,
-password
-});
-
-if(error){
-
-toast(error.message);
-return;
-
-}
-
-toast("حساب ساخته شد ✨ اگر ایمیل تأیید خواست، تأییدش کن.");
-
-}
-
-async function googleLogin(){
-
-const {error}=await db.auth.signInWithOAuth({
-provider:"google",
-options:{
-redirectTo:
-"https://oceaneyy8090-art.github.io/minuit-cotier/"
-}
-});
-
-if(error){
-toast(error.message);
-}
-
-}
-
-async function logout(){
-
-await db.auth.signOut();
-
-toast("فعلاً برم 🌙");
-
-go("home");
-
-}
 
 /* =========================
-   AUTH STATE
+   AUTH
 ========================= */
 
-async function loadUser(){
+async function loadAuth(){
 
-const {
-data:{
-user
+const result =
+await supabaseClient.auth.getSession();
+
+currentSession =
+result.data.session;
+
+currentUser =
+currentSession?.user || null;
+
+updateProfileButton();
+
 }
-}=await db.auth.getUser();
 
-currentUser=user;
 
-updateUI();
+supabaseClient.auth.onAuthStateChange(
+async (event,session)=>{
 
-}
+currentSession = session;
+currentUser = session?.user || null;
 
-db.auth.onAuthStateChange(
-(event,session)=>{
-
-currentUser=session?.user || null;
-
-setTimeout(()=>{
-updateUI();
-},0);
+updateProfileButton();
 
 }
 );
 
-/* =========================
-   PROFILE UI
-========================= */
 
-function getName(){
+function updateProfileButton(){
 
-if(!currentUser)
-return "یکی از شب‌گردها";
-
-return currentUser.user_metadata?.display_name
-|| currentUser.email?.split("@")[0]
-|| "گوگولی";
-
-}
-
-function getAvatar(){
-
-if(!currentUser)
-return "";
-
-return currentUser.user_metadata?.avatar_url
-|| "";
-
-}
-
-function updateUI(){
-
-const profileBtn =
-document.getElementById("profileBtn");
-
-const hero =
-document.getElementById("heroAvatar");
-
-const avatar =
-getAvatar();
-
-if(avatar){
-
-profileBtn.innerHTML =
-`<img src="${avatar}">`;
-
-hero.innerHTML =
-`<img src="${avatar}">`;
-
-}else{
-
-profileBtn.textContent="🌛";
-hero.textContent="🌛";
-
-}
-
-updateProfilePage();
-updateComposer();
-
-loadPosts();
-
-}
-
-function updateProfilePage(){
-
-const loggedOut =
-document.getElementById("profileLoggedOut");
-
-const loggedIn =
-document.getElementById("profileLoggedIn");
+const button =
+document.getElementById("profileButton");
 
 if(!currentUser){
 
-loggedOut.classList.remove("hidden");
-loggedIn.classList.add("hidden");
+button.innerHTML="<span>🌛</span>";
+
 return;
 
 }
 
-loggedOut.classList.add("hidden");
-loggedIn.classList.remove("hidden");
+const metadata =
+currentUser.user_metadata || {};
 
-document.getElementById("profileEmail")
-.textContent=currentUser.email || "";
+const avatar =
+metadata.avatar_url || "";
 
-const avatar=getAvatar();
-
-const image =
-document.getElementById("profileImage");
+const name =
+metadata.name ||
+currentUser.email?.split("@")[0] ||
+"شب‌گرد";
 
 if(avatar){
 
-image.src=avatar;
+button.innerHTML=
+`<img src="${avatar}" alt="${name}">`;
 
 }else{
 
-image.removeAttribute("src");
-image.alt="🌛";
+button.innerHTML=
+`<span>🌛</span>`;
 
 }
 
 }
 
-async function uploadAvatar(){
+
+function openLogin(){
+
+closePages();
+
+document
+.getElementById("loginPage")
+.classList.add("show");
+
+}
+
+
+async function emailSignup(){
+
+const email =
+document.getElementById("loginEmail").value.trim();
+
+const password =
+document.getElementById("loginPassword").value;
+
+if(!email || !password){
+
+toast("ایمیل و رمز رو وارد کن");
+
+return;
+
+}
+
+const {error} =
+await supabaseClient.auth.signUp({
+email,
+password
+});
+
+if(error){
+
+document.getElementById("loginStatus")
+.textContent=error.message;
+
+return;
+
+}
+
+toast("حساب ساخته شد ☆");
+
+}
+
+
+async function emailLogin(){
+
+const email =
+document.getElementById("loginEmail").value.trim();
+
+const password =
+document.getElementById("loginPassword").value;
+
+if(!email || !password){
+
+toast("ایمیل و رمز رو وارد کن");
+
+return;
+
+}
+
+const {error} =
+await supabaseClient.auth.signInWithPassword({
+email,
+password
+});
+
+if(error){
+
+document.getElementById("loginStatus")
+.textContent=error.message;
+
+return;
+
+}
+
+toast("خوش اومدی ☆");
+
+closePages();
+
+}
+
+
+async function googleLogin(){
+
+const {error} =
+await supabaseClient.auth.signInWithOAuth({
+
+provider:"google",
+
+options:{
+redirectTo:
+"https://oceaneyy8090-art.github.io/minuit-cotier/"
+}
+
+});
+
+if(error){
+
+toast(error.message);
+
+}
+
+}
+
+
+async function logout(){
+
+await supabaseClient.auth.signOut();
+
+currentUser=null;
+currentSession=null;
+
+updateProfileButton();
+
+toast("فعلاً برم 🌛");
+
+closePages();
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+function loadProfileUI(){
+
+const preview =
+document.getElementById("profilePreview");
+
+if(!currentUser){
+
+preview.src="";
+preview.style.display="none";
+
+document.getElementById("profileName").value="";
+document.getElementById("profileBio").value="";
+
+return;
+
+}
+
+const meta =
+currentUser.user_metadata || {};
+
+preview.style.display="block";
+
+preview.src =
+meta.avatar_url || "";
+
+document.getElementById("profileName").value =
+meta.name || "";
+
+document.getElementById("profileBio").value =
+meta.bio || "";
+
+}
+
+
+async function saveProfile(){
 
 if(!currentUser){
 
 openLogin();
+
 return;
 
 }
+
+const name =
+document.getElementById("profileName")
+.value.trim();
+
+const bio =
+document.getElementById("profileBio")
+.value.trim();
+
+let avatarUrl =
+currentUser.user_metadata?.avatar_url || "";
+
 
 const file =
-document.getElementById("avatarFile").files[0];
+document.getElementById("profileFile")
+.files[0];
 
-if(!file){
 
-toast("اول یه عکس انتخاب کن 🌙");
-return;
-
-}
+if(file){
 
 const ext =
 file.name.split(".").pop();
 
 const path =
-"avatars/"+currentUser.id+"."+ext;
+"profiles/" +
+currentUser.id +
+"-" +
+Date.now() +
+"." +
+ext;
 
-const {
-error
-}=await db.storage
+
+const {error:uploadError} =
+await supabaseClient.storage
 .from(BUCKET)
 .upload(path,file,{
 upsert:true,
 contentType:file.type
 });
 
-if(error){
 
-toast(error.message);
+if(uploadError){
+
+toast("آپلود عکس نشد");
+
+console.error(uploadError);
+
 return;
 
 }
 
-const {
-data
-}=db.storage
+
+const {data} =
+supabaseClient.storage
 .from(BUCKET)
 .getPublicUrl(path);
 
-const avatarUrl=data.publicUrl;
+avatarUrl =
+data.publicUrl;
 
-const {
-error:updateError
-}=await db.auth.updateUser({
-data:{
-avatar_url:avatarUrl,
-display_name:getName()
 }
+
+
+const {error} =
+await supabaseClient.auth.updateUser({
+
+data:{
+name:name,
+bio:bio,
+avatar_url:avatarUrl
+}
+
 });
 
-if(updateError){
 
-toast(updateError.message);
+if(error){
+
+toast("ذخیره نشد");
+
+console.error(error);
+
 return;
 
 }
 
-toast("عکس پروفایل ذخیره شد ✨");
+updateProfileButton();
 
-await loadUser();
+loadProfileUI();
+
+toast("پروفایلت ذخیره شد ☆");
 
 }
+
 
 /* =========================
-   COMPOSER
+   SETTINGS
 ========================= */
 
-function updateComposer(){
+function loadSettingsUI(){
 
-const loginRequired =
-document.getElementById("loginRequired");
+if(!currentUser){
 
-const composer =
-document.getElementById("composer");
-
-if(currentUser){
-
-loginRequired.classList.add("hidden");
-composer.classList.remove("hidden");
-
-}else{
-
-loginRequired.classList.remove("hidden");
-composer.classList.add("hidden");
+return;
 
 }
 
+const meta =
+currentUser.user_metadata || {};
+
+document.getElementById("settingPostEmoji")
+.value =
+meta.post_emoji || "🌛";
+
+document.getElementById("settingPathEmoji")
+.value =
+meta.path_emoji || "☆";
+
+document.getElementById("settingTitleEmoji")
+.value =
+meta.title_emoji || "✦";
+
 }
+
+
+async function saveSettings(){
+
+if(!currentUser){
+
+openLogin();
+
+return;
+
+}
+
+const postEmoji =
+document.getElementById("settingPostEmoji")
+.value.trim() || "🌛";
+
+const pathEmoji =
+document.getElementById("settingPathEmoji")
+.value.trim() || "☆";
+
+const titleEmoji =
+document.getElementById("settingTitleEmoji")
+.value.trim() || "✦";
+
+
+const old =
+currentUser.user_metadata || {};
+
+
+const {error} =
+await supabaseClient.auth.updateUser({
+
+data:{
+...old,
+post_emoji:postEmoji,
+path_emoji:pathEmoji,
+title_emoji:titleEmoji
+}
+
+});
+
+
+if(error){
+
+toast("ذخیره نشد");
+
+return;
+
+}
+
+toast("تنظیمات ذخیره شد ☆");
+
+}
+
+
+/* =========================
+   VIDEO STYLE
+========================= */
 
 function setVideoStyle(style){
 
 videoStyle=style;
 
-toast(
-style==="circle"
-?"ویدیو دایره‌ای شد 🎥"
-:"ویدیو مربعی شد 🎬"
-);
+document.getElementById("videoNormal")
+.style.opacity =
+style==="normal" ? "1" : ".5";
+
+document.getElementById("videoCircle")
+.style.opacity =
+style==="circle" ? "1" : ".5";
 
 }
 
-/* IMAGE PREVIEW */
-
-document.getElementById("imageFile")
-.addEventListener("change",function(){
-
-const file=this.files[0];
-
-const preview =
-document.getElementById("imagePreview");
-
-if(!file){
-
-preview.style.display="none";
-return;
-
-}
-
-preview.src=
-URL.createObjectURL(file);
-
-preview.style.display="block";
-
-});
 
 /* =========================
-   STORAGE UPLOAD
+   FILE UPLOAD
 ========================= */
 
 async function uploadFile(file,folder){
 
-if(!file)
+if(!file){
+
 return null;
+
+}
 
 const ext =
 file.name.split(".").pop();
 
-const cleanExt =
-ext.replace(/[^a-zA-Z0-9]/g,"");
+const safeName =
+Date.now() +
+"-" +
+Math.random()
+.toString(36)
+.substring(2) +
+"." +
+ext;
 
 const path =
-folder+"/"+currentUser.id+"_"+Date.now()+"."+cleanExt;
+folder + "/" + safeName;
 
-const {
-error
-}=await db.storage
+
+const {error} =
+await supabaseClient.storage
 .from(BUCKET)
-.upload(path,file,{
+.upload(
+path,
+file,
+{
 upsert:false,
 contentType:file.type
-});
+}
+);
 
-if(error)
+
+if(error){
+
+console.error(error);
+
 throw error;
 
-const {
-data
-}=db.storage
+}
+
+
+const {data} =
+supabaseClient.storage
 .from(BUCKET)
 .getPublicUrl(path);
 
@@ -1303,18 +1391,40 @@ return data.publicUrl;
 
 }
 
+
 /* =========================
-   CREATE POST
+   SEND POST
 ========================= */
 
-async function createPost(){
+async function sendPost(){
 
 if(!currentUser){
 
 openLogin();
+
 return;
 
 }
+
+const button =
+document.getElementById("sendPostBtn");
+
+if(button.disabled){
+
+return;
+
+}
+
+button.disabled=true;
+button.textContent="داره می‌فرسته...";
+
+const status =
+document.getElementById("status");
+
+status.textContent="در حال آماده کردن پست...";
+
+
+try{
 
 const title =
 document.getElementById("postTitle")
@@ -1325,74 +1435,98 @@ document.getElementById("postContent")
 .value.trim();
 
 const imageFile =
-document.getElementById("imageFile")
-.files[0];
-
-const videoFile =
-document.getElementById("videoFile")
+document.getElementById("postImage")
 .files[0];
 
 const musicFile =
-document.getElementById("musicFile")
+document.getElementById("postMusic")
 .files[0];
+
+const videoFile =
+document.getElementById("postVideo")
+.files[0];
+
+
+const meta =
+currentUser.user_metadata || {};
+
 
 const postEmoji =
 document.getElementById("postEmoji")
-.value.trim()
-||"🌛";
+.value.trim() ||
+meta.post_emoji ||
+"🌛";
+
 
 const pathEmoji =
 document.getElementById("pathEmoji")
-.value.trim()
-||"💫";
+.value.trim() ||
+meta.path_emoji ||
+"☆";
+
 
 const titleEmoji =
 document.getElementById("titleEmoji")
-.value.trim()
-||"🌛";
+.value.trim() ||
+meta.title_emoji ||
+"✦";
 
-if(
-!title &&
-!content &&
-!imageFile &&
-!videoFile &&
-!musicFile
-){
 
-toast("یه چیزی برای پست بذار 🌙");
-return;
+let imageUrl=null;
+let musicUrl=null;
+let videoUrl=null;
+
+
+if(imageFile){
+
+status.textContent="عکس داره آپلود می‌شه...";
+
+imageUrl =
+await uploadFile(
+imageFile,
+"posts-images"
+);
 
 }
 
-try{
 
-toast("دارم پستت رو آماده می‌کنم...");
+if(musicFile){
 
-const imageUrl =
-await uploadFile(
-imageFile,
-"images"
-);
+status.textContent="موزیک داره آپلود می‌شه...";
 
-const videoUrl =
-await uploadFile(
-videoFile,
-"videos"
-);
-
-const musicUrl =
+musicUrl =
 await uploadFile(
 musicFile,
-"music"
+"posts-music"
 );
 
-const {error}=await db
+}
+
+
+if(videoFile){
+
+status.textContent="ویدیو داره آپلود می‌شه...";
+
+videoUrl =
+await uploadFile(
+videoFile,
+"posts-video"
+);
+
+}
+
+
+status.textContent="پست داره ذخیره می‌شه...";
+
+
+const {data,error} =
+await supabaseClient
 .from("posts")
 .insert({
 
-title:title || null,
+title:title,
 
-content:content || null,
+content:content,
 
 image_url:imageUrl,
 
@@ -1402,9 +1536,7 @@ music_url:musicUrl,
 
 user_id:currentUser.id,
 
-video_style:videoFile
-?videoStyle
-:null,
+video_style:videoUrl ? videoStyle : null,
 
 post_emoji:postEmoji,
 
@@ -1412,37 +1544,73 @@ path_emoji:pathEmoji,
 
 title_emoji:titleEmoji
 
-});
+})
+.select()
+.single();
+
 
 if(error){
 
-toast(error.message);
-return;
+console.error(error);
+
+throw error;
 
 }
 
-document.getElementById("postTitle").value="";
-document.getElementById("postContent").value="";
-document.getElementById("imageFile").value="";
-document.getElementById("videoFile").value="";
-document.getElementById("musicFile").value="";
 
-document.getElementById("imagePreview")
-.style.display="none";
+toast("پستت رفت توی شب ☆");
 
-toast("پستت رفت روی خونه ✨");
+document.getElementById("postTitle")
+.value="";
 
-go("home");
+document.getElementById("postContent")
+.value="";
 
-loadPosts();
+document.getElementById("postImage")
+.value="";
+
+document.getElementById("postMusic")
+.value="";
+
+document.getElementById("postVideo")
+.value="";
+
+document.getElementById("postEmoji")
+.value="";
+
+document.getElementById("pathEmoji")
+.value="";
+
+document.getElementById("titleEmoji")
+.value="";
+
+
+status.textContent="";
+
+closePages();
+
+await loadPosts();
+
 
 }catch(error){
 
-toast(error.message);
+console.error(error);
+
+status.textContent =
+"خطا: " +
+(error.message || "ارسال نشد");
+
+toast("پست ارسال نشد 😭");
+
+}finally{
+
+button.disabled=false;
+button.textContent="ارسال ☆";
 
 }
 
 }
+
 
 /* =========================
    LOAD POSTS
@@ -1450,162 +1618,568 @@ toast(error.message);
 
 async function loadPosts(){
 
-const {
-data,
-error
-}=await db
+const {data,error} =
+await supabaseClient
 .from("posts")
 .select("*")
-.order("created_at",{ascending:true});
+.order("created_at",{
+ascending:true
+});
 
-const feed =
-document.getElementById("feed");
 
 if(error){
 
-feed.innerHTML=
-`<div class="empty">خطا در گرفتن پست‌ها:<br>${error.message}</div>`;
+console.error(error);
 
 return;
 
 }
 
-if(!data || data.length===0){
+posts =
+data || [];
 
-feed.innerHTML=
-`<div class="empty">
-هنوز چیزی اینجا نیست 🌛<br>
-اولین چیز رو خودت بذار ✨
-</div>`;
-
-return;
+drawWorld();
 
 }
 
-feed.innerHTML="";
-
-for(let i=0;i<data.length;i++){
-
-const post=data[i];
-
-feed.appendChild(
-await createPostElement(post)
-);
-
-if(i<data.length-1){
-
-const pathEmoji =
-post.path_emoji || "💫";
-
-const path =
-document.createElement("div");
-
-path.className="path";
-path.textContent=
-pathEmoji+"  "+pathEmoji+"  "+pathEmoji;
-
-feed.appendChild(path);
-
-}
-
-}
-
-}
 
 /* =========================
-   POST ELEMENT
+   CANVAS
 ========================= */
 
-async function createPostElement(post){
+const canvas =
+document.getElementById("sky");
 
-const card =
-document.createElement("article");
+const ctx =
+canvas.getContext("2d");
 
-card.className="card post";
+let W=0;
+let H=0;
 
-const avatar =
-post.user_id
-?await getUserAvatar(post.user_id)
-:null;
+function resizeCanvas(){
 
-const userName =
-post.visitor_name
-||"یکی از شب‌گردها";
+W=canvas.width=
+window.innerWidth *
+devicePixelRatio;
 
-let media="";
+H=canvas.height=
+window.innerHeight *
+devicePixelRatio;
 
-if(post.image_url){
+canvas.style.width=
+window.innerWidth+"px";
 
-media+=
-`<img class="postMedia"
-src="${post.image_url}"
-loading="lazy">`;
+canvas.style.height=
+window.innerHeight+"px";
 
-}
-
-if(post.video_url){
-
-const circle =
-post.video_style==="circle"
-?"circle"
-:"";
-
-media+=
-`<video
-class="postMedia postVideo ${circle}"
-src="${post.video_url}"
-controls
-playsinline
-></video>`;
+ctx.setTransform(
+devicePixelRatio,
+0,
+0,
+devicePixelRatio,
+0,
+0
+);
 
 }
 
-if(post.music_url){
+window.addEventListener(
+"resize",
+resizeCanvas
+);
 
-media+=
-`<audio
-class="audio"
-controls
-src="${post.music_url}">
-</audio>`;
+resizeCanvas();
+
+
+const backgroundStars=[];
+
+for(let i=0;i<850;i++){
+
+backgroundStars.push({
+
+x:Math.random()*window.innerWidth,
+
+y:Math.random()*window.innerHeight,
+
+r:Math.random()*1.4+.2,
+
+speed:Math.random()*.25+.03,
+
+phase:Math.random()*Math.PI*2
+
+});
 
 }
 
-const liked =
-currentUser
-?await alreadyLiked(post.id)
-:false;
 
-const likeInfo =
-await getLikeInfo(post.id);
+function getPostPosition(index){
 
-const comments =
-await getComments(post.id);
+const total=
+Math.max(posts.length,1);
 
-const titleEmoji =
-post.title_emoji || "🌛";
+const angle =
+index *
+(Math.PI*2/total)
++
+0.5;
 
-const postEmoji =
-post.post_emoji || "🌛";
+const radius =
+Math.min(
+window.innerWidth,
+window.innerHeight
+) *
+(.20 + (index%4)*.08);
 
-card.innerHTML=`
+return{
 
-<div class="postHead">
+x:
+window.innerWidth/2 +
+Math.cos(angle)*radius,
 
-<div class="postAvatar">
+y:
+window.innerHeight/2 +
+Math.sin(angle)*radius*.72
+
+};
+
+}
+
+
+function drawBackground(time){
+
+ctx.clearRect(
+0,
+0,
+window.innerWidth,
+window.innerHeight
+);
+
+
+for(const s of backgroundStars){
+
+const twinkle =
+.35 +
+Math.sin(
+time*.001*s.speed+
+s.phase
+)*.35;
+
+ctx.globalAlpha =
+Math.max(.05,twinkle);
+
+ctx.fillStyle="white";
+
+ctx.beginPath();
+
+ctx.arc(
+s.x,
+s.y,
+s.r,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+}
+
+ctx.globalAlpha=1;
+
+}
+
+
+function drawWorld(time){
+
+drawBackground(time);
+
+if(posts.length===0){
+
+requestAnimationFrame(drawWorld);
+
+return;
+
+}
+
+
+const positions =
+posts.map(
+(p,i)=>getPostPosition(i)
+);
+
+
+/* مسیرها */
+
+for(let i=1;i<positions.length;i++){
+
+const a=positions[i-1];
+const b=positions[i];
+
+const emoji =
+posts[i].path_emoji ||
+posts[i-1].path_emoji ||
+"☆";
+
+
+const steps=7;
+
+for(let j=1;j<steps;j++){
+
+const t=j/steps;
+
+const x=
+a.x+(b.x-a.x)*t;
+
+const y=
+a.y+(b.y-a.y)*t;
+
+ctx.globalAlpha=.65;
+
+ctx.font="15px Arial";
+
+ctx.fillText(
+emoji,
+x,
+y
+);
+
+}
+
+}
+
+
+ctx.globalAlpha=1;
+
+
+/* پست‌ها */
+
+posts.forEach((post,index)=>{
+
+const p=positions[index];
+
+post._x=p.x;
+post._y=p.y;
+
+
+/* glow */
+
+const glow =
+ctx.createRadialGradient(
+p.x,
+p.y,
+3,
+p.x,
+p.y,
+48
+);
+
+glow.addColorStop(
+0,
+"rgba(150,120,255,.22)"
+);
+
+glow.addColorStop(
+1,
+"rgba(150,120,255,0)"
+);
+
+ctx.fillStyle=glow;
+
+ctx.beginPath();
+
+ctx.arc(
+p.x,
+p.y,
+48,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+
+/* ایموجی پست */
+
+ctx.font="34px Arial";
+
+ctx.textAlign="center";
+
+ctx.fillText(
+post.post_emoji || "🌛",
+p.x,
+p.y+10
+);
+
+
+/* ایموجی عنوان */
+
+ctx.font="16px Arial";
+
+ctx.fillText(
+post.title_emoji || "✦",
+p.x,
+p.y-28
+);
+
+
+/* like stars */
+
+drawLikeStars(post);
+
+});
+
+ctx.textAlign="start";
+ctx.globalAlpha=1;
+
+requestAnimationFrame(drawWorld);
+
+}
+
+
+/* =========================
+   LIKE STARS
+========================= */
+
+function createLikeStars(post){
+
+const colors=[
+"#ff8fb3",
+"#9d8cff",
+"#75d9ff",
+"#ffffff",
+"#d88cff",
+"#ffb6d5"
+];
+
+
+/* دقیقاً 100 تا */
+
+for(let i=0;i<100;i++){
+
+likeStars.push({
+
+postId:post.id,
+
+x:post._x || window.innerWidth/2,
+
+y:post._y || window.innerHeight/2,
+
+vx:(Math.random()-.5)*6,
+
+vy:(Math.random()-.5)*6-1,
+
+life:1,
+
+color:
+colors[
+Math.floor(
+Math.random()*colors.length
+)
+]
+
+});
+
+}
+
+}
+
+
+function drawLikeStars(post){
+
+for(const s of likeStars){
+
+if(s.postId!==post.id){
+
+continue;
+
+}
+
+ctx.globalAlpha =
+Math.max(0,s.life);
+
+ctx.fillStyle=s.color;
+
+ctx.font="14px Arial";
+
+ctx.fillText(
+"☆",
+s.x,
+s.y
+);
+
+s.x+=s.vx;
+s.y+=s.vy;
+
+s.vx*=.97;
+s.vy*=.97;
+
+s.life-=.018;
+
+}
+
+likeStars =
+likeStars.filter(
+s=>s.life>0
+);
+
+ctx.globalAlpha=1;
+
+}
+
+
+/* =========================
+   CANVAS TOUCH
+========================= */
+
+canvas.addEventListener(
+"pointerdown",
+e=>{
+
+dragging=true;
+moved=false;
+
+startX=e.clientX;
+startY=e.clientY;
+
+lastX=e.clientX;
+lastY=e.clientY;
+
+canvas.setPointerCapture(e.pointerId);
+
+}
+);
+
+
+canvas.addEventListener(
+"pointermove",
+e=>{
+
+if(!dragging)return;
+
+const dx=e.clientX-lastX;
+const dy=e.clientY-lastY;
+
+if(
+Math.abs(e.clientX-startX)>8 ||
+Math.abs(e.clientY-startY)>8
+){
+
+moved=true;
+
+}
+
+lastX=e.clientX;
+lastY=e.clientY;
+
+}
+);
+
+
+canvas.addEventListener(
+"pointerup",
+e=>{
+
+if(!dragging)return;
+
+dragging=false;
+
+if(moved)return;
+
+
+let closest=null;
+let distance=999;
+
+
+posts.forEach((post,index)=>{
+
+const p=getPostPosition(index);
+
+const d=
+Math.hypot(
+e.clientX-p.x,
+e.clientY-p.y
+);
+
+if(d<distance){
+
+distance=d;
+closest=post;
+
+}
+
+});
+
+
+if(
+closest &&
+distance<55
+){
+
+openPost(closest);
+
+}
+
+});
+
+
+/* =========================
+   OPEN POST
+========================= */
+
+async function openPost(post){
+
+selectedPost=post;
+
+const modal =
+document.getElementById("postModal");
+
+const detail =
+document.getElementById("postDetail");
+
+
+let authorName=
+"یکی از شب‌گردها";
+
+let avatar="";
+
+
+if(
+currentUser &&
+String(post.user_id)===
+String(currentUser.id)
+){
+
+authorName =
+currentUser.user_metadata?.name ||
+currentUser.email?.split("@")[0] ||
+"من";
+
+avatar =
+currentUser.user_metadata?.avatar_url ||
+"";
+
+}
+
+
+let html="";
+
+
+html+=`
+<div class="postHeader">
 
 ${
 avatar
-?`<img src="${avatar}">`
-:`${postEmoji}`
+?
+`<img class="authorAvatar" src="${avatar}">`
+:
+`<div class="authorAvatar"
+style="display:flex;align-items:center;justify-content:center;font-size:21px">
+🌛
+</div>`
 }
 
-</div>
-
 <div>
-
-<div class="postUser">
-${escapeHtml(userName)}
+<div class="authorName">
+${escapeHtml(authorName)}
 </div>
 
 <div class="postTime">
@@ -1615,302 +2189,313 @@ ${formatDate(post.created_at)}
 </div>
 
 </div>
+`;
 
-${
-post.title
-?`
+
+html+=`
 <div class="postTitle">
-${titleEmoji} ${escapeHtml(post.title)}
+${escapeHtml(post.title_emoji || "✦")}
+${escapeHtml(post.title || "")}
 </div>
-`
-:""
-}
+`;
 
-${
-post.content
-?`
+
+if(post.content){
+
+html+=`
 <div class="postText">
 ${escapeHtml(post.content)}
 </div>
-`
-:""
+`;
+
 }
 
-${media}
 
-<div class="postActions">
+if(post.image_url){
+
+html+=`
+<img
+class="postMedia"
+src="${post.image_url}">
+`;
+
+}
+
+
+if(post.music_url){
+
+html+=`
+<audio
+controls
+src="${post.music_url}">
+</audio>
+`;
+
+}
+
+
+if(post.video_url){
+
+html+=`
+<video
+class="postMedia ${
+post.video_style==="circle"
+?
+"circle"
+:
+""
+}"
+controls
+playsinline
+src="${post.video_url}">
+</video>
+`;
+
+}
+
+
+const likes =
+await getLikes(post.id);
+
+const comments =
+await getComments(post.id);
+
+
+const myLiked =
+currentUser &&
+likes.some(
+l=>String(l.user_id)===
+String(currentUser.id)
+);
+
+
+html+=`
+
+<div class="actions">
 
 <button
-class="likeBtn ${liked?"liked":""}"
-onclick="toggleLike(${post.id},this)"
->
-${liked?"♥":"♡"} ${likeInfo.count}
+class="likeBtn ${myLiked?"liked":""}"
+onclick="likePost()">
+
+${myLiked?"♥":"♡"}
+ ${likes.length}
+
 </button>
+
+<span style="font-size:11px;opacity:.6">
+${likes.length} قلبک
+</span>
 
 ${
 currentUser &&
-post.user_id===currentUser.id
-?`
+String(post.user_id)===
+String(currentUser.id)
+?
+`
 <button
-class="deleteBtn"
-onclick="deletePost(${post.id})"
->
-حذف 🗑️
+class="deletePostBtn"
+onclick="deletePost()">
+حذف
 </button>
 `
-:""
+:
+""
 }
 
 </div>
+`;
 
-${
-likeInfo.names.length
-?`
-<div class="likeNames">
-❤️ ${likeInfo.names.join("، ")}
+
+if(likes.length){
+
+html+=`
+<div
+style="font-size:11px;opacity:.6;margin-top:10px">
+قلبک‌ها:
+${likes.map(
+l=>escapeHtml(l.visitor_name || "شب‌گرد")
+).join("، ")}
 </div>
-`
-:""
+`;
+
 }
 
-<div class="comments">
 
-${
-comments.map(c=>`
-<div class="comment">
-<b>${escapeHtml(c.visitor_name||"شب‌گرد")}</b>
-<br>
-${escapeHtml(c.message)}
-</div>
-`).join("")
-}
-
-</div>
+html+=`
 
 <div class="commentBox">
 
+<div
+style="font-size:13px;margin-bottom:8px">
+گپ‌های این پست 💬
+</div>
+
+${
+comments.length
+?
+comments.map(
+c=>`
+<div class="comment">
+<b>
+${escapeHtml(c.visitor_name || "شب‌گرد")}
+</b>
+<br>
+${escapeHtml(c.message)}
+</div>
+`
+).join("")
+:
+`
+<div style="opacity:.5;font-size:11px">
+هنوز کسی چیزی نگفته ☆
+</div>
+`
+}
+
+`;
+
+if(currentUser){
+
+html+=`
+
+<div style="display:flex;gap:7px;margin-top:10px">
+
 <input
-class="input"
-id="comment-${post.id}"
+id="commentInput"
 placeholder="یه چیزی بگو..."
->
+style="margin:0">
 
 <button
-class="commentBtn"
-onclick="addComment(${post.id})"
->
-↩
+class="smallBtn"
+onclick="sendComment()">
+ارسال
 </button>
 
 </div>
 
 `;
 
-return card;
+}
+
+html+=`</div>`;
+
+
+detail.innerHTML=html;
+
+modal.classList.add("show");
 
 }
+
 
 /* =========================
-   USER AVATAR
+   GET LIKES
 ========================= */
 
-async function getUserAvatar(userId){
+async function getLikes(postId){
 
-if(!userId)
-return null;
-
-/*
-   برای اینکه مجبور نباشیم
-   جدول profiles بسازیم،
-   فعلاً عکس خود کاربر را
-   از auth metadata فقط برای
-   کاربر فعلی داریم.
-*/
-
-if(currentUser &&
-currentUser.id===userId){
-
-return getAvatar();
-
-}
-
-return null;
-
-}
-
-/* =========================
-   LIKES
-========================= */
-
-async function alreadyLiked(postId){
-
-if(!currentUser)
-return false;
-
-const {
-data
-}=await db
+const {data,error} =
+await supabaseClient
 .from("likes")
-.select("id")
-.eq("post_id",postId)
-.eq("user_id",currentUser.id)
-.limit(1);
-
-return !!(data && data.length);
-
-}
-
-async function getLikeInfo(postId){
-
-const {
-data
-}=await db
-.from("likes")
-.select("visitor_name,user_id")
+.select("*")
 .eq("post_id",postId);
-
-if(!data)
-return{
-count:0,
-names:[]
-};
-
-const names=
-data
-.map(x=>x.visitor_name)
-.filter(Boolean);
-
-return{
-count:data.length,
-names:names.slice(0,8)
-};
-
-}
-
-async function toggleLike(postId,button){
-
-if(!currentUser){
-
-openLogin();
-return;
-
-}
-
-const {
-data
-}=await db
-.from("likes")
-.select("id")
-.eq("post_id",postId)
-.eq("user_id",currentUser.id)
-.limit(1);
-
-if(data && data.length){
-
-await db
-.from("likes")
-.delete()
-.eq("id",data[0].id);
-
-button.classList.remove("liked");
-button.innerHTML="♡";
-
-}else{
-
-const {error}=await db
-.from("likes")
-.insert({
-
-post_id:postId,
-
-user_id:currentUser.id,
-
-visitor_name:getName()
-
-});
 
 if(error){
 
-toast(error.message);
+console.error(error);
+
+return[];
+
+}
+
+return data || [];
+
+}
+
+
+/* =========================
+   LIKE
+========================= */
+
+async function likePost(){
+
+if(!selectedPost){
+
 return;
 
 }
 
-button.classList.add("liked");
-button.innerHTML="♥";
+if(!currentUser){
 
-createStarBurst(button);
+toast("برای لایک باید وارد شی 🌛");
+
+openLogin();
+
+return;
 
 }
 
-loadPosts();
 
-}
+const likes =
+await getLikes(selectedPost.id);
 
-/* =========================
-   EXACT 100 STAR BURST
-========================= */
 
-function createStarBurst(button){
-
-const rect =
-button.getBoundingClientRect();
-
-const colors=[
-"#ff78c8",
-"#72d7ff",
-"#a984ff",
-"#ffffff",
-"#ffd1ef"
-];
-
-for(let i=0;i<100;i++){
-
-const star =
-document.createElement("span");
-
-star.className="burst";
-star.textContent="☆";
-
-star.style.left=
-(rect.left+rect.width/2)+"px";
-
-star.style.top=
-(rect.top+rect.height/2)+"px";
-
-const angle=
-Math.random()*Math.PI*2;
-
-const distance=
-80+Math.random()*230;
-
-star.style.setProperty(
-"--x",
-Math.cos(angle)*distance+"px"
+const already =
+likes.some(
+l=>String(l.user_id)===
+String(currentUser.id)
 );
 
-star.style.setProperty(
-"--y",
-Math.sin(angle)*distance+"px"
-);
 
-star.style.color=
-colors[
-Math.floor(Math.random()*colors.length)
-];
+if(already){
 
-star.style.animationDelay=
-Math.random()*.18+"s";
+toast("این پست رو قبلاً قلب دادی ♡");
 
-document.body.appendChild(star);
-
-setTimeout(()=>{
-star.remove();
-},1600);
+return;
 
 }
 
+
+const name =
+currentUser.user_metadata?.name ||
+currentUser.email?.split("@")[0] ||
+"شب‌گرد";
+
+
+const {error} =
+await supabaseClient
+.from("likes")
+.insert({
+
+post_id:selectedPost.id,
+
+user_id:currentUser.id,
+
+visitor_name:name
+
+});
+
+
+if(error){
+
+console.error(error);
+
+toast("لایک نشد");
+
+return;
+
 }
+
+
+/* دقیقاً 100 ستاره */
+
+createLikeStars(selectedPost);
+
+toast("♥ + 100 ☆");
+
+openPost(selectedPost);
+
+}
+
 
 /* =========================
    COMMENTS
@@ -1918,277 +2503,245 @@ star.remove();
 
 async function getComments(postId){
 
-const {
-data
-}=await db
+const {data,error} =
+await supabaseClient
 .from("comments")
 .select("*")
 .eq("post_id",postId)
-.order("created_at",{ascending:true});
+.order("created_at",{
+ascending:true
+});
+
+if(error){
+
+console.error(error);
+
+return[];
+
+}
 
 return data || [];
 
 }
 
-async function addComment(postId){
+
+async function sendComment(){
+
+if(!selectedPost)return;
 
 if(!currentUser){
 
 openLogin();
+
 return;
 
 }
 
+
 const input =
-document.getElementById(
-"comment-"+postId
-);
+document.getElementById("commentInput");
 
 const message =
-input.value.trim();
+input?.value.trim();
 
-if(!message)
+if(!message){
+
 return;
 
-const {error}=await db
+}
+
+
+const name =
+currentUser.user_metadata?.name ||
+currentUser.email?.split("@")[0] ||
+"شب‌گرد";
+
+
+const {error} =
+await supabaseClient
 .from("comments")
 .insert({
 
-post_id:postId,
+post_id:selectedPost.id,
 
 user_id:currentUser.id,
 
 message:message,
 
-visitor_name:getName()
+visitor_name:name
 
 });
 
-if(error){
-
-toast(error.message);
-return;
-
-}
-
-input.value="";
-
-toast("کامنتت نشست 💬");
-
-loadPosts();
-
-}
-
-/* =========================
-   DELETE OWN POST
-========================= */
-
-async function deletePost(postId){
-
-if(!currentUser)
-return;
-
-const ok=
-confirm("این پست رو پاک کنم؟");
-
-if(!ok)
-return;
-
-const {error}=await db
-.from("posts")
-.delete()
-.eq("id",postId)
-.eq("user_id",currentUser.id);
 
 if(error){
 
-toast(error.message);
+console.error(error);
+
+toast("نظر ارسال نشد");
+
 return;
 
 }
 
-toast("پست پاک شد 🌙");
+toast("نظرت رفت ☆");
 
-loadPosts();
+openPost(selectedPost);
 
 }
 
+
 /* =========================
-   MY POSTS
+   DELETE POST
 ========================= */
 
-async function loadMyPosts(){
+async function deletePost(){
 
-const box =
-document.getElementById("myPosts");
+if(!selectedPost)return;
 
 if(!currentUser){
 
-box.innerHTML=
-`
-<div class="card">
-<p style="text-align:center">
-اول وارد شو 🌙
-</p>
-<button class="action"
-onclick="openLogin()">
-ورود
-</button>
-</div>
-`;
+return;
+
+}
+
+
+if(
+String(selectedPost.user_id)!==
+String(currentUser.id)
+){
+
+toast("این پست مال تو نیست");
 
 return;
 
 }
 
-const {
-data,
-error
-}=await db
+
+const yes =
+confirm(
+"این پست رو واقعاً حذف کنم؟"
+);
+
+if(!yes){
+
+return;
+
+}
+
+
+const {error} =
+await supabaseClient
 .from("posts")
-.select("*")
-.eq("user_id",currentUser.id)
-.order("created_at",{ascending:false});
+.delete()
+.eq("id",selectedPost.id)
+.eq("user_id",currentUser.id);
+
 
 if(error){
 
-box.innerHTML=
-`<div class="empty">${error.message}</div>`;
-
-return;
-
-}
-
-if(!data || !data.length){
-
-box.innerHTML=
-`<div class="empty">
-هنوز چیزی نذاشتی 🌛
-</div>`;
-
-return;
-
-}
-
-box.innerHTML="";
-
-for(const post of data){
-
-box.appendChild(
-await createPostElement(post)
-);
-
-}
-
-}
-
-/* =========================
-   LANGUAGE
-========================= */
-
-function changeLanguage(lang){
-
-localStorage.setItem(
-"site_language",
-lang
-);
-
-if(lang==="en"){
-
-document.body.classList.add("en");
-
-}else{
-
-document.body.classList.remove("en");
-
-}
+console.error(error);
 
 toast(
-lang==="en"
-?"English selected"
-:"زبان فارسی شد 🌙"
+"حذف نشد: "+
+error.message
 );
 
-}
-
-function loadLanguage(){
-
-const lang=
-localStorage.getItem("site_language")
-||"fa";
-
-document.getElementById("language")
-.value=lang;
-
-if(lang==="en"){
-document.body.classList.add("en");
-}
+return;
 
 }
+
+
+/*
+فعلاً likes/comments را پاک نمی‌کنیم،
+چون جدول‌های آنها ممکن است RLS حذف نداشته باشند.
+خود پست بدون مشکل حذف می‌شود.
+*/
+
+
+toast("پست حذف شد 🖤");
+
+closePost();
+
+await loadPosts();
+
+}
+
 
 /* =========================
-   HELPERS
+   CLOSE POST
+========================= */
+
+function closePost(){
+
+document
+.getElementById("postModal")
+.classList.remove("show");
+
+selectedPost=null;
+
+}
+
+
+/* =========================
+   ESCAPE
 ========================= */
 
 function escapeHtml(value){
 
-if(value===null ||
-value===undefined)
-return "";
-
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
 
 }
 
+
 function formatDate(date){
 
-if(!date)
+if(!date){
+
 return "";
 
+}
+
+try{
+
 return new Date(date)
-.toLocaleString("fa-IR",{
+.toLocaleString(
+"fa-IR",
+{
 year:"numeric",
 month:"short",
 day:"numeric",
 hour:"2-digit",
 minute:"2-digit"
-});
+}
+);
+
+}catch{
+
+return "";
 
 }
 
-/* =========================
-   FILE INPUT PREVIEW
-========================= */
+}
 
-document.getElementById("imageFile")
-.addEventListener("change",function(){
-
-const file=this.files[0];
-
-if(!file)
-return;
-
-const preview=
-document.getElementById("imagePreview");
-
-preview.src=
-URL.createObjectURL(file);
-
-preview.style.display="block";
-
-});
 
 /* =========================
    START
 ========================= */
 
-loadLanguage();
-loadUser();
+(async function(){
+
+setVideoStyle("normal");
+
+await loadAuth();
+
+await loadPosts();
+
+})();
 
 </script>
 
