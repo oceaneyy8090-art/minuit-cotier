@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 
 <title>𝑴𝒊𝒏𝒖𝒊𝒕 𝒄ô𝒕𝒊𝒆𝒓</title>
 
 <style>
-
 *{
     box-sizing:border-box;
 }
@@ -20,7 +16,7 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#000;
+    background:#02020a;
     touch-action:none;
     font-family:Arial,sans-serif;
 }
@@ -29,12 +25,11 @@ canvas{
     display:block;
     width:100%;
     height:100%;
-    background:#000;
 }
 
 
 /* =========================
-   صفحه ورود
+   ورود
 ========================= */
 
 #loginScreen{
@@ -46,203 +41,171 @@ canvas{
     align-items:center;
     justify-content:center;
 
-    background:
-        radial-gradient(
-            circle at center,
-            #241b62 0%,
-            #0b0b29 42%,
-            #000 100%
-        );
-
-    color:white;
     padding:20px;
 
-    overflow:auto;
+    background:
+    radial-gradient(
+        circle at center,
+        #28205e 0%,
+        #0c0b25 45%,
+        #000 100%
+    );
+
+    color:white;
 }
 
 .loginBox{
-    width:min(92vw,400px);
+    width:min(92vw,390px);
+    padding:28px 21px;
 
-    padding:30px 22px;
+    border-radius:27px;
 
-    border-radius:28px;
+    background:rgba(7,7,18,.95);
 
-    background:rgba(8,8,22,.94);
-
-    border:
-        1px solid
-        rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.14);
 
     box-shadow:
-        0 0 50px
-        rgba(130,90,255,.4);
+        0 0 45px
+        rgba(120,80,255,.35);
 
     text-align:center;
 
-    backdrop-filter:blur(18px);
+    backdrop-filter:blur(15px);
 }
 
 .loginLogo{
-    font-size:45px;
-
-    margin-bottom:8px;
+    font-size:42px;
 
     text-shadow:
-        0 0 15px #b99cff,
-        0 0 35px #7e5cff;
+        0 0 15px #c2aaff,
+        0 0 30px #7355ff;
 }
 
 .loginTitle{
-    font-size:26px;
-    margin-bottom:8px;
+    font-size:25px;
+    margin-top:6px;
 }
 
 .loginSub{
     color:#aaa;
     font-size:13px;
-    margin-bottom:25px;
+    margin:7px 0 22px;
 }
 
 .loginInput{
     width:100%;
-    height:49px;
+    height:48px;
 
     margin-top:10px;
 
-    padding:0 15px;
-
-    border-radius:15px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:14px;
 
     outline:none;
 
-    background:
-        rgba(255,255,255,.06);
+    background:rgba(255,255,255,.06);
 
     color:white;
 
-    text-align:right;
+    padding:0 14px;
 
     font-size:14px;
-}
 
-.loginInput:focus{
-    border-color:#a17cff;
-
-    box-shadow:
-        0 0 15px
-        rgba(140,100,255,.2);
+    text-align:right;
 }
 
 .loginButton{
     width:100%;
-    height:49px;
+    height:48px;
 
     margin-top:12px;
 
     border:0;
-    border-radius:16px;
+    border-radius:15px;
 
     color:white;
 
     background:
-        linear-gradient(
-            135deg,
-            #6046e8,
-            #b653df
-        );
+    linear-gradient(
+        135deg,
+        #6047e9,
+        #aa55dc
+    );
 
-    font-size:15px;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 0 20px
-        rgba(140,90,255,.25);
+    font-size:14px;
 }
 
 .googleButton{
-    background:
-        rgba(255,255,255,.09);
+    background:rgba(255,255,255,.08);
 
-    border:
-        1px solid
-        rgba(255,255,255,.2);
+    border:1px solid rgba(255,255,255,.15);
 }
 
 .smallButton{
-    background:transparent;
-
-    color:#c9b9ff;
+    margin-top:13px;
 
     border:0;
+    background:transparent;
 
-    margin-top:12px;
-
-    font-size:13px;
+    color:#c7b7ff;
 }
 
 #loginMessage{
     min-height:22px;
 
+    margin-top:12px;
+
     color:#ff9ed6;
 
     font-size:12px;
-
-    margin-top:12px;
 
     line-height:1.7;
 }
 
 
 /* =========================
-   پنل بالا
+   پروفایل کوچک بالا
 ========================= */
 
 #topPanel{
     position:fixed;
 
-    top:15px;
-    right:15px;
+    top:14px;
+    right:14px;
 
     z-index:1000;
 
     display:none;
-
-    text-align:center;
 }
 
 #profileButton{
-    width:50px;
-    height:50px;
-
-    border-radius:50%;
-
-    border:
-        2px solid
-        rgba(255,255,255,.55);
-
-    background:#15151f;
-
-    color:white;
-
-    overflow:hidden;
+    width:43px;
+    height:43px;
 
     padding:0;
 
-    font-size:23px;
+    border-radius:50%;
+
+    overflow:hidden;
+
+    border:2px solid rgba(255,255,255,.6);
+
+    background:#15151e;
+
+    color:white;
+
+    font-size:20px;
 
     box-shadow:
-        0 0 20px
-        rgba(160,120,255,.35);
+        0 0 15px
+        rgba(150,110,255,.3);
 }
 
 #profileButton img{
     width:100%;
     height:100%;
+
+    display:block;
 
     object-fit:cover;
 }
@@ -257,30 +220,26 @@ canvas{
 
     position:fixed;
 
-    z-index:3000;
-
     left:50%;
     top:50%;
 
-    transform:
-        translate(-50%,-50%);
+    transform:translate(-50%,-50%);
 
-    width:min(92vw,430px);
+    z-index:3000;
 
-    max-height:86vh;
+    width:min(91vw,410px);
+
+    max-height:84vh;
 
     overflow:auto;
 
-    padding:25px 20px 22px;
+    padding:23px 19px;
 
-    background:
-        rgba(5,5,10,.97);
+    border-radius:23px;
 
-    border:
-        1px solid
-        rgba(255,255,255,.18);
+    background:rgba(5,5,12,.97);
 
-    border-radius:25px;
+    border:1px solid rgba(255,255,255,.15);
 
     color:white;
 
@@ -288,34 +247,33 @@ canvas{
 
     box-shadow:
         0 0 40px
-        rgba(150,100,255,.3);
+        rgba(130,90,255,.3);
 }
 
 .window h2{
-    margin:
-        8px 35px 20px;
+    margin:7px 35px 18px;
 
-    font-size:22px;
+    font-size:21px;
 }
 
 .closeButton{
     position:absolute;
 
-    top:10px;
-    right:10px;
+    top:9px;
+    right:9px;
 
-    width:40px;
-    height:40px;
+    width:37px;
+    height:37px;
 
     border:0;
 
     border-radius:50%;
 
-    background:#181820;
+    background:#171720;
 
     color:white;
 
-    font-size:25px;
+    font-size:23px;
 }
 
 
@@ -324,41 +282,44 @@ canvas{
 ========================= */
 
 #profileAvatar{
-    width:95px;
-    height:95px;
+    width:72px;
+    height:72px;
 
     border-radius:50%;
 
     object-fit:cover;
 
-    border:
-        3px solid
-        rgba(255,255,255,.7);
+    background:#161620;
+
+    border:2px solid rgba(255,255,255,.55);
 
     box-shadow:
-        0 0 25px
-        rgba(170,120,255,.45);
-
-    background:#181820;
+        0 0 18px
+        rgba(150,100,255,.3);
 }
 
-.profileName{
-    font-size:21px;
-    margin-top:12px;
+#profileNameView{
+    margin-top:9px;
+
+    font-size:18px;
 }
 
-.profileEmail{
-    color:#888;
-    font-size:12px;
-    margin-top:5px;
+#profileEmailView{
+    margin-top:4px;
+
+    color:#777;
+
+    font-size:11px;
 }
 
-.profileBio{
-    color:#ddd;
+#profileBioView{
+    margin:12px 5px;
+
+    color:#ccc;
+
+    font-size:13px;
 
     line-height:1.8;
-
-    margin:15px 5px;
 }
 
 .profileInput{
@@ -366,32 +327,79 @@ canvas{
 
     min-height:45px;
 
-    margin-top:10px;
+    margin-top:9px;
 
-    border-radius:14px;
+    padding:10px 12px;
 
-    border:
-        1px solid
-        rgba(255,255,255,.15);
+    border-radius:13px;
 
-    background:
-        rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.13);
+
+    background:rgba(255,255,255,.06);
 
     color:white;
 
-    padding:10px;
-
     outline:none;
 
-    font-family:Arial;
-
     text-align:right;
+
+    font-family:Arial;
 }
 
-.profileTextarea{
-    min-height:90px;
+textarea.profileInput{
+    min-height:75px;
 
     resize:none;
+}
+
+.fileText{
+    color:#aaa;
+
+    font-size:11px;
+
+    margin-top:7px;
+
+    line-height:1.7;
+}
+
+
+/* =========================
+   دکمه‌ها
+========================= */
+
+.actionButton{
+    width:100%;
+
+    min-height:46px;
+
+    margin-top:9px;
+
+    border:0;
+
+    border-radius:14px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #5d46dc,
+        #a653d5
+    );
+
+    color:white;
+
+    font-size:14px;
+}
+
+.secondaryButton{
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.13);
+}
+
+.dangerButton{
+    background:rgba(255,50,90,.1);
+
+    border:1px solid rgba(255,80,110,.2);
 }
 
 
@@ -404,45 +412,40 @@ canvas{
 
     position:fixed;
 
-    z-index:2500;
-
     left:50%;
     top:50%;
 
-    transform:
-        translate(-50%,-50%);
+    transform:translate(-50%,-50%);
 
-    width:min(88vw,420px);
+    z-index:2500;
+
+    width:min(89vw,420px);
 
     max-height:82vh;
 
     overflow:auto;
 
-    padding:24px 20px 20px;
+    padding:23px 19px;
 
-    background:
-        rgba(5,5,10,.97);
+    border-radius:23px;
 
-    border:
-        1px solid
-        rgba(255,255,255,.18);
+    background:rgba(5,5,11,.97);
 
-    border-radius:24px;
+    border:1px solid rgba(255,255,255,.15);
 
-    color:#fff;
+    color:white;
 
     text-align:center;
 
     box-shadow:
-        0 0 35px
-        rgba(150,100,255,.25);
+        0 0 40px
+        rgba(140,90,255,.3);
 }
 
-#postWindow h2{
-    margin:
-        8px 35px 15px;
+#postTitle{
+    margin:7px 35px 13px;
 
-    font-size:23px;
+    font-size:21px;
 }
 
 #postText{
@@ -455,109 +458,50 @@ canvas{
 
 #postMedia img,
 #postMedia video{
+    display:block;
+
     width:100%;
 
-    max-height:320px;
+    max-height:300px;
 
     object-fit:contain;
 
-    border-radius:15px;
+    border-radius:14px;
 
-    margin-top:15px;
+    margin-top:13px;
 }
 
 #postMedia audio{
     width:100%;
 
-    margin-top:15px;
+    margin-top:13px;
 }
 
 #likeButton{
-    margin:20px auto 0;
+    width:62px;
+    height:51px;
 
-    width:68px;
-    height:55px;
+    margin-top:17px;
 
     border:0;
 
-    border-radius:18px;
+    border-radius:17px;
 
-    background:#15151d;
+    background:#15151e;
 
     color:white;
 
-    font-size:32px;
+    font-size:30px;
 }
 
 #likeButton.liked{
     color:#ff55aa;
 
     text-shadow:
-        0 0 10px #ff55aa,
-        0 0 25px #ff55aa;
+        0 0 9px #ff55aa,
+        0 0 22px #ff55aa;
 }
-
-
-/* =========================
-   دکمه‌ها
-========================= */
-
-.actionButton{
-    width:100%;
-
-    min-height:47px;
-
-    margin-top:10px;
-
-    border:0;
-
-    border-radius:15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #5b46d8,
-            #9d55d8
-        );
-
-    color:white;
-
-    font-size:14px;
-}
-
-.secondaryButton{
-    background:
-        rgba(255,255,255,.08);
-
-    border:
-        1px solid
-        rgba(255,255,255,.15);
-}
-
-.dangerButton{
-    background:
-        rgba(255,50,100,.12);
-
-    border:
-        1px solid
-        rgba(255,80,120,.25);
-}
-
-
-/* =========================
-   ستاره ورود
-========================= */
-
-.loginStar{
-    position:fixed;
-
-    pointer-events:none;
-
-    z-index:6000;
-}
-
 </style>
-
 </head>
 
 <body>
@@ -566,16 +510,14 @@ canvas{
 
 
 <!-- =========================
-     صفحه ورود
+     ورود
 ========================= -->
 
 <div id="loginScreen">
 
     <div class="loginBox">
 
-        <div class="loginLogo">
-            🌛
-        </div>
+        <div class="loginLogo">🌛</div>
 
         <div class="loginTitle">
             Minuit côtier
@@ -588,61 +530,49 @@ canvas{
         <button
             id="googleLogin"
             class="loginButton googleButton">
-
             ☆ ورود با Google ☆
-
         </button>
 
-        <div
-            style="
-            margin-top:18px;
+        <div style="
+            margin-top:17px;
             color:#777;
             font-size:12px;
-            ">
-
+        ">
             یا با ایمیل
-
         </div>
 
         <input
             id="emailInput"
             class="loginInput"
             type="email"
-            autocomplete="email"
             placeholder="ایمیل">
 
         <input
             id="passwordInput"
             class="loginInput"
             type="password"
-            autocomplete="current-password"
             placeholder="رمز عبور">
 
         <button
             id="emailLogin"
             class="loginButton">
-
             ورود
-
         </button>
 
         <button
             id="emailSignup"
             class="smallButton">
-
             حساب ندارم؛ ثبت‌نام کنم
-
         </button>
 
         <div id="loginMessage"></div>
 
     </div>
-
 </div>
 
 
 <!-- =========================
-     پنل بالا
+     دکمه پروفایل
 ========================= -->
 
 <div id="topPanel">
@@ -655,49 +585,31 @@ canvas{
 
 
 <!-- =========================
-     پروفایل
+     پنل پروفایل
 ========================= -->
 
-<div
-    id="profileWindow"
-    class="window">
+<div id="profileWindow" class="window">
 
     <button
-        class="closeButton"
-        id="closeProfile">
-
+        id="closeProfile"
+        class="closeButton">
         ×
-
     </button>
 
-    <h2>
-        پروفایل من
-    </h2>
+    <h2>پروفایل من</h2>
 
     <img
         id="profileAvatar"
-        src=""
         alt="profile">
 
-    <div
-        id="profileNameView"
-        class="profileName">
-
+    <div id="profileNameView">
         کاربر
-
     </div>
 
-    <div
-        id="profileEmailView"
-        class="profileEmail">
-    </div>
+    <div id="profileEmailView"></div>
 
-    <div
-        id="profileBioView"
-        class="profileBio">
-
+    <div id="profileBioView">
         هنوز بیویی ننوشتی ☆
-
     </div>
 
     <input
@@ -707,59 +619,128 @@ canvas{
 
     <textarea
         id="bioInput"
-        class="profileInput profileTextarea"
+        class="profileInput"
         placeholder="بیو"></textarea>
 
     <input
-        id="avatarInput"
+        id="avatarFile"
         class="profileInput"
-        placeholder="لینک عکس پروفایل">
+        type="file"
+        accept="image/*">
+
+    <div class="fileText">
+        عکس پروفایل را از گالری انتخاب کن
+    </div>
 
     <button
         id="saveProfile"
         class="actionButton">
-
         ذخیره پروفایل
+    </button>
 
+    <button
+        id="openSiteSettings"
+        class="actionButton secondaryButton">
+        ✨ تنظیم ظاهر پست‌ها
     </button>
 
     <button
         id="openComposer"
         class="actionButton">
-
-        ☆ ساخت پست جدید
-
+        ✍️ ساخت پست جدید
     </button>
 
     <button
         id="logoutButton"
         class="actionButton dangerButton">
-
         خروج از حساب
-
     </button>
+
+    <div
+        id="avatarMessage"
+        style="
+        margin-top:9px;
+        color:#aaa;
+        font-size:11px;
+        ">
+    </div>
 
 </div>
 
 
 <!-- =========================
-     ساخت پست
+     تنظیمات ظاهر
 ========================= -->
 
-<div
-    id="composerWindow"
-    class="window">
+<div id="settingsWindow" class="window">
 
     <button
-        class="closeButton"
-        id="closeComposer">
-
+        id="closeSettings"
+        class="closeButton">
         ×
-
     </button>
 
     <h2>
-        پست جدید
+        ظاهر پست‌ها
+    </h2>
+
+    <div style="
+        color:#aaa;
+        font-size:12px;
+        line-height:1.8;
+        margin-bottom:8px;
+    ">
+        هر ایموجی که دوست داری می‌تونی بنویسی.
+        مثلاً ☆ ، 💫 ، ♡ ، 🌸 ، 🦋 یا هر چیز دیگه.
+    </div>
+
+    <input
+        id="pathEmojiInput"
+        class="profileInput"
+        placeholder="ایموجی مسیر">
+
+    <input
+        id="postEmojiInput"
+        class="profileInput"
+        placeholder="ایموجی پست">
+
+    <input
+        id="titleEmojiInput"
+        class="profileInput"
+        placeholder="ایموجی عنوان">
+
+    <button
+        id="saveSiteSettings"
+        class="actionButton">
+        ذخیره تنظیمات ☆
+    </button>
+
+    <div
+        id="settingsMessage"
+        style="
+        margin-top:10px;
+        color:#aaa;
+        font-size:11px;
+        ">
+    </div>
+
+</div>
+
+
+<!-- =========================
+     ساخت پست جدا
+========================= -->
+
+<div id="composerWindow" class="window">
+
+    <button
+        id="closeComposer"
+        class="closeButton">
+        ×
+    </button>
+
+    <h2>
+        ساخت پست جدید
     </h2>
 
     <input
@@ -769,7 +750,7 @@ canvas{
 
     <textarea
         id="newContent"
-        class="profileInput profileTextarea"
+        class="profileInput"
         placeholder="متن پست"></textarea>
 
     <input
@@ -790,26 +771,23 @@ canvas{
     <button
         id="publishPost"
         class="actionButton">
-
         انتشار پست ☆
-
     </button>
 
     <div
         id="postMessage"
         style="
-        margin-top:10px;
+        margin-top:9px;
         color:#ff9ed6;
-        font-size:12px;
+        font-size:11px;
         ">
-
     </div>
 
 </div>
 
 
 <!-- =========================
-     پنجره پست
+     نمایش پست
 ========================= -->
 
 <div id="postWindow">
@@ -817,9 +795,7 @@ canvas{
     <button
         id="closePost"
         class="closeButton">
-
         ×
-
     </button>
 
     <h2 id="postTitle"></h2>
@@ -834,8 +810,6 @@ canvas{
 
 </div>
 
-
-<!-- Supabase -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -869,7 +843,7 @@ const canvas =
 document.getElementById("sky");
 
 const ctx =
-canvas.getContext("2d");
+canvas.getContext("2d",{alpha:false});
 
 let W = innerWidth;
 let H = innerHeight;
@@ -882,7 +856,7 @@ function resize(){
     const dpr =
         Math.min(
             devicePixelRatio || 1,
-            1.5
+            1.25
         );
 
     canvas.width =
@@ -916,6 +890,20 @@ resize();
 
 
 /* =====================================
+   تنظیمات پیش‌فرض
+===================================== */
+
+let settings = {
+
+    pathEmoji:"☆",
+
+    postEmoji:"🌛",
+
+    titleEmoji:"💫"
+};
+
+
+/* =====================================
    دوربین
 ===================================== */
 
@@ -938,7 +926,7 @@ let downY = 0;
 
 
 /* =====================================
-   رنگ‌ها
+   رنگ ستاره‌ها
 ===================================== */
 
 const colors = [
@@ -947,50 +935,40 @@ const colors = [
     "#ffd5ef",
     "#ff9ed6",
     "#ffb8e5",
-
     "#d3baff",
     "#b59cff",
-
     "#a9d9ff",
     "#78c8ff",
-
     "#9df3ff",
-
     "#e3c8ff",
     "#f4b9ff",
-
     "#c5ffe3"
 ];
 
 
 /* =====================================
-   جهان
+   ستاره‌های پس‌زمینه
 ===================================== */
 
 const WORLD = 24000;
 
-
-/* =====================================
-   ستاره‌ها
-===================================== */
-
 const stars = [];
 
-for(let i = 0; i < 3000; i++){
+for(let i=0;i<850;i++){
 
     stars.push({
 
         x:
-            (Math.random() - .5) *
+            (Math.random()-.5) *
             WORLD,
 
         y:
-            (Math.random() - .5) *
+            (Math.random()-.5) *
             WORLD,
 
         size:
-            13 +
-            Math.random() * 4,
+            10 +
+            Math.random()*4,
 
         color:
             colors[
@@ -1001,10 +979,10 @@ for(let i = 0; i < 3000; i++){
             ],
 
         vx:
-            (Math.random() - .5) * .8,
+            (Math.random()-.5)*.4,
 
         vy:
-            (Math.random() - .5) * .8,
+            (Math.random()-.5)*.4,
 
         phase:
             Math.random() *
@@ -1022,6 +1000,10 @@ let posts = [];
 let activePost = null;
 
 
+/* =====================================
+   جای پست
+===================================== */
+
 function getPostPosition(
     id,
     index
@@ -1029,14 +1011,14 @@ function getPostPosition(
 
     const n =
         Number(id) ||
-        index + 1;
+        index+1;
 
     const angle =
         n *
         2.399963229728653;
 
     const radius =
-        500 +
+        480 +
         Math.sqrt(index) *
         650;
 
@@ -1054,7 +1036,7 @@ function getPostPosition(
 
 
 /* =====================================
-   دریافت پست‌ها
+   بارگذاری پست‌ها
 ===================================== */
 
 async function loadPosts(){
@@ -1068,29 +1050,19 @@ async function loadPosts(){
                 "/rest/v1/posts?select=*&order=created_at.asc",
 
                 {
-
-                    method:"GET",
-
                     headers:{
-
-                        "apikey":
+                        apikey:
                             SUPABASE_KEY,
 
-                        "Authorization":
+                        Authorization:
                             "Bearer " +
                             SUPABASE_KEY
                     }
                 }
             );
 
-        if(!response.ok){
-
-            console.error(
-                await response.text()
-            );
-
+        if(!response.ok)
             return;
-        }
 
         const data =
             await response.json();
@@ -1099,7 +1071,7 @@ async function loadPosts(){
             data.map(
                 (item,index)=>{
 
-                    const position =
+                    const pos =
                         getPostPosition(
                             item.id,
                             index
@@ -1111,15 +1083,15 @@ async function loadPosts(){
                             item.id,
 
                         x:
-                            position.x,
+                            pos.x,
 
                         y:
-                            position.y,
+                            pos.y,
 
                         title:
                             item.title ||
                             item.Title ||
-                            "بدون عنوان 🌛",
+                            "بدون عنوان",
 
                         text:
                             item.content ||
@@ -1135,10 +1107,6 @@ async function loadPosts(){
 
                         music_url:
                             item.music_url ||
-                            "",
-
-                        created_at:
-                            item.created_at ||
                             ""
                     };
                 }
@@ -1152,157 +1120,49 @@ async function loadPosts(){
 
 
 /* =====================================
-   ستاره‌های اطراف ماه
-===================================== */
-
-function drawMoonStars(
-    post,
-    time
-){
-
-    const count = 18;
-
-    const orbitRadius = 70;
-
-    for(
-        let i = 0;
-        i < count;
-        i++
-    ){
-
-        const angle =
-            (i / count) *
-            Math.PI * 2 +
-            time * .00035;
-
-        const wave =
-            Math.sin(
-                time * .001 + i
-            ) * 5;
-
-        const worldX =
-            post.x +
-            Math.cos(angle) *
-            (orbitRadius + wave);
-
-        const worldY =
-            post.y +
-            Math.sin(angle) *
-            (orbitRadius + wave);
-
-        const x =
-            worldX -
-            camX +
-            W / 2;
-
-        const y =
-            worldY -
-            camY +
-            H / 2;
-
-        if(
-            x < -80 ||
-            x > W + 80 ||
-            y < -80 ||
-            y > H + 80
-        )
-            continue;
-
-        const size =
-            12 +
-            Math.sin(
-                time * .002 + i
-            ) * 2;
-
-        ctx.globalAlpha =
-            .75 +
-            Math.sin(
-                time * .002 + i
-            ) * .2;
-
-        ctx.fillStyle =
-            "#ffffff";
-
-        ctx.shadowColor =
-            "#ffffff";
-
-        ctx.shadowBlur = 7;
-
-        ctx.font =
-            `${size}px Arial`;
-
-        ctx.fillText(
-            "☆",
-            x,
-            y
-        );
-
-        ctx.shadowBlur = 0;
-    }
-
-    ctx.globalAlpha = 1;
-}
-
-
-/* =====================================
-   زنجیره دفرمه
-   پروفایل → ماه‌ها
+   مسیر بین پست‌ها
+   بدون هیچ حلقه‌ای دور ماه
 ===================================== */
 
 function drawMoonPath(time){
 
-    ctx.textAlign = "center";
+    if(posts.length === 0)
+        return;
 
-    ctx.textBaseline = "middle";
+    const points = [
 
-    const profileX =
-        W / 2;
+        {
+            x:W/2,
+            y:H/2
+        }
 
-    const profileY =
-        195;
+    ];
 
-    const points = [];
-
-
-    points.push({
-
-        x:profileX,
-
-        y:profileY
-    });
-
-
-    for(
-        let i = 0;
-        i < posts.length;
-        i++
-    ){
-
-        const post =
-            posts[i];
+    for(let i=0;i<posts.length;i++){
 
         points.push({
 
             x:
-                post.x -
+                posts[i].x -
                 camX +
-                W / 2,
+                W/2,
 
             y:
-                post.y -
+                posts[i].y -
                 camY +
-                H / 2
+                H/2
         });
     }
 
+    ctx.textAlign =
+        "center";
 
-    if(points.length < 2)
-        return;
-
+    ctx.textBaseline =
+        "middle";
 
     for(
-        let p = 0;
-        p < points.length - 1;
+        let p=0;
+        p<points.length-1;
         p++
     ){
 
@@ -1310,133 +1170,82 @@ function drawMoonPath(time){
             points[p];
 
         const b =
-            points[p + 1];
+            points[p+1];
 
         const dx =
-            b.x - a.x;
+            b.x-a.x;
 
         const dy =
-            b.y - a.y;
+            b.y-a.y;
 
         const distance =
-            Math.sqrt(
-                dx * dx +
-                dy * dy
+            Math.hypot(
+                dx,
+                dy
             );
 
         const count =
             Math.max(
-                12,
+                7,
                 Math.floor(
-                    distance / 22
+                    distance/34
                 )
             );
 
-        const length =
+        const len =
             distance || 1;
 
-
         const nx =
-            -dy / length;
+            -dy/len;
 
         const ny =
-            dx / length;
-
+            dx/len;
 
         for(
-            let j = 1;
-            j < count;
+            let j=1;
+            j<count;
             j++
         ){
 
             const t =
-                j / count;
+                j/count;
 
             let x =
-                a.x +
-                dx * t;
+                a.x + dx*t;
 
             let y =
-                a.y +
-                dy * t;
-
+                a.y + dy*t;
 
             const wave =
                 Math.sin(
-                    t *
-                    Math.PI *
-                    3 +
-                    p * 1.7 +
-                    time * .001
-                ) * 24;
+                    t*Math.PI*3 +
+                    p +
+                    time*.001
+                ) * 10;
 
-            const wave2 =
-                Math.sin(
-                    t *
-                    Math.PI *
-                    7 +
-                    p
-                ) * 9;
-
-
-            x +=
-                nx *
-                (wave + wave2);
-
-            y +=
-                ny *
-                (wave + wave2);
-
-
-            const float =
-                Math.sin(
-                    time * .002 +
-                    j * .8 +
-                    p
-                ) * 3;
-
-            x +=
-                nx * float;
-
-            y +=
-                ny * float;
-
+            x += nx*wave;
+            y += ny*wave;
 
             ctx.globalAlpha =
-                .65 +
+                .7 +
                 Math.sin(
-                    time * .003 +
-                    j
-                ) * .25;
+                    time*.002+j
+                )*.15;
 
             ctx.fillStyle =
                 colors[
-                    (j + p) %
+                    (j+p) %
                     colors.length
                 ];
 
-            ctx.shadowColor =
-                ctx.fillStyle;
-
-            ctx.shadowBlur = 6;
-
-            const size =
-                8 +
-                Math.sin(
-                    time * .002 +
-                    j
-                ) * 2;
-
             ctx.font =
-                `${size}px Arial`;
+                "13px Arial";
 
             ctx.fillText(
-                "☆",
+                settings.pathEmoji || "☆",
                 x,
                 y
             );
-
-            ctx.shadowBlur = 0;
         }
     }
 
@@ -1445,41 +1254,17 @@ function drawMoonPath(time){
 
 
 /* =====================================
-   پروفایل داخل جهان
+   پروفایل کوچک وسط
+   فقط یک نمایش کوچک
 ===================================== */
 
 function drawProfile(){
 
     const x =
-        W / 2;
+        W/2;
 
     const y =
-        120;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        45,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        "#15151f";
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "#ffffff";
-
-    ctx.lineWidth = 3;
-
-    ctx.stroke();
-
-    ctx.font =
-        "35px Arial";
+        H/2;
 
     ctx.textAlign =
         "center";
@@ -1487,31 +1272,93 @@ function drawProfile(){
     ctx.textBaseline =
         "middle";
 
-    ctx.fillText(
-        "🌛",
-        x,
-        y
-    );
+    const avatar =
+        window.currentAvatar;
+
+    if(
+        avatar &&
+        window.profileImage &&
+        window.profileImage.complete
+    ){
+
+        ctx.save();
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            27,
+            0,
+            Math.PI*2
+        );
+
+        ctx.clip();
+
+        ctx.drawImage(
+            window.profileImage,
+            x-27,
+            y-27,
+            54,
+            54
+        );
+
+        ctx.restore();
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            28,
+            0,
+            Math.PI*2
+        );
+
+        ctx.strokeStyle =
+            "rgba(255,255,255,.65)";
+
+        ctx.lineWidth = 2;
+
+        ctx.stroke();
+
+    }else{
+
+        ctx.font =
+            "28px Arial";
+
+        ctx.fillText(
+            "🌛",
+            x,
+            y
+        );
+    }
 
     ctx.font =
-        "18px Arial";
+        "14px Arial";
 
     ctx.fillStyle =
         "#fff";
 
+    ctx.globalAlpha =
+        .85;
+
     ctx.fillText(
         "Minuit côtier",
         x,
-        y + 75
+        y+48
     );
+
+    ctx.globalAlpha = 1;
 }
 
 
 /* =====================================
-   ماه‌های پست
+   پست‌ها
+   هیچ ستاره‌ای دورشان نیست
 ===================================== */
 
-function drawPosts(time){
+function drawPosts(){
 
     ctx.textAlign =
         "center";
@@ -1526,89 +1373,99 @@ function drawPosts(time){
         const x =
             post.x -
             camX +
-            W / 2;
+            W/2;
 
         const y =
             post.y -
             camY +
-            H / 2;
+            H/2;
 
         if(
-            x < -120 ||
-            x > W + 120 ||
-            y < -120 ||
-            y > H + 120
+            x < -70 ||
+            x > W+70 ||
+            y < -70 ||
+            y > H+70
         )
             continue;
 
-
-        drawMoonStars(
-            post,
-            time
-        );
-
-
         ctx.font =
-            "36px Arial";
+            "30px Arial";
 
         ctx.shadowColor =
-            "#ffffff";
+            "rgba(255,255,255,.7)";
 
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 8;
 
         ctx.fillText(
-            "🌛",
+            settings.postEmoji || "🌛",
             x,
             y
         );
 
         ctx.shadowBlur = 0;
+
+        /* عنوان کوچک زیر پست */
+
+        ctx.font =
+            "12px Arial";
+
+        ctx.fillStyle =
+            "#fff";
+
+        ctx.globalAlpha =
+            .8;
+
+        ctx.fillText(
+
+            (settings.titleEmoji || "💫") +
+            " " +
+            post.title,
+
+            x,
+            y+30
+        );
+
+        ctx.globalAlpha = 1;
     }
 }
 
 
 /* =====================================
    ستاره‌های لایک
+   دقیقاً 100 تا
 ===================================== */
 
 const likeStars = [];
-
 
 function createLikeStars(){
 
     if(!activePost)
         return;
 
-    const startX =
+    const x =
         activePost.x -
         camX +
-        W / 2;
+        W/2;
 
-    const startY =
+    const y =
         activePost.y -
         camY +
-        H / 2;
+        H/2;
 
-
-    for(
-        let i = 0;
-        i < 100;
-        i++
-    ){
+    for(let i=0;i<100;i++){
 
         const angle =
             Math.random() *
-            Math.PI * 2;
+            Math.PI*2;
 
         const speed =
             1.5 +
-            Math.random() * 4;
+            Math.random()*4;
 
         likeStars.push({
 
-            x:startX,
-
-            y:startY,
+            x:x,
+            y:y,
 
             vx:
                 Math.cos(angle) *
@@ -1619,8 +1476,8 @@ function createLikeStars(){
                 speed,
 
             size:
-                13 +
-                Math.random() * 5,
+                12 +
+                Math.random()*5,
 
             color:
                 colors[
@@ -1632,11 +1489,10 @@ function createLikeStars(){
 
             life:
                 100 +
-                Math.random() * 100
+                Math.random()*100
         });
     }
 }
-
 
 function drawLikeStars(){
 
@@ -1646,13 +1502,9 @@ function drawLikeStars(){
     ctx.textBaseline =
         "middle";
 
-
     for(
-        let i =
-            likeStars.length - 1;
-
-        i >= 0;
-
+        let i=likeStars.length-1;
+        i>=0;
         i--
     ){
 
@@ -1660,17 +1512,14 @@ function drawLikeStars(){
             likeStars[i];
 
         s.x += s.vx;
-
         s.y += s.vy;
 
         s.vx *= .998;
-
         s.vy *= .998;
 
         s.life--;
 
-
-        if(s.life <= 0){
+        if(s.life<=0){
 
             likeStars.splice(
                 i,
@@ -1680,11 +1529,10 @@ function drawLikeStars(){
             continue;
         }
 
-
         ctx.globalAlpha =
             Math.min(
                 1,
-                s.life / 35
+                s.life/35
             );
 
         ctx.fillStyle =
@@ -1696,7 +1544,7 @@ function drawLikeStars(){
         ctx.shadowBlur = 5;
 
         ctx.font =
-            `normal ${s.size}px Arial`;
+            `${s.size}px Arial`;
 
         ctx.fillText(
             "☆",
@@ -1718,7 +1566,7 @@ function drawLikeStars(){
 function drawBackground(){
 
     ctx.fillStyle =
-        "#000";
+        "#02020a";
 
     ctx.fillRect(
         0,
@@ -1730,7 +1578,7 @@ function drawBackground(){
 
 
 /* =====================================
-   ستاره‌های اصلی
+   ستاره‌های زمینه
 ===================================== */
 
 function drawStars(time){
@@ -1741,97 +1589,60 @@ function drawStars(time){
     ctx.textBaseline =
         "middle";
 
-
     for(
         const s of stars
     ){
 
         s.x += s.vx;
-
         s.y += s.vy;
 
+        if(s.x>WORLD/2)
+            s.x=-WORLD/2;
 
-        if(
-            s.x >
-            WORLD / 2
-        )
-            s.x =
-                -WORLD / 2;
+        if(s.x<-WORLD/2)
+            s.x=WORLD/2;
 
+        if(s.y>WORLD/2)
+            s.y=-WORLD/2;
 
-        if(
-            s.x <
-            -WORLD / 2
-        )
-            s.x =
-                WORLD / 2;
-
-
-        if(
-            s.y >
-            WORLD / 2
-        )
-            s.y =
-                -WORLD / 2;
-
-
-        if(
-            s.y <
-            -WORLD / 2
-        )
-            s.y =
-                WORLD / 2;
-
+        if(s.y<-WORLD/2)
+            s.y=WORLD/2;
 
         const x =
             s.x -
             camX +
-            W / 2;
+            W/2;
 
         const y =
             s.y -
             camY +
-            H / 2;
-
+            H/2;
 
         if(
-            x < -40 ||
-            x > W + 40 ||
-            y < -40 ||
-            y > H + 40
+            x<-30 ||
+            x>W+30 ||
+            y<-30 ||
+            y>H+30
         )
             continue;
 
-
-        const alpha =
-            .88 +
-            Math.sin(
-                time * .002 +
-                s.phase
-            ) * .10;
-
-
         ctx.globalAlpha =
-            alpha;
+            .78 +
+            Math.sin(
+                time*.002+s.phase
+            )*.12;
 
         ctx.fillStyle =
             s.color;
 
-        ctx.shadowColor =
-            s.color;
-
-        ctx.shadowBlur = 5;
-
         ctx.font =
-            `normal ${s.size}px Arial`;
+            `${s.size}px Arial`;
 
         ctx.fillText(
             "☆",
             x,
             y
         );
-
-        ctx.shadowBlur = 0;
     }
 
     ctx.globalAlpha = 1;
@@ -1839,50 +1650,42 @@ function drawStars(time){
 
 
 /* =====================================
-   پیدا کردن پست
+   لمس پست
 ===================================== */
 
 function findPost(x,y){
 
     for(
-        let i =
-            posts.length - 1;
-
-        i >= 0;
-
+        let i=posts.length-1;
+        i>=0;
         i--
     ){
 
-        const post =
+        const p =
             posts[i];
 
         const px =
-            post.x -
+            p.x -
             camX +
-            W / 2;
+            W/2;
 
         const py =
-            post.y -
+            p.y -
             camY +
-            H / 2;
-
+            H/2;
 
         if(
             Math.hypot(
-                x - px,
-                y - py
-            ) < 70
+                x-px,
+                y-py
+            ) < 65
         )
-            return post;
+            return p;
     }
 
     return null;
 }
 
-
-/* =====================================
-   لمس
-===================================== */
 
 canvas.addEventListener(
     "pointerdown",
@@ -1894,8 +1697,7 @@ canvas.addEventListener(
         downY =
             e.clientY;
 
-        dragging =
-            true;
+        dragging = true;
 
         startX =
             e.clientX;
@@ -1908,7 +1710,6 @@ canvas.addEventListener(
 
         startCamY =
             camY;
-
 
         canvas.setPointerCapture(
             e.pointerId
@@ -1924,23 +1725,19 @@ canvas.addEventListener(
         if(!dragging)
             return;
 
-
         const dx =
-            e.clientX -
-            startX;
+            e.clientX-startX;
 
         const dy =
-            e.clientY -
-            startY;
-
+            e.clientY-startY;
 
         targetX =
             startCamX -
-            dx * 1.5;
+            dx*1.5;
 
         targetY =
             startCamY -
-            dy * 1.5;
+            dy*1.5;
     }
 );
 
@@ -1951,18 +1748,13 @@ canvas.addEventListener(
 
         const distance =
             Math.hypot(
-                e.clientX - downX,
-                e.clientY - downY
+                e.clientX-downX,
+                e.clientY-downY
             );
 
+        dragging=false;
 
-        dragging =
-            false;
-
-
-        if(
-            distance < 12
-        ){
+        if(distance<12){
 
             const post =
                 findPost(
@@ -1970,19 +1762,9 @@ canvas.addEventListener(
                     e.clientY
                 );
 
-
             if(post)
                 openPost(post);
         }
-
-
-        try{
-
-            canvas.releasePointerCapture(
-                e.pointerId
-            );
-
-        }catch(err){}
     }
 );
 
@@ -1996,28 +1778,29 @@ function openPost(post){
     activePost =
         post;
 
-
     document.getElementById(
         "postTitle"
     ).textContent =
-        post.title;
 
+        (
+            settings.titleEmoji ||
+            "💫"
+        ) +
+        " " +
+        post.title;
 
     document.getElementById(
         "postText"
     ).textContent =
         post.text;
 
-
     const media =
         document.getElementById(
             "postMedia"
         );
 
-
     media.innerHTML =
         "";
-
 
     if(post.image_url){
 
@@ -2037,7 +1820,6 @@ function openPost(post){
         );
     }
 
-
     if(post.video_url){
 
         const video =
@@ -2048,17 +1830,14 @@ function openPost(post){
         video.src =
             post.video_url;
 
-        video.controls =
-            true;
+        video.controls = true;
 
-        video.playsInline =
-            true;
+        video.playsInline = true;
 
         media.appendChild(
             video
         );
     }
-
 
     if(post.music_url){
 
@@ -2070,20 +1849,17 @@ function openPost(post){
         audio.src =
             post.music_url;
 
-        audio.controls =
-            true;
+        audio.controls = true;
 
         media.appendChild(
             audio
         );
     }
 
-
     const like =
         document.getElementById(
             "likeButton"
         );
-
 
     like.classList.remove(
         "liked"
@@ -2092,17 +1868,12 @@ function openPost(post){
     like.textContent =
         "♡";
 
-
     document.getElementById(
         "postWindow"
     ).style.display =
         "block";
 }
 
-
-/* =====================================
-   بستن پست
-===================================== */
 
 document.getElementById(
     "closePost"
@@ -2114,14 +1885,9 @@ function(){
     ).style.display =
         "none";
 
-    activePost =
-        null;
+    activePost=null;
 };
 
-
-/* =====================================
-   لایک
-===================================== */
 
 document.getElementById(
     "likeButton"
@@ -2131,14 +1897,12 @@ function(){
     if(!activePost)
         return;
 
-
     this.classList.add(
         "liked"
     );
 
     this.textContent =
         "♥";
-
 
     createLikeStars();
 };
@@ -2157,27 +1921,21 @@ async function(){
         "در حال انتقال به Google..."
     );
 
-
     const {error} =
         await supabaseClient.auth.signInWithOAuth({
 
-            provider:
-                "google",
+            provider:"google",
 
             options:{
-
                 redirectTo:
                     SITE_URL
             }
         });
 
-
-    if(error){
-
+    if(error)
         showLoginMessage(
             error.message
         );
-    }
 };
 
 
@@ -2195,17 +1953,12 @@ async function(){
             "emailInput"
         ).value.trim();
 
-
     const password =
         document.getElementById(
             "passwordInput"
         ).value;
 
-
-    if(
-        !email ||
-        !password
-    ){
+    if(!email || !password){
 
         showLoginMessage(
             "ایمیل و رمز را وارد کن."
@@ -2214,41 +1967,19 @@ async function(){
         return;
     }
 
-
-    showLoginMessage(
-        "در حال ورود..."
-    );
-
-
     const {error} =
         await supabaseClient.auth.signInWithPassword({
 
-            email:
-                email,
-
-            password:
-                password
+            email,
+            password
         });
 
-
-    if(error){
-
+    if(error)
         showLoginMessage(
             error.message
         );
-
-    }else{
-
-        showLoginMessage(
-            "ورود موفق بود ☆"
-        );
-    }
 };
 
-
-/* =====================================
-   ثبت‌نام
-===================================== */
 
 document.getElementById(
     "emailSignup"
@@ -2260,17 +1991,12 @@ async function(){
             "emailInput"
         ).value.trim();
 
-
     const password =
         document.getElementById(
             "passwordInput"
         ).value;
 
-
-    if(
-        !email ||
-        !password
-    ){
+    if(!email || !password){
 
         showLoginMessage(
             "ایمیل و رمز را وارد کن."
@@ -2279,235 +2005,46 @@ async function(){
         return;
     }
 
-
-    if(
-        password.length < 6
-    ){
+    if(password.length<6){
 
         showLoginMessage(
-            "رمز عبور باید حداقل ۶ کاراکتر باشد."
+            "رمز باید حداقل ۶ کاراکتر باشد."
         );
 
         return;
     }
 
-
-    showLoginMessage(
-        "در حال ساخت حساب..."
-    );
-
-
     const {error} =
         await supabaseClient.auth.signUp({
 
-            email:
-                email,
-
-            password:
-                password,
+            email,
+            password,
 
             options:{
-
                 emailRedirectTo:
                     SITE_URL
             }
         });
 
-
-    if(error){
-
+    if(error)
         showLoginMessage(
             error.message
         );
-
-    }else{
-
+    else
         showLoginMessage(
-            "ثبت‌نام انجام شد ☆ اگر تأیید ایمیل روشن باشد، ایمیلت را چک کن."
+            "حساب ساخته شد ☆"
         );
-    }
 };
 
 
-/* =====================================
-   پیام ورود
-===================================== */
-
 function showLoginMessage(
-    message
+    text
 ){
 
     document.getElementById(
         "loginMessage"
     ).textContent =
-        message;
-}
-
-
-/* =====================================
-   ستاره‌های ورود
-===================================== */
-
-function createLoginStars(){
-
-    for(
-        let i = 0;
-        i < 35;
-        i++
-    ){
-
-        const star =
-            document.createElement(
-                "div"
-            );
-
-
-        star.className =
-            "loginStar";
-
-
-        star.textContent =
-            "☆";
-
-
-        star.style.left =
-            "50%";
-
-
-        star.style.top =
-            "50%";
-
-
-        star.style.color =
-            colors[
-                Math.floor(
-                    Math.random() *
-                    colors.length
-                )
-            ];
-
-
-        star.style.fontSize =
-            (
-                12 +
-                Math.random() * 22
-            ) +
-            "px";
-
-
-        document.body.appendChild(
-            star
-        );
-
-
-        const x =
-            (
-                Math.random() - .5
-            ) * 500;
-
-
-        const y =
-            (
-                Math.random() - .5
-            ) * 500;
-
-
-        star.animate(
-
-            [
-
-                {
-                    transform:
-                        "translate(-50%,-50%) scale(1)",
-
-                    opacity:1
-                },
-
-                {
-                    transform:
-                        `translate(
-                            calc(-50% + ${x}px),
-                            calc(-50% + ${y}px)
-                        )
-                        scale(0)`,
-
-                    opacity:0
-                }
-
-            ],
-
-            {
-
-                duration:
-                    900 +
-                    Math.random() * 900,
-
-                easing:
-                    "ease-out"
-            }
-        );
-
-
-        setTimeout(
-            ()=>{
-                star.remove();
-            },
-            2000
-        );
-    }
-}
-
-
-/* =====================================
-   وضعیت کاربر
-===================================== */
-
-async function updateUserUI(){
-
-    const {data} =
-        await supabaseClient.auth.getSession();
-
-
-    const session =
-        data.session;
-
-
-    const loginScreen =
-        document.getElementById(
-            "loginScreen"
-        );
-
-
-    const topPanel =
-        document.getElementById(
-            "topPanel"
-        );
-
-
-    if(!session){
-
-        loginScreen.style.display =
-            "flex";
-
-        topPanel.style.display =
-            "none";
-
-        return;
-    }
-
-
-    loginScreen.style.display =
-        "none";
-
-
-    topPanel.style.display =
-        "block";
-
-
-    createLoginStars();
-
-
-    await loadProfile();
+        text;
 }
 
 
@@ -2515,49 +2052,59 @@ async function updateUserUI(){
    پروفایل
 ===================================== */
 
+window.currentAvatar = "";
+window.profileImage = null;
+
+
 async function loadProfile(){
 
     const {data} =
         await supabaseClient.auth.getUser();
 
-
     const user =
         data.user;
-
 
     if(!user)
         return;
 
-
     const meta =
         user.user_metadata || {};
-
 
     const name =
         meta.name ||
         meta.full_name ||
         user.email.split("@")[0];
 
-
     const bio =
         meta.bio || "";
-
 
     const avatar =
         meta.avatar_url || "";
 
+    settings.pathEmoji =
+        meta.path_emoji ||
+        "☆";
+
+    settings.postEmoji =
+        meta.post_emoji ||
+        "🌛";
+
+    settings.titleEmoji =
+        meta.title_emoji ||
+        "💫";
+
+    window.currentAvatar =
+        avatar;
 
     document.getElementById(
         "profileNameView"
     ).textContent =
         name;
 
-
     document.getElementById(
         "profileEmailView"
     ).textContent =
         user.email;
-
 
     document.getElementById(
         "profileBioView"
@@ -2565,34 +2112,53 @@ async function loadProfile(){
         bio ||
         "هنوز بیویی ننوشتی ☆";
 
-
     document.getElementById(
         "nameInput"
     ).value =
         name;
-
 
     document.getElementById(
         "bioInput"
     ).value =
         bio;
 
+    document.getElementById(
+        "pathEmojiInput"
+    ).value =
+        settings.pathEmoji;
 
     document.getElementById(
-        "avatarInput"
+        "postEmojiInput"
     ).value =
-        avatar;
+        settings.postEmoji;
 
+    document.getElementById(
+        "titleEmojiInput"
+    ).value =
+        settings.titleEmoji;
 
     const avatarElement =
         document.getElementById(
             "profileAvatar"
         );
 
+    const button =
+        document.getElementById(
+            "profileButton"
+        );
 
     if(avatar){
 
         avatarElement.src =
+            avatar;
+
+        button.innerHTML =
+            `<img src="${avatar}" alt="profile">`;
+
+        window.profileImage =
+            new Image();
+
+        window.profileImage.src =
             avatar;
 
     }else{
@@ -2600,64 +2166,29 @@ async function loadProfile(){
         avatarElement.src =
             "data:image/svg+xml;charset=UTF-8," +
             encodeURIComponent(`
-
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="200"
-                    height="200"
-                    viewBox="0 0 200 200">
-
+                    width="150"
+                    height="150">
                     <rect
-                        width="200"
-                        height="200"
+                        width="150"
+                        height="150"
                         fill="#15151f"/>
-
                     <text
-                        x="100"
-                        y="120"
+                        x="75"
+                        y="92"
                         text-anchor="middle"
-                        font-size="75">
-
+                        font-size="58">
                         🌛
-
                     </text>
-
                 </svg>
-
             `);
-    }
 
-
-    const profileButton =
-        document.getElementById(
-            "profileButton"
-        );
-
-
-    profileButton.innerHTML =
-        "";
-
-
-    if(avatar){
-
-        const img =
-            document.createElement(
-                "img"
-            );
-
-
-        img.src =
-            avatar;
-
-
-        profileButton.appendChild(
-            img
-        );
-
-    }else{
-
-        profileButton.textContent =
+        button.textContent =
             "🌛";
+
+        window.profileImage =
+            null;
     }
 }
 
@@ -2671,57 +2202,243 @@ document.getElementById(
 ).onclick =
 async function(){
 
+    const {data} =
+        await supabaseClient.auth.getUser();
+
+    const user =
+        data.user;
+
+    if(!user)
+        return;
+
     const name =
         document.getElementById(
             "nameInput"
         ).value.trim();
-
 
     const bio =
         document.getElementById(
             "bioInput"
         ).value.trim();
 
-
-    const avatar =
+    const fileInput =
         document.getElementById(
-            "avatarInput"
-        ).value.trim();
+            "avatarFile"
+        );
 
+    const message =
+        document.getElementById(
+            "avatarMessage"
+        );
+
+    let avatar =
+        user.user_metadata?.avatar_url ||
+        "";
+
+    if(
+        fileInput.files &&
+        fileInput.files.length
+    ){
+
+        const file =
+            fileInput.files[0];
+
+        if(
+            !file.type.startsWith("image/")
+        ){
+
+            message.textContent =
+                "این فایل عکس نیست.";
+
+            return;
+        }
+
+        if(
+            file.size >
+            5*1024*1024
+        ){
+
+            message.textContent =
+                "حجم عکس باید کمتر از ۵ مگابایت باشد.";
+
+            return;
+        }
+
+        message.textContent =
+            "در حال آپلود عکس...";
+
+        const extension =
+            (
+                file.name.split(".").pop() ||
+                "jpg"
+            ).toLowerCase();
+
+        const path =
+            "profiles/" +
+            user.id +
+            "_" +
+            Date.now() +
+            "." +
+            extension;
+
+        const {error} =
+            await supabaseClient
+            .storage
+            .from("Minuit cotier")
+            .upload(
+                path,
+                file,
+                {
+                    upsert:true,
+                    contentType:
+                        file.type
+                }
+            );
+
+        if(error){
+
+            message.textContent =
+                "آپلود نشد: " +
+                error.message;
+
+            return;
+        }
+
+        const {data:urlData} =
+            supabaseClient
+            .storage
+            .from("Minuit cotier")
+            .getPublicUrl(path);
+
+        avatar =
+            urlData.publicUrl;
+    }
 
     const {error} =
         await supabaseClient.auth.updateUser({
 
             data:{
 
-                name:
-                    name,
-
-                bio:
-                    bio,
+                name,
+                bio,
 
                 avatar_url:
                     avatar
             }
         });
 
-
     if(error){
 
-        alert(
-            error.message
-        );
+        message.textContent =
+            error.message;
 
         return;
     }
 
-
     await loadProfile();
 
+    fileInput.value = "";
 
-    alert(
-        "پروفایلت ذخیره شد ☆"
-    );
+    message.textContent =
+        "پروفایل ذخیره شد ☆";
+};
+
+
+/* =====================================
+   تنظیمات ایموجی
+===================================== */
+
+document.getElementById(
+    "openSiteSettings"
+).onclick =
+function(){
+
+    document.getElementById(
+        "profileWindow"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "settingsWindow"
+    ).style.display =
+        "block";
+};
+
+
+document.getElementById(
+    "closeSettings"
+).onclick =
+function(){
+
+    document.getElementById(
+        "settingsWindow"
+    ).style.display =
+        "none";
+};
+
+
+document.getElementById(
+    "saveSiteSettings"
+).onclick =
+async function(){
+
+    const pathEmoji =
+        document.getElementById(
+            "pathEmojiInput"
+        ).value.trim() ||
+        "☆";
+
+    const postEmoji =
+        document.getElementById(
+            "postEmojiInput"
+        ).value.trim() ||
+        "🌛";
+
+    const titleEmoji =
+        document.getElementById(
+            "titleEmojiInput"
+        ).value.trim() ||
+        "💫";
+
+    const {error} =
+        await supabaseClient.auth.updateUser({
+
+            data:{
+
+                path_emoji:
+                    pathEmoji,
+
+                post_emoji:
+                    postEmoji,
+
+                title_emoji:
+                    titleEmoji
+            }
+        });
+
+    if(error){
+
+        document.getElementById(
+            "settingsMessage"
+        ).textContent =
+            error.message;
+
+        return;
+    }
+
+    settings.pathEmoji =
+        pathEmoji;
+
+    settings.postEmoji =
+        postEmoji;
+
+    settings.titleEmoji =
+        titleEmoji;
+
+    document.getElementById(
+        "settingsMessage"
+    ).textContent =
+        "ذخیره شد ☆";
 };
 
 
@@ -2736,17 +2453,12 @@ function(){
 
     loadProfile();
 
-
     document.getElementById(
         "profileWindow"
     ).style.display =
         "block";
 };
 
-
-/* =====================================
-   بستن پروفایل
-===================================== */
 
 document.getElementById(
     "closeProfile"
@@ -2761,7 +2473,7 @@ function(){
 
 
 /* =====================================
-   ساخت پست
+   پنل ساخت پست جدا
 ===================================== */
 
 document.getElementById(
@@ -2774,17 +2486,12 @@ function(){
     ).style.display =
         "none";
 
-
     document.getElementById(
         "composerWindow"
     ).style.display =
         "block";
 };
 
-
-/* =====================================
-   بستن ساخت پست
-===================================== */
 
 document.getElementById(
     "closeComposer"
@@ -2812,50 +2519,35 @@ async function(){
             "newTitle"
         ).value.trim();
 
-
     const content =
         document.getElementById(
             "newContent"
         ).value.trim();
-
 
     const image =
         document.getElementById(
             "newImage"
         ).value.trim();
 
-
     const video =
         document.getElementById(
             "newVideo"
         ).value.trim();
-
 
     const music =
         document.getElementById(
             "newMusic"
         ).value.trim();
 
-
     const message =
         document.getElementById(
             "postMessage"
         );
 
-
-    message.textContent =
-        "در حال انتشار...";
-
-
     const {data} =
         await supabaseClient.auth.getUser();
 
-
-    const user =
-        data.user;
-
-
-    if(!user){
+    if(!data.user){
 
         message.textContent =
             "اول وارد حساب شو.";
@@ -2863,6 +2555,8 @@ async function(){
         return;
     }
 
+    message.textContent =
+        "در حال انتشار...";
 
     const {error} =
         await supabaseClient
@@ -2871,7 +2565,7 @@ async function(){
 
             title:
                 title ||
-                "بدون عنوان 🌛",
+                "بدون عنوان",
 
             content:
                 content,
@@ -2886,64 +2580,46 @@ async function(){
                 music
         });
 
-
     if(error){
 
-        console.error(error);
-
         message.textContent =
-            "پست ذخیره نشد: " +
+            "ذخیره نشد: " +
             error.message;
 
         return;
     }
 
-
     message.textContent =
         "پست منتشر شد ☆";
 
-
     document.getElementById(
         "newTitle"
-    ).value =
-        "";
-
+    ).value = "";
 
     document.getElementById(
         "newContent"
-    ).value =
-        "";
-
+    ).value = "";
 
     document.getElementById(
         "newImage"
-    ).value =
-        "";
-
+    ).value = "";
 
     document.getElementById(
         "newVideo"
-    ).value =
-        "";
-
+    ).value = "";
 
     document.getElementById(
         "newMusic"
-    ).value =
-        "";
-
+    ).value = "";
 
     await loadPosts();
 
-
     setTimeout(
         ()=>{
-
             document.getElementById(
                 "composerWindow"
             ).style.display =
                 "none";
-
         },
         700
     );
@@ -2961,30 +2637,68 @@ async function(){
 
     await supabaseClient.auth.signOut();
 
-
     document.getElementById(
         "profileWindow"
     ).style.display =
         "none";
 
+    document.getElementById(
+        "settingsWindow"
+    ).style.display =
+        "none";
 
     document.getElementById(
         "composerWindow"
     ).style.display =
         "none";
 
-
     updateUserUI();
 };
 
 
 /* =====================================
-   تغییر وضعیت ورود
+   وضعیت کاربر
 ===================================== */
 
-supabaseClient.auth.onAuthStateChange(
-    function(){
+async function updateUserUI(){
 
+    const {data} =
+        await supabaseClient.auth.getSession();
+
+    const session =
+        data.session;
+
+    if(!session){
+
+        document.getElementById(
+            "loginScreen"
+        ).style.display =
+            "flex";
+
+        document.getElementById(
+            "topPanel"
+        ).style.display =
+            "none";
+
+        return;
+    }
+
+    document.getElementById(
+        "loginScreen"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "topPanel"
+    ).style.display =
+        "block";
+
+    await loadProfile();
+}
+
+
+supabaseClient.auth.onAuthStateChange(
+    ()=>{
         setTimeout(
             updateUserUI,
             0
@@ -2994,7 +2708,7 @@ supabaseClient.auth.onAuthStateChange(
 
 
 /* =====================================
-   شروع سایت
+   شروع
 ===================================== */
 
 loadPosts();
@@ -3010,23 +2724,15 @@ function animate(time){
 
     if(!dragging){
 
-        targetX += .10;
-
-        targetY += .04;
+        targetX += .08;
+        targetY += .03;
     }
 
-
     camX +=
-        (
-            targetX - camX
-        ) * .06;
-
+        (targetX-camX)*.06;
 
     camY +=
-        (
-            targetY - camY
-        ) * .06;
-
+        (targetY-camY)*.06;
 
     drawBackground();
 
@@ -3036,22 +2742,20 @@ function animate(time){
 
     drawMoonPath(time);
 
-    drawPosts(time);
+    drawPosts();
 
     drawLikeStars();
-
 
     requestAnimationFrame(
         animate
     );
 }
 
-
 requestAnimationFrame(
     animate
 );
- 
+
 </script>
 
 </body>
-</html>  
+</html>
