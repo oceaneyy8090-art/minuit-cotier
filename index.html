@@ -2754,6 +2754,231 @@ function animate(time){
 requestAnimationFrame(
     animate
 );
+/* =====================================
+   LANGUAGE
+   فقط ترجمه متن‌ها - بدون تغییر ساختار
+===================================== */
+
+const translations = {
+
+    fa:{
+        loginSub:"به شب ساحلی خوش اومدی ☆",
+        google:"☆ ورود با Google ☆",
+        orEmail:"یا با ایمیل",
+        email:"ایمیل",
+        password:"رمز عبور",
+        login:"ورود",
+        signup:"حساب ندارم؛ ثبت‌نام کنم",
+
+        profile:"پروفایل من",
+        noBio:"هنوز بیویی ننوشتی ☆",
+        name:"اسم",
+        bio:"بیو",
+        avatarText:"عکس پروفایل را از گالری انتخاب کن",
+        saveProfile:"ذخیره پروفایل",
+        appearance:"✨ تنظیم ظاهر پست‌ها",
+        newPost:"✍️ ساخت پست جدید",
+        logout:"خروج از حساب",
+
+        postAppearance:"ظاهر پست‌ها",
+        appearanceHelp:
+        "هر ایموجی که دوست داری می‌تونی بنویسی. مثلاً ☆ ، 💫 ، ♡ ، 🌸 ، 🦋 یا هر چیز دیگه.",
+        pathEmoji:"ایموجی مسیر",
+        postEmoji:"ایموجی پست",
+        titleEmoji:"ایموجی عنوان",
+        saveSettings:"ذخیره تنظیمات ☆",
+
+        createPost:"ساخت پست جدید",
+        postTitle:"عنوان پست",
+        postText:"متن پست",
+        imageLink:"لینک عکس",
+        videoLink:"لینک ویدیو",
+        musicLink:"لینک موزیک",
+        publish:"انتشار پست ☆",
+
+        untitled:"بدون عنوان"
+    },
+
+    en:{
+        loginSub:"Welcome to the coastal night ☆",
+        google:"☆ Continue with Google ☆",
+        orEmail:"or with email",
+        email:"Email",
+        password:"Password",
+        login:"Login",
+        signup:"I don't have an account",
+
+        profile:"My Profile",
+        noBio:"You haven't written a bio yet ☆",
+        name:"Name",
+        bio:"Bio",
+        avatarText:"Choose a profile photo from your gallery",
+        saveProfile:"Save Profile",
+        appearance:"✨ Post Appearance",
+        newPost:"✍️ Create New Post",
+        logout:"Log Out",
+
+        postAppearance:"Post Appearance",
+        appearanceHelp:
+        "Choose any emoji you like. For example ☆, 💫, ♡, 🌸, 🦋 or anything else.",
+        pathEmoji:"Path emoji",
+        postEmoji:"Post emoji",
+        titleEmoji:"Title emoji",
+        saveSettings:"Save Settings ☆",
+
+        createPost:"Create New Post",
+        postTitle:"Post title",
+        postText:"Post text",
+        imageLink:"Image link",
+        videoLink:"Video link",
+        musicLink:"Music link",
+        publish:"Publish Post ☆",
+
+        untitled:"Untitled"
+    }
+};
+
+
+/* زبان فعلی */
+
+let currentLanguage =
+    localStorage.getItem("minuit_language") ||
+    "fa";
+
+
+function applyLanguage(){
+
+    const t =
+        translations[currentLanguage];
+
+    /* ورود */
+
+    document.querySelector(".loginSub")
+        .textContent = t.loginSub;
+
+    document.getElementById("googleLogin")
+        .textContent = t.google;
+
+    document.querySelector(
+        '#loginScreen div[style*="margin-top:17px"]'
+    ).textContent = t.orEmail;
+
+    document.getElementById("emailInput")
+        .placeholder = t.email;
+
+    document.getElementById("passwordInput")
+        .placeholder = t.password;
+
+    document.getElementById("emailLogin")
+        .textContent = t.login;
+
+    document.getElementById("emailSignup")
+        .textContent = t.signup;
+
+
+    /* پروفایل */
+
+    document.querySelector("#profileWindow h2")
+        .textContent = t.profile;
+
+    document.getElementById("nameInput")
+        .placeholder = t.name;
+
+    document.getElementById("bioInput")
+        .placeholder = t.bio;
+
+    document.querySelector("#profileWindow .fileText")
+        .textContent = t.avatarText;
+
+    document.getElementById("saveProfile")
+        .textContent = t.saveProfile;
+
+    document.getElementById("openSiteSettings")
+        .textContent = t.appearance;
+
+    document.getElementById("openComposer")
+        .textContent = t.newPost;
+
+    document.getElementById("logoutButton")
+        .textContent = t.logout;
+
+
+    /* تنظیمات */
+
+    document.querySelector("#settingsWindow h2")
+        .textContent = t.postAppearance;
+
+    document.querySelector(
+        '#settingsWindow div[style*="line-height:1.8"]'
+    ).textContent = t.appearanceHelp;
+
+    document.getElementById("pathEmojiInput")
+        .placeholder = t.pathEmoji;
+
+    document.getElementById("postEmojiInput")
+        .placeholder = t.postEmoji;
+
+    document.getElementById("titleEmojiInput")
+        .placeholder = t.titleEmoji;
+
+    document.getElementById("saveSiteSettings")
+        .textContent = t.saveSettings;
+
+
+    /* ساخت پست */
+
+    document.querySelector("#composerWindow h2")
+        .textContent = t.createPost;
+
+    document.getElementById("newTitle")
+        .placeholder = t.postTitle;
+
+    document.getElementById("newContent")
+        .placeholder = t.postText;
+
+    document.getElementById("newImage")
+        .placeholder = t.imageLink;
+
+    document.getElementById("newVideo")
+        .placeholder = t.videoLink;
+
+    document.getElementById("newMusic")
+        .placeholder = t.musicLink;
+
+    document.getElementById("publishPost")
+        .textContent = t.publish;
+
+
+    document.documentElement.lang =
+        currentLanguage;
+}
+
+
+/* تغییر زبان */
+
+function setLanguage(language){
+
+    if(
+        language !== "fa" &&
+        language !== "en"
+    )
+        return;
+
+    currentLanguage =
+        language;
+
+    localStorage.setItem(
+        "minuit_language",
+        language
+    );
+
+    applyLanguage();
+}
+
+
+/* اجرای زبان هنگام باز شدن سایت */
+
+applyLanguage();
 
 </script>
 
