@@ -33,14 +33,15 @@ canvas{
 }
 
 
-/* ================================
-   پنل ورود
-================================ */
+/* =========================
+   صفحه ورود
+========================= */
 
 #loginScreen{
     position:fixed;
     inset:0;
-    z-index:500;
+    z-index:5000;
+
     display:flex;
     align-items:center;
     justify-content:center;
@@ -48,45 +49,51 @@ canvas{
     background:
         radial-gradient(
             circle at center,
-            #17144b 0%,
-            #08091f 45%,
+            #241b62 0%,
+            #0b0b29 42%,
             #000 100%
         );
 
     color:white;
     padding:20px;
+
     overflow:auto;
 }
 
 .loginBox{
     width:min(92vw,400px);
+
     padding:30px 22px;
+
     border-radius:28px;
 
-    background:rgba(10,10,25,.88);
+    background:rgba(8,8,22,.94);
 
     border:
         1px solid
-        rgba(255,255,255,.15);
+        rgba(255,255,255,.16);
 
     box-shadow:
-        0 0 45px
-        rgba(130,90,255,.35);
+        0 0 50px
+        rgba(130,90,255,.4);
 
     text-align:center;
-    backdrop-filter:blur(15px);
+
+    backdrop-filter:blur(18px);
 }
 
 .loginLogo{
-    font-size:42px;
+    font-size:45px;
+
     margin-bottom:8px;
 
     text-shadow:
-        0 0 15px #b99cff;
+        0 0 15px #b99cff,
+        0 0 35px #7e5cff;
 }
 
 .loginTitle{
-    font-size:25px;
+    font-size:26px;
     margin-bottom:8px;
 }
 
@@ -98,9 +105,12 @@ canvas{
 
 .loginInput{
     width:100%;
-    height:48px;
+    height:49px;
+
     margin-top:10px;
+
     padding:0 15px;
+
     border-radius:15px;
 
     border:
@@ -113,14 +123,26 @@ canvas{
         rgba(255,255,255,.06);
 
     color:white;
+
     text-align:right;
+
     font-size:14px;
+}
+
+.loginInput:focus{
+    border-color:#a17cff;
+
+    box-shadow:
+        0 0 15px
+        rgba(140,100,255,.2);
 }
 
 .loginButton{
     width:100%;
-    height:48px;
+    height:49px;
+
     margin-top:12px;
+
     border:0;
     border-radius:16px;
 
@@ -129,11 +151,12 @@ canvas{
     background:
         linear-gradient(
             135deg,
-            #6e4cff,
-            #b75cff
+            #6046e8,
+            #b653df
         );
 
     font-size:15px;
+
     cursor:pointer;
 
     box-shadow:
@@ -142,7 +165,8 @@ canvas{
 }
 
 .googleButton{
-    background:rgba(255,255,255,.09);
+    background:
+        rgba(255,255,255,.09);
 
     border:
         1px solid
@@ -151,64 +175,89 @@ canvas{
 
 .smallButton{
     background:transparent;
+
     color:#c9b9ff;
+
     border:0;
+
     margin-top:12px;
+
     font-size:13px;
 }
 
 #loginMessage{
     min-height:22px;
+
     color:#ff9ed6;
+
     font-size:12px;
-    margin-top:10px;
+
+    margin-top:12px;
+
+    line-height:1.7;
 }
 
 
-/* ================================
-   پنل بالای سایت
-================================ */
+/* =========================
+   پنل بالا
+========================= */
 
 #topPanel{
     position:fixed;
+
     top:15px;
     right:15px;
-    z-index:100;
+
+    z-index:1000;
+
     display:none;
+
     text-align:center;
 }
 
 #profileButton{
-    width:48px;
-    height:48px;
+    width:50px;
+    height:50px;
+
     border-radius:50%;
 
     border:
         2px solid
-        rgba(255,255,255,.5);
+        rgba(255,255,255,.55);
 
     background:#15151f;
+
     color:white;
+
     overflow:hidden;
+
     padding:0;
+
     font-size:23px;
+
+    box-shadow:
+        0 0 20px
+        rgba(160,120,255,.35);
 }
 
 #profileButton img{
     width:100%;
     height:100%;
+
     object-fit:cover;
 }
 
 
-/* ================================
+/* =========================
    پنجره‌ها
-================================ */
+========================= */
 
 .window{
     display:none;
+
     position:fixed;
-    z-index:300;
+
+    z-index:3000;
 
     left:50%;
     top:50%;
@@ -217,7 +266,9 @@ canvas{
         translate(-50%,-50%);
 
     width:min(92vw,430px);
+
     max-height:86vh;
+
     overflow:auto;
 
     padding:25px 20px 22px;
@@ -232,6 +283,7 @@ canvas{
     border-radius:25px;
 
     color:white;
+
     text-align:center;
 
     box-shadow:
@@ -248,6 +300,7 @@ canvas{
 
 .closeButton{
     position:absolute;
+
     top:10px;
     right:10px;
 
@@ -255,22 +308,27 @@ canvas{
     height:40px;
 
     border:0;
+
     border-radius:50%;
 
     background:#181820;
+
     color:white;
+
     font-size:25px;
 }
 
 
-/* ================================
+/* =========================
    پروفایل
-================================ */
+========================= */
 
 #profileAvatar{
     width:95px;
     height:95px;
+
     border-radius:50%;
+
     object-fit:cover;
 
     border:
@@ -297,13 +355,17 @@ canvas{
 
 .profileBio{
     color:#ddd;
+
     line-height:1.8;
+
     margin:15px 5px;
 }
 
 .profileInput{
     width:100%;
+
     min-height:45px;
+
     margin-top:10px;
 
     border-radius:14px;
@@ -318,26 +380,31 @@ canvas{
     color:white;
 
     padding:10px;
+
     outline:none;
 
     font-family:Arial;
+
     text-align:right;
 }
 
 .profileTextarea{
     min-height:90px;
+
     resize:none;
 }
 
 
-/* ================================
+/* =========================
    پست
-================================ */
+========================= */
 
 #postWindow{
     display:none;
+
     position:fixed;
-    z-index:250;
+
+    z-index:2500;
 
     left:50%;
     top:50%;
@@ -346,7 +413,9 @@ canvas{
         translate(-50%,-50%);
 
     width:min(88vw,420px);
+
     max-height:82vh;
+
     overflow:auto;
 
     padding:24px 20px 20px;
@@ -361,6 +430,7 @@ canvas{
     border-radius:24px;
 
     color:#fff;
+
     text-align:center;
 
     box-shadow:
@@ -377,21 +447,28 @@ canvas{
 
 #postText{
     color:#ddd;
+
     line-height:1.9;
+
     white-space:pre-wrap;
 }
 
 #postMedia img,
 #postMedia video{
     width:100%;
+
     max-height:320px;
+
     object-fit:contain;
+
     border-radius:15px;
+
     margin-top:15px;
 }
 
 #postMedia audio{
     width:100%;
+
     margin-top:15px;
 }
 
@@ -402,9 +479,11 @@ canvas{
     height:55px;
 
     border:0;
+
     border-radius:18px;
 
     background:#15151d;
+
     color:white;
 
     font-size:32px;
@@ -419,16 +498,19 @@ canvas{
 }
 
 
-/* ================================
+/* =========================
    دکمه‌ها
-================================ */
+========================= */
 
 .actionButton{
     width:100%;
+
     min-height:47px;
+
     margin-top:10px;
 
     border:0;
+
     border-radius:15px;
 
     background:
@@ -439,6 +521,7 @@ canvas{
         );
 
     color:white;
+
     font-size:14px;
 }
 
@@ -461,14 +544,16 @@ canvas{
 }
 
 
-/* ================================
+/* =========================
    ستاره ورود
-================================ */
+========================= */
 
 .loginStar{
     position:fixed;
+
     pointer-events:none;
-    z-index:1000;
+
+    z-index:6000;
 }
 
 </style>
@@ -480,9 +565,9 @@ canvas{
 <canvas id="sky"></canvas>
 
 
-<!-- ================================
+<!-- =========================
      صفحه ورود
-================================ -->
+========================= -->
 
 <div id="loginScreen">
 
@@ -523,12 +608,14 @@ canvas{
             id="emailInput"
             class="loginInput"
             type="email"
+            autocomplete="email"
             placeholder="ایمیل">
 
         <input
             id="passwordInput"
             class="loginInput"
             type="password"
+            autocomplete="current-password"
             placeholder="رمز عبور">
 
         <button
@@ -554,9 +641,9 @@ canvas{
 </div>
 
 
-<!-- ================================
-     پنل بالای سایت
-================================ -->
+<!-- =========================
+     پنل بالا
+========================= -->
 
 <div id="topPanel">
 
@@ -567,9 +654,9 @@ canvas{
 </div>
 
 
-<!-- ================================
-     پنجره پروفایل
-================================ -->
+<!-- =========================
+     پروفایل
+========================= -->
 
 <div
     id="profileWindow"
@@ -655,9 +742,9 @@ canvas{
 </div>
 
 
-<!-- ================================
+<!-- =========================
      ساخت پست
-================================ -->
+========================= -->
 
 <div
     id="composerWindow"
@@ -721,9 +808,9 @@ canvas{
 </div>
 
 
-<!-- ================================
+<!-- =========================
      پنجره پست
-================================ -->
+========================= -->
 
 <div id="postWindow">
 
@@ -764,6 +851,9 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_dV39l6cN2-ibtAGNv71GWA_x8r0xsxT";
 
+const SITE_URL =
+"https://oceaneyy8090-art.github.io/minuit-cotier/";
+
 const supabaseClient =
 window.supabase.createClient(
     SUPABASE_URL,
@@ -795,11 +885,17 @@ function resize(){
             1.5
         );
 
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
+    canvas.width =
+        W * dpr;
 
-    canvas.style.width = W + "px";
-    canvas.style.height = H + "px";
+    canvas.height =
+        H * dpr;
+
+    canvas.style.width =
+        W + "px";
+
+    canvas.style.height =
+        H + "px";
 
     ctx.setTransform(
         dpr,
@@ -811,7 +907,10 @@ function resize(){
     );
 }
 
-addEventListener("resize", resize);
+addEventListener(
+    "resize",
+    resize
+);
 
 resize();
 
@@ -839,7 +938,7 @@ let downY = 0;
 
 
 /* =====================================
-   رنگ ستاره‌ها
+   رنگ‌ها
 ===================================== */
 
 const colors = [
@@ -919,10 +1018,14 @@ for(let i = 0; i < 3000; i++){
 ===================================== */
 
 let posts = [];
+
 let activePost = null;
 
 
-function getPostPosition(id,index){
+function getPostPosition(
+    id,
+    index
+){
 
     const n =
         Number(id) ||
@@ -951,7 +1054,7 @@ function getPostPosition(id,index){
 
 
 /* =====================================
-   گرفتن پست‌ها
+   دریافت پست‌ها
 ===================================== */
 
 async function loadPosts(){
@@ -1049,15 +1152,23 @@ async function loadPosts(){
 
 
 /* =====================================
-   ماه و ستاره‌های اطراف
+   ستاره‌های اطراف ماه
 ===================================== */
 
-function drawMoonStars(post,time){
+function drawMoonStars(
+    post,
+    time
+){
 
     const count = 18;
+
     const orbitRadius = 70;
 
-    for(let i = 0; i < count; i++){
+    for(
+        let i = 0;
+        i < count;
+        i++
+    ){
 
         const angle =
             (i / count) *
@@ -1134,33 +1245,41 @@ function drawMoonStars(post,time){
 
 
 /* =====================================
-   زنجیره ستاره‌ای دفرمه
-   از پروفایل تا ماه‌ها
+   زنجیره دفرمه
+   پروفایل → ماه‌ها
 ===================================== */
 
 function drawMoonPath(time){
 
     ctx.textAlign = "center";
+
     ctx.textBaseline = "middle";
 
-    const profileX = W / 2;
-    const profileY = 195;
+    const profileX =
+        W / 2;
+
+    const profileY =
+        195;
 
     const points = [];
 
-    /* شروع زنجیره از پروفایل */
 
     points.push({
-        x: profileX,
-        y: profileY
+
+        x:profileX,
+
+        y:profileY
     });
 
 
-    /* ماه‌های پست */
+    for(
+        let i = 0;
+        i < posts.length;
+        i++
+    ){
 
-    for(let i = 0; i < posts.length; i++){
-
-        const post = posts[i];
+        const post =
+            posts[i];
 
         points.push({
 
@@ -1181,16 +1300,17 @@ function drawMoonPath(time){
         return;
 
 
-    /* هر بخش از زنجیره */
-
     for(
         let p = 0;
         p < points.length - 1;
         p++
     ){
 
-        const a = points[p];
-        const b = points[p + 1];
+        const a =
+            points[p];
+
+        const b =
+            points[p + 1];
 
         const dx =
             b.x - a.x;
@@ -1212,15 +1332,9 @@ function drawMoonPath(time){
                 )
             );
 
-
         const length =
-            Math.sqrt(
-                dx * dx +
-                dy * dy
-            ) || 1;
+            distance || 1;
 
-
-        /* جهت عمودی مسیر */
 
         const nx =
             -dy / length;
@@ -1238,7 +1352,6 @@ function drawMoonPath(time){
             const t =
                 j / count;
 
-
             let x =
                 a.x +
                 dx * t;
@@ -1248,8 +1361,6 @@ function drawMoonPath(time){
                 dy * t;
 
 
-            /* موج بزرگ */
-
             const wave =
                 Math.sin(
                     t *
@@ -1258,9 +1369,6 @@ function drawMoonPath(time){
                     p * 1.7 +
                     time * .001
                 ) * 24;
-
-
-            /* موج کوچک */
 
             const wave2 =
                 Math.sin(
@@ -1280,15 +1388,12 @@ function drawMoonPath(time){
                 (wave + wave2);
 
 
-            /* شناور شدن ستاره‌ها */
-
             const float =
                 Math.sin(
                     time * .002 +
                     j * .8 +
                     p
                 ) * 3;
-
 
             x +=
                 nx * float;
@@ -1297,8 +1402,6 @@ function drawMoonPath(time){
                 ny * float;
 
 
-            /* ستاره */
-
             ctx.globalAlpha =
                 .65 +
                 Math.sin(
@@ -1306,19 +1409,16 @@ function drawMoonPath(time){
                     j
                 ) * .25;
 
-
             ctx.fillStyle =
                 colors[
                     (j + p) %
                     colors.length
                 ];
 
-
             ctx.shadowColor =
                 ctx.fillStyle;
 
             ctx.shadowBlur = 6;
-
 
             const size =
                 8 +
@@ -1327,10 +1427,8 @@ function drawMoonPath(time){
                     j
                 ) * 2;
 
-
             ctx.font =
                 `${size}px Arial`;
-
 
             ctx.fillText(
                 "☆",
@@ -1338,24 +1436,25 @@ function drawMoonPath(time){
                 y
             );
 
-
             ctx.shadowBlur = 0;
         }
     }
-
 
     ctx.globalAlpha = 1;
 }
 
 
 /* =====================================
-   پروفایل کانال
+   پروفایل داخل جهان
 ===================================== */
 
 function drawProfile(){
 
-    const x = W / 2;
-    const y = 120;
+    const x =
+        W / 2;
+
+    const y =
+        120;
 
     ctx.beginPath();
 
@@ -1414,10 +1513,15 @@ function drawProfile(){
 
 function drawPosts(time){
 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.textAlign =
+        "center";
 
-    for(const post of posts){
+    ctx.textBaseline =
+        "middle";
+
+    for(
+        const post of posts
+    ){
 
         const x =
             post.x -
@@ -1437,10 +1541,12 @@ function drawPosts(time){
         )
             continue;
 
+
         drawMoonStars(
             post,
             time
         );
+
 
         ctx.font =
             "36px Arial";
@@ -1483,7 +1589,12 @@ function createLikeStars(){
         camY +
         H / 2;
 
-    for(let i = 0; i < 100; i++){
+
+    for(
+        let i = 0;
+        i < 100;
+        i++
+    ){
 
         const angle =
             Math.random() *
@@ -1496,6 +1607,7 @@ function createLikeStars(){
         likeStars.push({
 
             x:startX,
+
             y:startY,
 
             vx:
@@ -1528,12 +1640,19 @@ function createLikeStars(){
 
 function drawLikeStars(){
 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
 
     for(
-        let i = likeStars.length - 1;
+        let i =
+            likeStars.length - 1;
+
         i >= 0;
+
         i--
     ){
 
@@ -1541,12 +1660,15 @@ function drawLikeStars(){
             likeStars[i];
 
         s.x += s.vx;
+
         s.y += s.vy;
 
         s.vx *= .998;
+
         s.vy *= .998;
 
         s.life--;
+
 
         if(s.life <= 0){
 
@@ -1557,6 +1679,7 @@ function drawLikeStars(){
 
             continue;
         }
+
 
         ctx.globalAlpha =
             Math.min(
@@ -1612,25 +1735,53 @@ function drawBackground(){
 
 function drawStars(time){
 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+    ctx.textAlign =
+        "center";
 
-    for(const s of stars){
+    ctx.textBaseline =
+        "middle";
+
+
+    for(
+        const s of stars
+    ){
 
         s.x += s.vx;
+
         s.y += s.vy;
 
-        if(s.x > WORLD / 2)
-            s.x = -WORLD / 2;
 
-        if(s.x < -WORLD / 2)
-            s.x = WORLD / 2;
+        if(
+            s.x >
+            WORLD / 2
+        )
+            s.x =
+                -WORLD / 2;
 
-        if(s.y > WORLD / 2)
-            s.y = -WORLD / 2;
 
-        if(s.y < -WORLD / 2)
-            s.y = WORLD / 2;
+        if(
+            s.x <
+            -WORLD / 2
+        )
+            s.x =
+                WORLD / 2;
+
+
+        if(
+            s.y >
+            WORLD / 2
+        )
+            s.y =
+                -WORLD / 2;
+
+
+        if(
+            s.y <
+            -WORLD / 2
+        )
+            s.y =
+                WORLD / 2;
+
 
         const x =
             s.x -
@@ -1642,6 +1793,7 @@ function drawStars(time){
             camY +
             H / 2;
 
+
         if(
             x < -40 ||
             x > W + 40 ||
@@ -1650,12 +1802,14 @@ function drawStars(time){
         )
             continue;
 
+
         const alpha =
             .88 +
             Math.sin(
                 time * .002 +
                 s.phase
             ) * .10;
+
 
         ctx.globalAlpha =
             alpha;
@@ -1691,8 +1845,11 @@ function drawStars(time){
 function findPost(x,y){
 
     for(
-        let i = posts.length - 1;
+        let i =
+            posts.length - 1;
+
         i >= 0;
+
         i--
     ){
 
@@ -1709,6 +1866,7 @@ function findPost(x,y){
             camY +
             H / 2;
 
+
         if(
             Math.hypot(
                 x - px,
@@ -1723,23 +1881,34 @@ function findPost(x,y){
 
 
 /* =====================================
-   لمس صفحه
+   لمس
 ===================================== */
 
 canvas.addEventListener(
     "pointerdown",
     e=>{
 
-        downX = e.clientX;
-        downY = e.clientY;
+        downX =
+            e.clientX;
 
-        dragging = true;
+        downY =
+            e.clientY;
 
-        startX = e.clientX;
-        startY = e.clientY;
+        dragging =
+            true;
 
-        startCamX = camX;
-        startCamY = camY;
+        startX =
+            e.clientX;
+
+        startY =
+            e.clientY;
+
+        startCamX =
+            camX;
+
+        startCamY =
+            camY;
+
 
         canvas.setPointerCapture(
             e.pointerId
@@ -1755,6 +1924,7 @@ canvas.addEventListener(
         if(!dragging)
             return;
 
+
         const dx =
             e.clientX -
             startX;
@@ -1762,6 +1932,7 @@ canvas.addEventListener(
         const dy =
             e.clientY -
             startY;
+
 
         targetX =
             startCamX -
@@ -1784,9 +1955,14 @@ canvas.addEventListener(
                 e.clientY - downY
             );
 
-        dragging = false;
 
-        if(distance < 12){
+        dragging =
+            false;
+
+
+        if(
+            distance < 12
+        ){
 
             const post =
                 findPost(
@@ -1794,9 +1970,11 @@ canvas.addEventListener(
                     e.clientY
                 );
 
+
             if(post)
                 openPost(post);
         }
+
 
         try{
 
@@ -1815,24 +1993,31 @@ canvas.addEventListener(
 
 function openPost(post){
 
-    activePost = post;
+    activePost =
+        post;
+
 
     document.getElementById(
         "postTitle"
     ).textContent =
         post.title;
 
+
     document.getElementById(
         "postText"
     ).textContent =
         post.text;
+
 
     const media =
         document.getElementById(
             "postMedia"
         );
 
-    media.innerHTML = "";
+
+    media.innerHTML =
+        "";
+
 
     if(post.image_url){
 
@@ -1844,10 +2029,14 @@ function openPost(post){
         img.src =
             post.image_url;
 
+        img.loading =
+            "lazy";
+
         media.appendChild(
             img
         );
     }
+
 
     if(post.video_url){
 
@@ -1859,13 +2048,17 @@ function openPost(post){
         video.src =
             post.video_url;
 
-        video.controls = true;
-        video.playsInline = true;
+        video.controls =
+            true;
+
+        video.playsInline =
+            true;
 
         media.appendChild(
             video
         );
     }
+
 
     if(post.music_url){
 
@@ -1877,17 +2070,20 @@ function openPost(post){
         audio.src =
             post.music_url;
 
-        audio.controls = true;
+        audio.controls =
+            true;
 
         media.appendChild(
             audio
         );
     }
 
+
     const like =
         document.getElementById(
             "likeButton"
         );
+
 
     like.classList.remove(
         "liked"
@@ -1895,6 +2091,7 @@ function openPost(post){
 
     like.textContent =
         "♡";
+
 
     document.getElementById(
         "postWindow"
@@ -1917,7 +2114,8 @@ function(){
     ).style.display =
         "none";
 
-    activePost = null;
+    activePost =
+        null;
 };
 
 
@@ -1933,6 +2131,7 @@ function(){
     if(!activePost)
         return;
 
+
     this.classList.add(
         "liked"
     );
@@ -1940,12 +2139,13 @@ function(){
     this.textContent =
         "♥";
 
+
     createLikeStars();
 };
 
 
 /* =====================================
-   ورود با Google
+   ورود Google
 ===================================== */
 
 document.getElementById(
@@ -1953,17 +2153,24 @@ document.getElementById(
 ).onclick =
 async function(){
 
+    showLoginMessage(
+        "در حال انتقال به Google..."
+    );
+
+
     const {error} =
         await supabaseClient.auth.signInWithOAuth({
 
-            provider:"google",
+            provider:
+                "google",
 
             options:{
 
                 redirectTo:
-                    "https://oceaneyy8090-art.github.io/minuit-cotier/"
+                    SITE_URL
             }
         });
+
 
     if(error){
 
@@ -1975,7 +2182,7 @@ async function(){
 
 
 /* =====================================
-   ورود با ایمیل
+   ورود ایمیل
 ===================================== */
 
 document.getElementById(
@@ -1988,12 +2195,17 @@ async function(){
             "emailInput"
         ).value.trim();
 
+
     const password =
         document.getElementById(
             "passwordInput"
         ).value;
 
-    if(!email || !password){
+
+    if(
+        !email ||
+        !password
+    ){
 
         showLoginMessage(
             "ایمیل و رمز را وارد کن."
@@ -2002,12 +2214,22 @@ async function(){
         return;
     }
 
+
+    showLoginMessage(
+        "در حال ورود..."
+    );
+
+
     const {error} =
         await supabaseClient.auth.signInWithPassword({
 
-            email:email,
-            password:password
+            email:
+                email,
+
+            password:
+                password
         });
+
 
     if(error){
 
@@ -2038,12 +2260,17 @@ async function(){
             "emailInput"
         ).value.trim();
 
+
     const password =
         document.getElementById(
             "passwordInput"
         ).value;
 
-    if(!email || !password){
+
+    if(
+        !email ||
+        !password
+    ){
 
         showLoginMessage(
             "ایمیل و رمز را وارد کن."
@@ -2052,7 +2279,10 @@ async function(){
         return;
     }
 
-    if(password.length < 6){
+
+    if(
+        password.length < 6
+    ){
 
         showLoginMessage(
             "رمز عبور باید حداقل ۶ کاراکتر باشد."
@@ -2061,19 +2291,28 @@ async function(){
         return;
     }
 
+
+    showLoginMessage(
+        "در حال ساخت حساب..."
+    );
+
+
     const {error} =
         await supabaseClient.auth.signUp({
 
-            email:email,
+            email:
+                email,
 
-            password:password,
+            password:
+                password,
 
             options:{
 
                 emailRedirectTo:
-                    "https://oceaneyy8090-art.github.io/minuit-cotier/"
+                    SITE_URL
             }
         });
+
 
     if(error){
 
@@ -2084,7 +2323,7 @@ async function(){
     }else{
 
         showLoginMessage(
-            "ثبت‌نام انجام شد. اگر تأیید ایمیل روشن باشد، ایمیلت را چک کن."
+            "ثبت‌نام انجام شد ☆ اگر تأیید ایمیل روشن باشد، ایمیلت را چک کن."
         );
     }
 };
@@ -2094,7 +2333,9 @@ async function(){
    پیام ورود
 ===================================== */
 
-function showLoginMessage(message){
+function showLoginMessage(
+    message
+){
 
     document.getElementById(
         "loginMessage"
@@ -2109,24 +2350,33 @@ function showLoginMessage(message){
 
 function createLoginStars(){
 
-    for(let i = 0; i < 35; i++){
+    for(
+        let i = 0;
+        i < 35;
+        i++
+    ){
 
         const star =
             document.createElement(
                 "div"
             );
 
+
         star.className =
             "loginStar";
+
 
         star.textContent =
             "☆";
 
+
         star.style.left =
             "50%";
 
+
         star.style.top =
             "50%";
+
 
         star.style.color =
             colors[
@@ -2136,6 +2386,7 @@ function createLoginStars(){
                 )
             ];
 
+
         star.style.fontSize =
             (
                 12 +
@@ -2143,19 +2394,23 @@ function createLoginStars(){
             ) +
             "px";
 
+
         document.body.appendChild(
             star
         );
+
 
         const x =
             (
                 Math.random() - .5
             ) * 500;
 
+
         const y =
             (
                 Math.random() - .5
             ) * 500;
+
 
         star.animate(
 
@@ -2192,6 +2447,7 @@ function createLoginStars(){
             }
         );
 
+
         setTimeout(
             ()=>{
                 star.remove();
@@ -2203,7 +2459,7 @@ function createLoginStars(){
 
 
 /* =====================================
-   نمایش کاربر
+   وضعیت کاربر
 ===================================== */
 
 async function updateUserUI(){
@@ -2211,18 +2467,22 @@ async function updateUserUI(){
     const {data} =
         await supabaseClient.auth.getSession();
 
+
     const session =
         data.session;
+
 
     const loginScreen =
         document.getElementById(
             "loginScreen"
         );
 
+
     const topPanel =
         document.getElementById(
             "topPanel"
         );
+
 
     if(!session){
 
@@ -2235,20 +2495,24 @@ async function updateUserUI(){
         return;
     }
 
+
     loginScreen.style.display =
         "none";
+
 
     topPanel.style.display =
         "block";
 
+
     createLoginStars();
 
-    loadProfile();
+
+    await loadProfile();
 }
 
 
 /* =====================================
-   بارگذاری پروفایل
+   پروفایل
 ===================================== */
 
 async function loadProfile(){
@@ -2256,35 +2520,44 @@ async function loadProfile(){
     const {data} =
         await supabaseClient.auth.getUser();
 
+
     const user =
         data.user;
+
 
     if(!user)
         return;
 
+
     const meta =
         user.user_metadata || {};
+
 
     const name =
         meta.name ||
         meta.full_name ||
         user.email.split("@")[0];
 
+
     const bio =
         meta.bio || "";
 
+
     const avatar =
         meta.avatar_url || "";
+
 
     document.getElementById(
         "profileNameView"
     ).textContent =
         name;
 
+
     document.getElementById(
         "profileEmailView"
     ).textContent =
         user.email;
+
 
     document.getElementById(
         "profileBioView"
@@ -2292,25 +2565,30 @@ async function loadProfile(){
         bio ||
         "هنوز بیویی ننوشتی ☆";
 
+
     document.getElementById(
         "nameInput"
     ).value =
         name;
+
 
     document.getElementById(
         "bioInput"
     ).value =
         bio;
 
+
     document.getElementById(
         "avatarInput"
     ).value =
         avatar;
 
+
     const avatarElement =
         document.getElementById(
             "profileAvatar"
         );
+
 
     if(avatar){
 
@@ -2345,12 +2623,20 @@ async function loadProfile(){
                     </text>
 
                 </svg>
+
             `);
     }
 
-    document.getElementById(
-        "profileButton"
-    ).innerHTML = "";
+
+    const profileButton =
+        document.getElementById(
+            "profileButton"
+        );
+
+
+    profileButton.innerHTML =
+        "";
+
 
     if(avatar){
 
@@ -2359,20 +2645,18 @@ async function loadProfile(){
                 "img"
             );
 
+
         img.src =
             avatar;
 
-        document.getElementById(
-            "profileButton"
-        ).appendChild(
+
+        profileButton.appendChild(
             img
         );
 
     }else{
 
-        document.getElementById(
-            "profileButton"
-        ).textContent =
+        profileButton.textContent =
             "🌛";
     }
 }
@@ -2392,26 +2676,35 @@ async function(){
             "nameInput"
         ).value.trim();
 
+
     const bio =
         document.getElementById(
             "bioInput"
         ).value.trim();
+
 
     const avatar =
         document.getElementById(
             "avatarInput"
         ).value.trim();
 
+
     const {error} =
         await supabaseClient.auth.updateUser({
 
             data:{
 
-                name:name,
-                bio:bio,
-                avatar_url:avatar
+                name:
+                    name,
+
+                bio:
+                    bio,
+
+                avatar_url:
+                    avatar
             }
         });
+
 
     if(error){
 
@@ -2422,7 +2715,9 @@ async function(){
         return;
     }
 
+
     await loadProfile();
+
 
     alert(
         "پروفایلت ذخیره شد ☆"
@@ -2440,6 +2735,7 @@ document.getElementById(
 function(){
 
     loadProfile();
+
 
     document.getElementById(
         "profileWindow"
@@ -2465,7 +2761,7 @@ function(){
 
 
 /* =====================================
-   باز کردن ساخت پست
+   ساخت پست
 ===================================== */
 
 document.getElementById(
@@ -2477,6 +2773,7 @@ function(){
         "profileWindow"
     ).style.display =
         "none";
+
 
     document.getElementById(
         "composerWindow"
@@ -2515,39 +2812,48 @@ async function(){
             "newTitle"
         ).value.trim();
 
+
     const content =
         document.getElementById(
             "newContent"
         ).value.trim();
+
 
     const image =
         document.getElementById(
             "newImage"
         ).value.trim();
 
+
     const video =
         document.getElementById(
             "newVideo"
         ).value.trim();
+
 
     const music =
         document.getElementById(
             "newMusic"
         ).value.trim();
 
+
     const message =
         document.getElementById(
             "postMessage"
         );
 
+
     message.textContent =
         "در حال انتشار...";
+
 
     const {data} =
         await supabaseClient.auth.getUser();
 
+
     const user =
         data.user;
+
 
     if(!user){
 
@@ -2556,6 +2862,7 @@ async function(){
 
         return;
     }
+
 
     const {error} =
         await supabaseClient
@@ -2579,6 +2886,7 @@ async function(){
                 music
         });
 
+
     if(error){
 
         console.error(error);
@@ -2590,30 +2898,43 @@ async function(){
         return;
     }
 
+
     message.textContent =
         "پست منتشر شد ☆";
 
+
     document.getElementById(
         "newTitle"
-    ).value = "";
+    ).value =
+        "";
+
 
     document.getElementById(
         "newContent"
-    ).value = "";
+    ).value =
+        "";
+
 
     document.getElementById(
         "newImage"
-    ).value = "";
+    ).value =
+        "";
+
 
     document.getElementById(
         "newVideo"
-    ).value = "";
+    ).value =
+        "";
+
 
     document.getElementById(
         "newMusic"
-    ).value = "";
+    ).value =
+        "";
+
 
     await loadPosts();
+
 
     setTimeout(
         ()=>{
@@ -2640,10 +2961,20 @@ async function(){
 
     await supabaseClient.auth.signOut();
 
+
     document.getElementById(
         "profileWindow"
     ).style.display =
         "none";
+
+
+    document.getElementById(
+        "composerWindow"
+    ).style.display =
+        "none";
+
+
+    updateUserUI();
 };
 
 
@@ -2663,7 +2994,7 @@ supabaseClient.auth.onAuthStateChange(
 
 
 /* =====================================
-   شروع
+   شروع سایت
 ===================================== */
 
 loadPosts();
@@ -2680,18 +3011,22 @@ function animate(time){
     if(!dragging){
 
         targetX += .10;
+
         targetY += .04;
     }
+
 
     camX +=
         (
             targetX - camX
         ) * .06;
 
+
     camY +=
         (
             targetY - camY
         ) * .06;
+
 
     drawBackground();
 
@@ -2705,10 +3040,12 @@ function animate(time){
 
     drawLikeStars();
 
+
     requestAnimationFrame(
         animate
     );
 }
+
 
 requestAnimationFrame(
     animate
