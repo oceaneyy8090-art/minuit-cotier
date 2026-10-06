@@ -3143,9 +3143,6 @@ function(){
 };
 document.getElementById("mainMenu").style.display = "block";
 
-/* ❤️ لایک + 💬 کامنت
-========================= */
-
 const engagementBox =
     document.createElement("div");
 
@@ -3160,6 +3157,11 @@ engagementBox.style.cssText = `
     color:white;
     font-family:Arial;
 `;
+
+
+/* =========================
+   ❤️ لایک + 💬 کامنت
+========================= */
 
 async function loadEngagement(post){
 
@@ -3177,7 +3179,7 @@ async function loadEngagement(post){
                 color:white;
                 border-radius:16px;
                 padding:9px 14px;
-                font-size:17px;
+                font-size:18px;
             ">
                 ♡
             </button>
@@ -3187,6 +3189,7 @@ async function loadEngagement(post){
             </span>
 
         </div>
+
 
         <div style="
             display:flex;
@@ -3205,6 +3208,7 @@ async function loadEngagement(post){
                     outline:none;
                     background:rgba(255,255,255,.1);
                     color:white;
+                    min-width:0;
                 "
             >
 
@@ -3217,6 +3221,7 @@ async function loadEngagement(post){
                     background:#7667ff;
                     color:white;
                     font-size:15px;
+                    white-space:nowrap;
                 "
             >
                 بفرستش ♡
@@ -3224,16 +3229,21 @@ async function loadEngagement(post){
 
         </div>
 
+
         <div
             id="commentsList"
-            style="margin-top:15px"
+            style="
+                margin-top:15px;
+            "
         ></div>
     `;
+
 
     const postWindow =
         document.getElementById(
             "postWindow"
         );
+
 
     if(postWindow){
 
@@ -3242,62 +3252,100 @@ async function loadEngagement(post){
         );
     }
 
+
     await refreshLikes(post);
+
     await refreshComments(post);
 
 
-    /* ❤️ لایک */
+    /* =========================
+       ❤️ لایک
+    ========================= */
 
-    document.getElementById(
-        "realLikeButton"
-    ).onclick =
-    async function(){
+    const likeButton =
+        document.getElementById(
+            "realLikeButton"
+        );
 
-        const user =
-            (
+
+    if(likeButton){
+
+        likeButton.onclick =
+        async function(){
+
+            const userResult =
                 await supabaseClient
                 .auth
-                .getUser()
-            ).data.user;
-
-        if(!user){
-
-            alert(
-                "اول وارد حسابت شو ♡"
-            );
-
-            return;
-        }
-
-        const name =
-            user.user_metadata?.full_name ||
-            user.user_metadata?.name ||
-            user.email?.split("@")[0] ||
-            "کاربر";
+                .getUser();
 
 
-        const { error } =
-            await supabaseClient
-            .from("likes")
-            .insert({
-
-                post_id:
-                    post.id,
-
-                user_id:
-                    user.id,
-
-                visitor_name:
-                    name
-            });
+            const user =
+                userResult.data.user;
 
 
-        if(!error){
+            if(!user){
 
-            /*
-              ✨ افکت ۱۰۰ ستاره قبلی
-              دست‌نخورده می‌مونه
-            */
+                alert(
+                    "اول وارد حسابت شو ♡"
+                );
+
+                return;
+            }
+
+
+            const name =
+                user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                user.email?.split("@")[0] ||
+                "کاربر";
+
+
+            const { error } =
+                await supabaseClient
+                .from("likes")
+                .insert({
+
+                    post_id:
+                        post.id,
+
+                    user_id:
+                        user.id,
+
+                    visitor_name:
+                        name
+                });
+
+
+            if(error){
+
+                console.log(
+                    "LIKE ERROR:",
+                    error
+                );
+
+
+                if(
+                    error.code ===
+                    "23505"
+                ){
+
+                    alert(
+                        "این پست رو قبلاً قلبک زدی ♡"
+                    );
+
+                }else{
+
+                    alert(
+                        "خطای لایک: " +
+                        error.message
+                    );
+                }
+
+                return;
+            }
+
+
+            /* ✨ همان افکت ۱۰۰ ستاره */
 
             if(
                 typeof createLikeStars ===
@@ -3307,112 +3355,118 @@ async function loadEngagement(post){
                 createLikeStars();
             }
 
+
             await refreshLikes(post);
+        };
+    }
 
-        }else{
 
-            if(
-                error.code ===
-                "23505"
-            ){
+    /* =========================
+       💬 کامنت
+    ========================= */
 
-                alert(
-                    "این پست رو قبلاً قلبک زدی ♡"
+    const sendComment =
+        document.getElementById(
+            "sendComment"
+        );
+
+
+    if(sendComment){
+
+        sendComment.onclick =
+        async function(){
+
+            const input =
+                document.getElementById(
+                    "commentInput"
                 );
 
-            }else{
 
-                console.log(error);
-
-            }
-        }
-    };
+            const message =
+                input.value.trim();
 
 
-    /* 💬 ارسال کامنت */
-
-    document.getElementById(
-        "sendComment"
-    ).onclick =
-    async function(){
-
-        const input =
-            document.getElementById(
-                "commentInput"
-            );
-
-        const message =
-            input.value.trim();
-
-        if(!message)
-            return;
+            if(!message)
+                return;
 
 
-        const user =
-            (
+            const userResult =
                 await supabaseClient
                 .auth
-                .getUser()
-            ).data.user;
+                .getUser();
 
 
-        if(!user){
-
-            alert(
-                "اول وارد حسابت شو ♡"
-            );
-
-            return;
-        }
+            const user =
+                userResult.data.user;
 
 
-        const name =
-            user.user_metadata?.full_name ||
-            user.user_metadata?.name ||
-            user.email?.split("@")[0] ||
-            "کاربر";
+            if(!user){
+
+                alert(
+                    "اول وارد حسابت شو ♡"
+                );
+
+                return;
+            }
 
 
-        const { error } =
-            await supabaseClient
-            .from("comments")
-            .insert({
-
-                post_id:
-                    post.id,
-
-                user_id:
-                    user.id,
-
-                message:
-                    message,
-
-                visitor_name:
-                    name
-            });
+            const name =
+                user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                user.email?.split("@")[0] ||
+                "کاربر";
 
 
-        if(!error){
+            const { error } =
+                await supabaseClient
+                .from("comments")
+                .insert({
+
+                    post_id:
+                        post.id,
+
+                    user_id:
+                        user.id,
+
+                    message:
+                        message,
+
+                    visitor_name:
+                        name
+                });
+
+
+            if(error){
+
+                console.log(
+                    "COMMENT ERROR:",
+                    error
+                );
+
+
+                alert(
+                    "خطای کامنت: " +
+                    error.message
+                );
+
+                return;
+            }
+
 
             input.value = "";
+
 
             await refreshComments(
                 post
             );
-
-        }else{
-
-            console.log(error);
-
-            alert(
-                "کامنت نرفت 😭"
-            );
-        }
-    };
+        };
+    }
 }
 
 
-/* ❤️ تعداد لایک */
+/* =========================
+   ❤️ تعداد لایک
+========================= */
 
 async function refreshLikes(post){
 
@@ -3427,9 +3481,13 @@ async function refreshLikes(post){
             post.id
         );
 
+
     if(error){
 
-        console.log(error);
+        console.log(
+            "REFRESH LIKES ERROR:",
+            error
+        );
 
         return;
     }
@@ -3449,7 +3507,9 @@ async function refreshLikes(post){
 }
 
 
-/* 💬 نمایش کامنت‌ها */
+/* =========================
+   💬 نمایش کامنت‌ها
+========================= */
 
 async function refreshComments(post){
 
@@ -3457,6 +3517,7 @@ async function refreshComments(post){
         document.getElementById(
             "commentsList"
         );
+
 
     if(!list)
         return;
@@ -3482,7 +3543,10 @@ async function refreshComments(post){
 
     if(error){
 
-        console.log(error);
+        console.log(
+            "REFRESH COMMENTS ERROR:",
+            error
+        );
 
         return;
     }
@@ -3502,8 +3566,8 @@ async function refreshComments(post){
 
             item.style.cssText = `
                 margin-bottom:8px;
-                padding:9px;
-                border-radius:12px;
+                padding:10px;
+                border-radius:13px;
                 background:rgba(255,255,255,.07);
             `;
 
@@ -3518,7 +3582,10 @@ async function refreshComments(post){
                     }
                 </b>
 
-                <div style="margin-top:4px">
+                <div style="
+                    margin-top:5px;
+                    opacity:.9;
+                ">
                     ${
                         escapeHtml(
                             comment.message
@@ -3536,27 +3603,34 @@ async function refreshComments(post){
 }
 
 
-/* 🛡️ جلوگیری از HTML داخل کامنت */
+/* =========================
+   🛡️ امنیت متن کامنت
+========================= */
 
 function escapeHtml(text){
 
     return String(text)
+
         .replaceAll(
             "&",
             "&amp;"
         )
+
         .replaceAll(
             "<",
             "&lt;"
         )
+
         .replaceAll(
             ">",
             "&gt;"
         )
+
         .replaceAll(
             '"',
             "&quot;"
         )
+
         .replaceAll(
             "'",
             "&#039;"
