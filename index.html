@@ -3300,7 +3300,57 @@ async function loadEngagement(post){
                 "کاربر";
 
 
-            const { error } =
+            
+
+
+    /* =========================
+       💬 کامنت
+    ========================= */
+
+    const sendComment =
+        document.getElementById(
+            "sendComment"
+        );
+
+
+    if(sendComment){
+
+        sendComment.onclick =
+        async function(){
+
+            const input =
+                document.getElementById(
+                    "commentInput"
+                );
+
+
+            const message =
+                input.value.trim();
+
+
+            if(!message)
+                return;
+
+
+            const userResult =
+                await supabaseClient
+                .auth
+                .getUser();
+
+
+            const user =
+                userResult.data.user;
+
+
+            if(!user){
+
+                alert(
+                    "اول وارد حسابت شو ♡"
+                );
+
+                return;
+            }
+const { error } =
                 await supabaseClient
                 .from("likes")
 .insert({
@@ -3364,56 +3414,6 @@ async function loadEngagement(post){
             await refreshLikes(post);
         };
     }
-
-
-    /* =========================
-       💬 کامنت
-    ========================= */
-
-    const sendComment =
-        document.getElementById(
-            "sendComment"
-        );
-
-
-    if(sendComment){
-
-        sendComment.onclick =
-        async function(){
-
-            const input =
-                document.getElementById(
-                    "commentInput"
-                );
-
-
-            const message =
-                input.value.trim();
-
-
-            if(!message)
-                return;
-
-
-            const userResult =
-                await supabaseClient
-                .auth
-                .getUser();
-
-
-            const user =
-                userResult.data.user;
-
-
-            if(!user){
-
-                alert(
-                    "اول وارد حسابت شو ♡"
-                );
-
-                return;
-            }
-
 
             const name =
                 user.user_metadata?.full_name ||
