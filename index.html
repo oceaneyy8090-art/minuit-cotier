@@ -709,6 +709,32 @@ textarea.profileInput{
         class="profileInput"
         placeholder="ایموجی عنوان">
 
+<div style="
+    margin-top:15px;
+    color:#aaa;
+    font-size:12px;
+">
+    زبان / Language
+</div>
+
+<div style="
+    display:flex;
+    gap:8px;
+    margin-top:8px;
+">
+    <button
+        id="faLanguage"
+        class="actionButton secondaryButton">
+        🇮🇷 فارسی
+    </button>
+
+    <button
+        id="enLanguage"
+        class="actionButton secondaryButton">
+        🇬🇧 English
+    </button>
+</div>
+
     <button
         id="saveSiteSettings"
         class="actionButton">
@@ -2979,6 +3005,13 @@ function setLanguage(language){
 /* اجرای زبان هنگام باز شدن سایت */
 
 applyLanguage();
+document.getElementById("faLanguage").onclick = function(){
+    setLanguage("fa");
+};
+
+document.getElementById("enLanguage").onclick = function(){
+    setLanguage("en");
+};
 
 </script>
 
