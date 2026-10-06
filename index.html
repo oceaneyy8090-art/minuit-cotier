@@ -506,6 +506,50 @@ textarea.profileInput{
 
 <body>
 
+<div id="mainMenu" style="
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:9999;
+    display:none;
+">
+    <button id="menuButton" class="actionButton">
+        ☰
+    </button>
+</div>
+
+<div id="menuPanel" class="window" style="
+    display:none;
+    z-index:10000;
+">
+    <button id="closeMenu" class="closeButton">
+        ×
+    </button>
+
+    <h2>منوی من ☆</h2>
+
+    <button id="homeMenu" class="actionButton">
+        🏠 خونه‌مون
+    </button>
+
+    <button id="profileMenu" class="actionButton">
+        🌙 گوشه‌م
+    </button>
+
+    <button id="postMenu" class="actionButton">
+        ✨ بذار یه چیز
+    </button>
+
+    <button id="settingsMenu" class="actionButton">
+        ⚙️ یه کم دستکاری
+    </button>
+
+    <button id="languageMenu" class="actionButton">
+        🌐 زبان
+    </button>
+</div>
+
+
 <canvas id="sky"></canvas>
 
 
@@ -3012,6 +3056,91 @@ document.getElementById("faLanguage").onclick = function(){
 document.getElementById("enLanguage").onclick = function(){
     setLanguage("en");
 };
+/* =========================
+   منوی اصلی
+========================= */
+
+const mainMenu =
+    document.getElementById("mainMenu");
+
+const menuButton =
+    document.getElementById("menuButton");
+
+const menuPanel =
+    document.getElementById("menuPanel");
+
+const closeMenu =
+    document.getElementById("closeMenu");
+
+menuButton.onclick = function(){
+
+    menuPanel.style.display =
+        "block";
+};
+
+closeMenu.onclick = function(){
+
+    menuPanel.style.display =
+        "none";
+};
+
+document.getElementById("homeMenu").onclick =
+function(){
+
+    menuPanel.style.display =
+        "none";
+};
+
+document.getElementById("profileMenu").onclick =
+function(){
+
+    menuPanel.style.display =
+        "none";
+
+    loadProfile();
+
+    document.getElementById(
+        "profileWindow"
+    ).style.display =
+        "block";
+};
+
+document.getElementById("postMenu").onclick =
+function(){
+
+    menuPanel.style.display =
+        "none";
+
+    document.getElementById(
+        "composerWindow"
+    ).style.display =
+        "block";
+};
+
+document.getElementById("settingsMenu").onclick =
+function(){
+
+    menuPanel.style.display =
+        "none";
+
+    document.getElementById(
+        "settingsWindow"
+    ).style.display =
+        "block";
+};
+
+document.getElementById("languageMenu").onclick =
+function(){
+
+    menuPanel.style.display =
+        "none";
+
+    document.getElementById(
+        "settingsWindow"
+    ).style.display =
+        "block";
+};
+document.getElementById("mainMenu").style.display = "block";
 
 </script>
 
