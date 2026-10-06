@@ -3142,6 +3142,282 @@ function(){
 };
 document.getElementById("mainMenu").style.display = "block";
 
+/* =========================
+   ❤️ لایک + 💬 کامنت
+========================= */
+
+const engagementBox = document.createElement("div");
+
+engagementBox.id = "engagementBox";
+
+engagementBox.style.cssText = `
+    margin-top:15px;
+    padding:12px;
+    border-radius:18px;
+    background:rgba(10,8,35,.75);
+    color:white;
+    font-family:Arial;
+`;
+
+async function loadEngagement(post){
+
+    engagementBox.innerHTML = `
+        <div style="display:flex;gap:10px;align-items:center">
+
+            <button id="realLikeButton"
+            style="
+                border:0;
+                background:rgba(255,255,255,.1);
+                color:white;
+                border-radius:14px;
+                padding:9px 14px;
+                font-size:17px;
+            ">
+            ❤️ لایک
+            </button>
+
+            <span id="likeCount">0 لایک</span>
+
+        </div>
+
+        <div style="margin-top:15px">
+            <input id="commentInput"
+            placeholder="یه چیزی بگو..."
+            style="
+                width:70%;
+                padding:10px;
+                border:0;
+                border-radius:12px;
+                outline:none;
+            ">
+
+            <button id="sendComment"
+            style="
+                padding:10px;
+                border:0;
+                border-radius:12px;
+                background:#6d5cff;
+                color:white;
+            ">
+            بفرست
+            </button>
+        </div>
+
+        <div id="commentsList"
+        style="margin-top:15px"></div>
+    `;
+
+    const postWindow =
+        document.getElementById("postWindow");
+
+    if(postWindow){
+        postWindow.appendChild(engagementBox);
+    }
+
+    await refreshLikes(post);
+    await refreshComments(post);
+
+    document.getElementById("realLikeButton").onclick =
+    async function(){
+
+        const user =
+            supabaseClient.auth.getUser
+            ? (await supabaseClient.auth.getUser()).data.user
+            : null;
+
+        if(!user){
+            alert("اول وارد حسابت شو ❤️");
+            return;
+        }
+
+        const name =
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email?.split("@")[0] ||
+            "کاربر";
+
+        const { error } =
+            await supabaseClient
+            .from("likes")
+            .insert({
+                post_id: post.id,
+                user_id: user.id,
+                visitor_name: name
+            });
+
+        if(!error){
+
+            /*
+              ❤️ افکت ستاره‌ای قبلیت دست‌نخورده می‌مونه.
+              اگر تابع افکت قبلی‌ات موجود باشه اجرا میشه.
+            */
+
+            if(typeof createLikeStars === "function"){
+                createLikeStars(post);
+            }
+
+            await refreshLikes(post);
+
+        }else{
+
+            if(
+                error.code === "23505"
+            ){
+                alert("قبلاً این پست رو لایک کردی ❤️");
+            }else{
+                console.log(error);
+            }
+        }
+    };
+
+    document.getElementById("sendComment").onclick =
+    async function(){
+
+        const input =
+            document.getElementById("commentInput");
+
+        const message =
+            input.value.trim();
+
+        if(!message) return;
+
+        const user =
+            supabaseClient.auth.getUser
+            ? (await supabaseClient.auth.getUser()).data.user
+            : null;
+
+        if(!user){
+            alert("اول وارد حسابت شو ❤️");
+            return;
+        }
+
+        const name =
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email?.split("@")[0] ||
+            "کاربر";
+
+        const { error } =
+            await supabaseClient
+            .from("comments")
+            .insert({
+                post_id: post.id,
+                user_id: user.id,
+                message: message,
+                visitor_name: name
+            });
+
+        if(!error){
+
+            input.value = "";
+
+            await refreshComments(post);
+
+        }else{
+
+            console.log(error);
+            alert("کامنت ارسال نشد 😭");
+        }
+    };
+}
+
+
+/* ❤️ تعداد لایک‌ها */
+
+async function refreshLikes(post){
+
+    const { data, error } =
+        await supabaseClient
+        .from("likes")
+        .select("id,visitor_name")
+        .eq("post_id", post.id);
+
+    if(error) return;
+
+    const count =
+        document.getElementById("likeCount");
+
+    if(count){
+        count.innerText =
+            `${data.length} لایک`;
+    }
+}
+
+
+/* 💬 نمایش کامنت‌ها */
+
+async function refreshComments(post){
+
+    const list =
+        document.getElementById("commentsList");
+
+    if(!list) return;
+
+    const { data, error } =
+        await supabaseClient
+        .from("comments")
+        .select("visitor_name,message,created_at")
+        .eq("post_id", post.id)
+        .order("created_at",{ascending:true});
+
+    if(error) return;
+
+    list.innerHTML = "";
+
+    data.forEach(comment => {
+
+        const item =
+            document.createElement("div");
+
+        item.style.cssText = `
+            margin-bottom:8px;
+            padding:9px;
+            border-radius:12px;
+            background:rgba(255,255,255,.07);
+        `;
+
+        item.innerHTML = `
+            <b>♡ ${escapeHtml(comment.visitor_name || "کاربر")}</b>
+            <div style="margin-top:4px">
+                ${escapeHtml(comment.message)}
+            </div>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+
+/* جلوگیری از HTML داخل کامنت */
+
+function escapeHtml(text){
+
+    return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* وصل کردن لایک و کامنت به پست بازشده */
+
+const oldOpenPost =
+    window.openPost;
+
+window.openPost =
+async function(post){
+
+    oldOpenPost(post);
+
+    setTimeout(function(){
+
+        loadEngagement(post);
+
+    },100);
+};
+
 </script>
 
 </body>
