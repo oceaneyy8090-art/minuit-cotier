@@ -3303,18 +3303,20 @@ async function loadEngagement(post){
             const { error } =
                 await supabaseClient
                 .from("likes")
-                .insert({
+.insert({
 
-                    post_id:
-                        post.id,
+    post_id:
+        post.id,
 
-                    user_id:
-                        user.id,
+    user_id:
+        user.id,
 
-                    visitor_name:
-                        name
-                    created_at:
-                     new Date().toISOString()
+    visitor_name:
+        name,
+
+    created_at:
+        new Date().toISOString()
+});
 
                 });
 
