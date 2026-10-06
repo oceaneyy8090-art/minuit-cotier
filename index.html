@@ -1074,23 +1074,18 @@ let activePost = null;
    جای پست
 ===================================== */
 
-function getPostPosition(
-    id,
-    index
-){
+function getPostPosition(id,index){
 
     const n =
         Number(id) ||
-        index+1;
+        index + 1;
 
     const angle =
-        n *
-        2.399963229728653;
+        n * 2.399963229728653;
 
     const radius =
         480 +
-        Math.sqrt(index) *
-        650;
+        Math.sqrt(index) * 650;
 
     return {
 
@@ -1115,10 +1110,8 @@ async function loadPosts(){
 
         const response =
             await fetch(
-
                 SUPABASE_URL +
                 "/rest/v1/posts?select=*&order=created_at.asc",
-
                 {
                     headers:{
                         apikey:
@@ -1131,26 +1124,66 @@ async function loadPosts(){
                 }
             );
 
-        if(!response.ok)
+
+        if(!response.ok){
+
+            console.error(
+                "خطا در بارگذاری پست‌ها:",
+                response.status
+            );
+
             return;
+        }
+
 
         const data =
             await response.json();
 
+
+        const userIndexes = {};
+
+
         posts =
             data.map(
-                (item,index)=>{
+                (item)=>{
+
+                    const userId =
+                        item.user_id ||
+                        "unknown";
+
+
+                    if(
+                        userIndexes[userId] === undefined
+                    ){
+
+                        userIndexes[userId] =
+                            0;
+
+                    }
+
+
+                    const userIndex =
+                        userIndexes[userId];
+
+
+                    userIndexes[userId]++;
+
 
                     const pos =
                         getPostPosition(
                             item.id,
-                            index
+                            userIndex
                         );
+
 
                     return {
 
                         id:
                             item.id,
+
+                        user_id:
+                            item.user_id ||
+                            null,
 
                         x:
                             pos.x,
@@ -1177,14 +1210,37 @@ async function loadPosts(){
 
                         music_url:
                             item.music_url ||
-                            ""
+                            "",
+
+                        post_emoji:
+                            item.post_emoji ||
+                            "🌛",
+
+                        path_emoji:
+                            item.path_emoji ||
+                            "☆",
+
+                        title_emoji:
+                            item.title_emoji ||
+                            "💫"
                     };
                 }
             );
 
+
+        console.log(
+            "پست‌ها بارگذاری شدند:",
+            posts
+        );
+
+
     }catch(error){
 
-        console.error(error);
+        console.error(
+            "خطا در بارگذاری پست‌ها:",
+            error
+        );
+
     }
 }
 
@@ -1193,35 +1249,21 @@ async function loadPosts(){
    مسیر بین پست‌ها
    بدون هیچ حلقه‌ای دور ماه
 ===================================== */
-
 function drawMoonPath(time){
 
-    if(posts.length === 0)
-        return;
+    const users = {};
 
-    const points = [
+    for(
+        const post of posts
+    ){
 
-        {
-            x:W/2,
-            y:H/2
-        }
+        if(!post.user_id)
+            continue;
 
-    ];
+        if(!users[post.user_id])
+            users[post.user_id] = [];
 
-    for(let i=0;i<posts.length;i++){
-
-        points.push({
-
-            x:
-                posts[i].x -
-                camX +
-                W/2,
-
-            y:
-                posts[i].y -
-                camY +
-                H/2
-        });
+        users[post.user_id].push(post);
     }
 
     ctx.textAlign =
@@ -1231,91 +1273,123 @@ function drawMoonPath(time){
         "middle";
 
     for(
-        let p=0;
-        p<points.length-1;
-        p++
+        const userId in users
     ){
 
-        const a =
-            points[p];
+        const userPosts =
+            users[userId];
 
-        const b =
-            points[p+1];
-
-        const dx =
-            b.x-a.x;
-
-        const dy =
-            b.y-a.y;
-
-        const distance =
-            Math.hypot(
-                dx,
-                dy
-            );
-
-        const count =
-            Math.max(
-                7,
-                Math.floor(
-                    distance/34
-                )
-            );
-
-        const len =
-            distance || 1;
-
-        const nx =
-            -dy/len;
-
-        const ny =
-            dx/len;
+        if(userPosts.length < 2)
+            continue;
 
         for(
-            let j=1;
-            j<count;
-            j++
+            let p = 0;
+            p < userPosts.length - 1;
+            p++
         ){
 
-            const t =
-                j/count;
+            const a =
+                userPosts[p];
 
-            let x =
-                a.x + dx*t;
+            const b =
+                userPosts[p + 1];
 
-            let y =
-                a.y + dy*t;
+            const ax =
+                a.x -
+                camX +
+                W / 2;
 
-            const wave =
-                Math.sin(
-                    t*Math.PI*3 +
-                    p +
-                    time*.001
-                ) * 10;
+            const ay =
+                a.y -
+                camY +
+                H / 2;
 
-            x += nx*wave;
-            y += ny*wave;
+            const bx =
+                b.x -
+                camX +
+                W / 2;
 
-            ctx.globalAlpha =
-                .7 +
-                Math.sin(
-                    time*.002+j
-                )*.15;
+            const by =
+                b.y -
+                camY +
+                H / 2;
 
-            ctx.fillStyle =
-                colors[
-                    (j+p) %
-                    colors.length
-                ];
+            const dx =
+                bx - ax;
 
-            ctx.font =
-                "13px Arial";
+            const dy =
+                by - ay;
 
-            ctx.fillText(
-                settings.pathEmoji || "☆",
-                x,
-                y
-            );
+            const distance =
+                Math.hypot(
+                    dx,
+                    dy
+                );
+
+            const count =
+                Math.max(
+                    7,
+                    Math.floor(
+                        distance / 34
+                    )
+                );
+
+            const len =
+                distance || 1;
+
+            const nx =
+                -dy / len;
+
+            const ny =
+                dx / len;
+
+            for(
+                let j = 1;
+                j < count;
+                j++
+            ){
+
+                const t =
+                    j / count;
+
+                let x =
+                    ax + dx * t;
+
+                let y =
+                    ay + dy * t;
+
+                const wave =
+                    Math.sin(
+                        t * Math.PI * 3 +
+                        p +
+                        time * .001
+                    ) * 10;
+
+                x += nx * wave;
+                y += ny * wave;
+
+                ctx.globalAlpha =
+                    .7 +
+                    Math.sin(
+                        time * .002 + j
+                    ) * .15;
+
+                ctx.fillStyle =
+                    colors[
+                        (j + p) %
+                        colors.length
+                    ];
+
+                ctx.font =
+                    "13px Arial";
+
+                ctx.fillText(
+                    a.path_emoji ||
+                    "☆",
+                    x,
+                    y
+                );
+            }
         }
     }
 
@@ -1467,14 +1541,13 @@ function drawPosts(){
         ctx.shadowBlur = 8;
 
         ctx.fillText(
-            settings.postEmoji || "🌛",
+            post.post_emoji ||
+            "🌛",
             x,
             y
         );
 
         ctx.shadowBlur = 0;
-
-        /* عنوان کوچک زیر پست */
 
         ctx.font =
             "12px Arial";
@@ -1487,7 +1560,8 @@ function drawPosts(){
 
         ctx.fillText(
 
-            (settings.titleEmoji || "💫") +
+            (post.title_emoji ||
+            "💫") +
             " " +
             post.title,
 
@@ -1498,7 +1572,6 @@ function drawPosts(){
         ctx.globalAlpha = 1;
     }
 }
-
 
 /* =====================================
    ستاره‌های لایک
@@ -2164,6 +2237,12 @@ function showLoginMessage(
    پروفایل
 ===================================== */
 
+
+let posts = [];
+let activePost = null;
+let currentUserId = null;
+
+
 window.currentAvatar = "";
 window.profileImage = null;
 
@@ -2178,6 +2257,9 @@ async function loadProfile(){
 
     if(!user)
         return;
+
+    currentUserId =
+        user.id;
 
     const meta =
         user.user_metadata || {};
@@ -2208,15 +2290,18 @@ async function loadProfile(){
     window.currentAvatar =
         avatar;
 
+
     document.getElementById(
         "profileNameView"
     ).textContent =
         name;
 
+
     document.getElementById(
         "profileEmailView"
     ).textContent =
         user.email;
+
 
     document.getElementById(
         "profileBioView"
@@ -2224,40 +2309,48 @@ async function loadProfile(){
         bio ||
         "هنوز بیویی ننوشتی ☆";
 
+
     document.getElementById(
         "nameInput"
     ).value =
         name;
+
 
     document.getElementById(
         "bioInput"
     ).value =
         bio;
 
+
     document.getElementById(
         "pathEmojiInput"
     ).value =
         settings.pathEmoji;
+
 
     document.getElementById(
         "postEmojiInput"
     ).value =
         settings.postEmoji;
 
+
     document.getElementById(
         "titleEmojiInput"
     ).value =
         settings.titleEmoji;
+
 
     const avatarElement =
         document.getElementById(
             "profileAvatar"
         );
 
+
     const button =
         document.getElementById(
             "profileButton"
         );
+
 
     if(avatar){
 
@@ -2282,10 +2375,12 @@ async function loadProfile(){
                     xmlns="http://www.w3.org/2000/svg"
                     width="150"
                     height="150">
+
                     <rect
                         width="150"
                         height="150"
                         fill="#15151f"/>
+
                     <text
                         x="75"
                         y="92"
@@ -2293,6 +2388,7 @@ async function loadProfile(){
                         font-size="58">
                         🌛
                     </text>
+
                 </svg>
             `);
 
@@ -2303,7 +2399,6 @@ async function loadProfile(){
             null;
     }
 }
-
 
 /* =====================================
    ذخیره پروفایل
@@ -2620,6 +2715,7 @@ function(){
 /* =====================================
    انتشار پست
 ===================================== */
+
 document.getElementById("publishPost").onclick =
 async function(){
 
@@ -2641,43 +2737,100 @@ async function(){
     const message =
         document.getElementById("postMessage");
 
+
     const {data} =
         await supabaseClient.auth.getUser();
 
+
     if(!data.user){
-        message.textContent = "اول وارد حساب شو.";
+
+        message.textContent =
+            "اول وارد حساب شو.";
+
         return;
     }
 
-    message.textContent = "در حال انتشار...";
+
+    message.textContent =
+        "در حال انتشار...";
+
 
     const {error} =
         await supabaseClient
         .from("posts")
         .insert({
-            title: title || "بدون عنوان",
-            content: content,
-            image_url: image,
-            video_url: video,
-            music_url: music,
-            user_id: data.user.id
+
+            title:
+                title ||
+                "بدون عنوان",
+
+            content:
+                content,
+
+            image_url:
+                image,
+
+            video_url:
+                video,
+
+            music_url:
+                music,
+
+            user_id:
+                data.user.id,
+
+            post_emoji:
+                settings.postEmoji ||
+                "🌛",
+
+            path_emoji:
+                settings.pathEmoji ||
+                "☆",
+
+            title_emoji:
+                settings.titleEmoji ||
+                "💫"
         });
 
+
     if(error){
+
         console.error(error);
-        message.textContent = "خطا در انتشار پست.";
+
+        message.textContent =
+            "خطا در انتشار پست.";
+
         return;
     }
 
-    message.textContent = "پست منتشر شد ❤️";
 
-    document.getElementById("newTitle").value = "";
-    document.getElementById("newContent").value = "";
-    document.getElementById("newImage").value = "";
-    document.getElementById("newVideo").value = "";
-    document.getElementById("newMusic").value = "";
+    message.textContent =
+        "پست منتشر شد ❤️";
+
+
+    document.getElementById(
+        "newTitle"
+    ).value = "";
+
+    document.getElementById(
+        "newContent"
+    ).value = "";
+
+    document.getElementById(
+        "newImage"
+    ).value = "";
+
+    document.getElementById(
+        "newVideo"
+    ).value = "";
+
+    document.getElementById(
+        "newMusic"
+    ).value = "";
+
 
     await loadPosts();
+
 };
 
 /* =====================================
