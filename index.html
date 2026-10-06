@@ -1981,14 +1981,14 @@ function(){
 
 /* =====================================
    ورود Google
-========================================
+==================================== */
 document.getElementById("googleLogin").onclick =
 async function(){
 
     this.disabled = true;
 
     showLoginMessage(
-        "در حال رفتن به Google..."
+        "در حال ورود با Google..."
     );
 
     try{
@@ -1999,8 +1999,10 @@ async function(){
                 provider: "google",
 
                 options: {
+
                     redirectTo:
                         "https://oceaneyy8090-art.github.io/minuit-cotier/"
+
                 }
 
             });
@@ -2024,7 +2026,7 @@ async function(){
         }
 
 
-        if(data?.url){
+        if(data && data.url){
 
             window.location.href =
                 data.url;
@@ -2043,9 +2045,11 @@ async function(){
         );
 
         this.disabled = false;
+
     }
 
 };
+
 
 /* =====================================
    ورود ایمیل
