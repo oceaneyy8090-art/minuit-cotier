@@ -1981,34 +1981,71 @@ function(){
 
 /* =====================================
    ورود Google
-===================================== */
-
-document.getElementById(
-    "googleLogin"
-).onclick =
+========================================
+document.getElementById("googleLogin").onclick =
 async function(){
 
+    this.disabled = true;
+
     showLoginMessage(
-        "در حال انتقال به Google..."
+        "در حال رفتن به Google..."
     );
 
-    const {error} =
-        await supabaseClient.auth.signInWithOAuth({
+    try{
 
-            provider:"google",
+        const { data, error } =
+            await supabaseClient.auth.signInWithOAuth({
 
-            options:{
-                redirectTo:
-                    SITE_URL
-            }
-        });
+                provider: "google",
 
-    if(error)
-        showLoginMessage(
-            error.message
+                options: {
+                    redirectTo:
+                        "https://oceaneyy8090-art.github.io/minuit-cotier/"
+                }
+
+            });
+
+
+        if(error){
+
+            console.error(
+                "GOOGLE LOGIN ERROR:",
+                error
+            );
+
+            showLoginMessage(
+                "ورود با Google انجام نشد: " +
+                error.message
+            );
+
+            this.disabled = false;
+
+            return;
+        }
+
+
+        if(data?.url){
+
+            window.location.href =
+                data.url;
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "GOOGLE ERROR:",
+            error
         );
-};
 
+        showLoginMessage(
+            "خطا در ورود با Google"
+        );
+
+        this.disabled = false;
+    }
+
+};
 
 /* =====================================
    ورود ایمیل
