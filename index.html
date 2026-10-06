@@ -1249,13 +1249,12 @@ async function loadPosts(){
    مسیر بین پست‌ها
    بدون هیچ حلقه‌ای دور ماه
 ===================================== */
+
 function drawMoonPath(time){
 
     const users = {};
 
-    for(
-        const post of posts
-    ){
+    for(const post of posts){
 
         if(!post.user_id)
             continue;
@@ -1266,53 +1265,88 @@ function drawMoonPath(time){
         users[post.user_id].push(post);
     }
 
-    ctx.textAlign =
-        "center";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
-    ctx.textBaseline =
-        "middle";
-
-    for(
-        const userId in users
-    ){
+    for(const userId in users){
 
         const userPosts =
             users[userId];
 
-        if(userPosts.length < 2)
+        if(!userPosts.length)
             continue;
+
+        let previous;
+
+        /*
+         * زنجیره کاربر فعلی
+         * از خود پروفایل وسط صفحه شروع می‌شود
+         */
+
+        if(userId === currentUserId){
+
+            previous = {
+                x:0,
+                y:0
+            };
+
+        }else{
+
+            /*
+             * کاربران دیگر:
+             * زنجیره از اولین پست خودشان شروع می‌شود
+             */
+
+            previous = null;
+        }
+
 
         for(
             let p = 0;
-            p < userPosts.length - 1;
+            p < userPosts.length;
             p++
         ){
 
-            const a =
+            const post =
                 userPosts[p];
 
-            const b =
-                userPosts[p + 1];
+
+            /*
+             * اگر اولین پست کاربر دیگری است،
+             * هنوز نقطه شروع نداریم
+             */
+
+            if(!previous){
+
+                previous = {
+                    x:post.x,
+                    y:post.y
+                };
+
+                continue;
+            }
+
 
             const ax =
-                a.x -
+                previous.x -
                 camX +
-                W / 2;
+                W/2;
 
             const ay =
-                a.y -
+                previous.y -
                 camY +
-                H / 2;
+                H/2;
 
             const bx =
-                b.x -
+                post.x -
                 camX +
-                W / 2;
+                W/2;
 
             const by =
-                b.y -
+                post.y -
                 camY +
-                H / 2;
+                H/2;
+
 
             const dx =
                 bx - ax;
@@ -1320,28 +1354,30 @@ function drawMoonPath(time){
             const dy =
                 by - ay;
 
+
             const distance =
-                Math.hypot(
-                    dx,
-                    dy
-                );
+                Math.hypot(dx,dy);
+
 
             const count =
                 Math.max(
-                    7,
+                    8,
                     Math.floor(
-                        distance / 34
+                        distance / 28
                     )
                 );
 
+
             const len =
                 distance || 1;
+
 
             const nx =
                 -dy / len;
 
             const ny =
                 dx / len;
+
 
             for(
                 let j = 1;
@@ -1352,51 +1388,62 @@ function drawMoonPath(time){
                 const t =
                     j / count;
 
+
                 let x =
-                    ax + dx * t;
+                    ax + dx*t;
 
                 let y =
-                    ay + dy * t;
+                    ay + dy*t;
+
 
                 const wave =
                     Math.sin(
                         t * Math.PI * 3 +
                         p +
                         time * .001
-                    ) * 10;
+                    ) * 8;
+
 
                 x += nx * wave;
                 y += ny * wave;
 
+
                 ctx.globalAlpha =
-                    .7 +
+                    .75 +
                     Math.sin(
-                        time * .002 + j
-                    ) * .15;
+                        time*.002+j
+                    )*.15;
+
 
                 ctx.fillStyle =
                     colors[
-                        (j + p) %
+                        (j+p) %
                         colors.length
                     ];
 
+
                 ctx.font =
-                    "13px Arial";
+                    "15px Arial";
+
 
                 ctx.fillText(
-                    a.path_emoji ||
+                    post.path_emoji ||
                     "☆",
                     x,
                     y
                 );
             }
+
+
+            previous = {
+                x:post.x,
+                y:post.y
+            };
         }
     }
 
     ctx.globalAlpha = 1;
 }
-
-
 /* =====================================
    پروفایل کوچک وسط
    فقط یک نمایش کوچک
