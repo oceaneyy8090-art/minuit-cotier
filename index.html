@@ -1136,134 +1136,151 @@ async function loadPosts(){
    بدون هیچ حلقه‌ای دور ماه  
 ===================================== */  
   
-function drawMoonPath(time){  
-  
-    if(posts.length === 0)  
-        return;  
-  
-    const points = [  
-  
-        {  
-            x:W/2,  
-            y:H/2  
-        }  
-  
-    ];  
-  
-    for(let i=0;i<posts.length;i++){  
-  
-        points.push({  
-  
-            x:  
-                posts[i].x -  
-                camX +  
-                W/2,  
-  
-            y:  
-                posts[i].y -  
-                camY +  
-                H/2  
-        });  
-    }  
-  
-    ctx.textAlign =  
-        "center";  
-  
-    ctx.textBaseline =  
-        "middle";  
-  
-    for(  
-        let p=0;  
-        p<points.length-1;  
-        p++  
-    ){  
-  
-        const a =  
-            points[p];  
-  
-        const b =  
-            points[p+1];  
-  
-        const dx =  
-            b.x-a.x;  
-  
-        const dy =  
-            b.y-a.y;  
-  
-        const distance =  
-            Math.hypot(  
-                dx,  
-                dy  
-            );  
-  
-        const count =  
-            Math.max(  
-                7,  
-                Math.floor(  
-                    distance/34  
-                )  
-            );  
-  
-        const len =  
-            distance || 1;  
-  
-        const nx =  
-            -dy/len;  
-  
-        const ny =  
-            dx/len;  
-  
-        for(  
-            let j=1;  
-            j<count;  
-            j++  
-        ){  
-  
-            const t =  
-                j/count;  
-  
-            let x =  
-                a.x + dx*t;  
-  
-            let y =  
-                a.y + dy*t;  
-  
-            const wave =  
-                Math.sin(  
-                    t*Math.PI*3 +  
-                    p +  
-                    time*.001  
-                ) * 10;  
-  
-            x += nx*wave;  
-            y += ny*wave;  
-  
-            ctx.globalAlpha =  
-                .7 +  
-                Math.sin(  
-                    time*.002+j  
-                )*.15;  
-  
-            ctx.fillStyle =  
-                colors[  
-                    (j+p) %  
-                    colors.length  
-                ];  
-  
-            ctx.font =  
-                "13px Arial";  
-  
-            ctx.fillText(
-    settings.pathEmoji || "☆",
-    x,
-    y
-);
-        }  
-    }  
-  
-    ctx.globalAlpha = 1;  
-}  
-  
+  function drawMoonPath(time){
+
+    if(posts.length === 0)
+        return;
+
+    const users = {};
+
+    for(const post of posts){
+
+        const uid =
+            post.user_id || "unknown";
+
+        if(!users[uid])
+            users[uid] = [];
+
+        users[uid].push(post);
+    }
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    for(const uid in users){
+
+        const userPosts =
+            users[uid];
+
+        if(userPosts.length < 2)
+            continue;
+
+        for(
+            let p = 0;
+            p < userPosts.length - 1;
+            p++
+        ){
+
+            const first =
+                userPosts[p];
+
+            const second =
+                userPosts[p + 1];
+
+            const ax =
+                first.x -
+                camX +
+                W/2;
+
+            const ay =
+                first.y -
+                camY +
+                H/2;
+
+            const bx =
+                second.x -
+                camX +
+                W/2;
+
+            const by =
+                second.y -
+                camY +
+                H/2;
+
+            const dx =
+                bx - ax;
+
+            const dy =
+                by - ay;
+
+            const distance =
+                Math.hypot(
+                    dx,
+                    dy
+                );
+
+            const count =
+                Math.max(
+                    7,
+                    Math.floor(
+                        distance / 34
+                    )
+                );
+
+            const len =
+                distance || 1;
+
+            const nx =
+                -dy / len;
+
+            const ny =
+                dx / len;
+
+            for(
+                let j = 1;
+                j < count;
+                j++
+            ){
+
+                const t =
+                    j / count;
+
+                let x =
+                    ax + dx * t;
+
+                let y =
+                    ay + dy * t;
+
+                const wave =
+                    Math.sin(
+                        t * Math.PI * 3 +
+                        p +
+                        time * .001
+                    ) * 10;
+
+                x += nx * wave;
+                y += ny * wave;
+
+                ctx.globalAlpha =
+                    .7 +
+                    Math.sin(
+                        time * .002 + j
+                    ) * .15;
+
+                ctx.fillStyle =
+                    colors[
+                        (j + p) %
+                        colors.length
+                    ];
+
+                ctx.font =
+                    "13px Arial";
+
+                ctx.fillText(
+                    first.path_emoji ||
+                    "☆",
+                    x,
+                    y
+                );
+            }
+        }
+    }
+
+    ctx.globalAlpha = 1;
+}
   
 /* =====================================  
    پروفایل کوچک وسط  
