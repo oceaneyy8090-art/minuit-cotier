@@ -1287,100 +1287,96 @@ async function loadPosts(){
    فقط یک نمایش کوچک  
 ===================================== */  
   
-function drawProfile(){  
-  
-    const x =  
-        W/2;  
-  
-    const y =  
-        H/2;  
-  
-    ctx.textAlign =  
-        "center";  
-  
-    ctx.textBaseline =  
-        "middle";  
-  
-    const avatar =  
-        window.currentAvatar;  
-  
-    if(  
-        avatar &&  
-        window.profileImage &&  
-        window.profileImage.complete  
-    ){  
-  
-        ctx.save();  
-  
-        ctx.beginPath();  
-  
-        ctx.arc(  
-            x,  
-            y,  
-            27,  
-            0,  
-            Math.PI*2  
-        );  
-  
-        ctx.clip();  
-  
-        ctx.drawImage(  
-            window.profileImage,  
-            x-27,  
-            y-27,  
-            54,  
-            54  
-        );  
-  
-        ctx.restore();  
-  
-        ctx.beginPath();  
-  
-        ctx.arc(  
-            x,  
-            y,  
-            28,  
-            0,  
-            Math.PI*2  
-        );  
-  
-        ctx.strokeStyle =  
-            "rgba(255,255,255,.65)";  
-  
-        ctx.lineWidth = 2;  
-  
-        ctx.stroke();  
-  
-    }else{  
-  
-        ctx.font =  
-            "28px Arial";  
-  
-        ctx.fillText(  
-            "🌛",  
-            x,  
-            y  
-        );  
-    }  
-  
-    ctx.font =  
-        "14px Arial";  
-  
-    ctx.fillStyle =  
-        "#fff";  
-  
-    ctx.globalAlpha =  
-        .85;  
-  
-    ctx.fillText(  
-        "Minuit côtier",  
-        x,  
-        y+48  
-    );  
-  
-    ctx.globalAlpha = 1;  
-}  
-  
+function drawProfile(){
+
+    const x = W / 2;
+    const y = H / 2;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const avatar = window.currentAvatar;
+
+    if(
+        avatar &&
+        window.profileImage &&
+        window.profileImage.complete
+    ){
+
+        ctx.save();
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            27,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.clip();
+
+        ctx.drawImage(
+            window.profileImage,
+            x - 27,
+            y - 27,
+            54,
+            54
+        );
+
+        ctx.restore();
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            28,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.strokeStyle =
+            "rgba(255,255,255,.65)";
+
+        ctx.lineWidth = 2;
+
+        ctx.stroke();
+
+    }else{
+
+        ctx.font =
+            "28px Arial";
+
+        ctx.fillText(
+            "🌛",
+            x,
+            y
+        );
+    }
+
+    const profileName =
+        window.currentProfileName ||
+        "کاربر";
+
+    ctx.font =
+        "14px Arial";
+
+    ctx.fillStyle =
+        "#fff";
+
+    ctx.globalAlpha =
+        .85;
+
+    ctx.fillText(
+        profileName,
+        x,
+        y + 48
+    );
+
+    ctx.globalAlpha = 1;
+}
   
 /* =====================================  
    پست‌ها  
