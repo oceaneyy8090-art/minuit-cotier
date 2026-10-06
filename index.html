@@ -1130,13 +1130,63 @@ async function loadPosts(){
         console.error(error);
     }
 }
-  
+  async function loadPublicProfiles(){
+
+    try{
+
+        const response =
+            await fetch(
+
+                SUPABASE_URL +
+                "/rest/v1/profiles?select=*",
+
+                {
+                    headers:{
+                        apikey:
+                            SUPABASE_KEY,
+
+                        Authorization:
+                            "Bearer " +
+                            SUPABASE_KEY
+                    }
+                }
+            );
+
+        if(!response.ok){
+
+            console.error(
+                "خطای دریافت پروفایل‌ها"
+            );
+
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        window.publicProfiles =
+            data || [];
+
+        console.log(
+            "پروفایل‌های عمومی:",
+            window.publicProfiles
+        );
+
+    }catch(error){
+
+        console.error(
+            "خطای پروفایل‌ها:",
+            error
+        );
+    }
+}
+
 /* =====================================  
    مسیر بین پست‌ها  
    بدون هیچ حلقه‌ای دور ماه  
 ===================================== */  
   
-  function drawMoonPath(time){
+function drawMoonPath(time){
 
     if(posts.length === 0)
         return;
@@ -1165,8 +1215,52 @@ async function loadPosts(){
         const userPosts =
             users[uid];
 
-        if(userPosts.length < 2)
+        if(userPosts.length === 0)
             continue;
+
+        /*
+        =========================
+        جای پروفایل صاحب زنجیر
+        =========================
+        */
+
+        const firstPost =
+            userPosts[0];
+
+        const profileX =
+            firstPost.x -
+            camX +
+            W / 2;
+
+        const profileY =
+            firstPost.y -
+            camY +
+            H / 2;
+
+        /*
+        =========================
+        پروفایل → پست اول
+        =========================
+        */
+
+        if(userPosts.length >= 1){
+
+            drawChain(
+                W / 2,
+                H / 2,
+                profileX,
+                profileY,
+                time,
+                uid,
+                0
+            );
+        }
+
+        /*
+        =========================
+        پست‌های همان کاربر
+        =========================
+        */
 
         for(
             let p = 0;
@@ -1183,100 +1277,143 @@ async function loadPosts(){
             const ax =
                 first.x -
                 camX +
-                W/2;
+                W / 2;
 
             const ay =
                 first.y -
                 camY +
-                H/2;
+                H / 2;
 
             const bx =
                 second.x -
                 camX +
-                W/2;
+                W / 2;
 
             const by =
                 second.y -
                 camY +
-                H/2;
+                H / 2;
 
-            const dx =
-                bx - ax;
-
-            const dy =
-                by - ay;
-
-            const distance =
-                Math.hypot(
-                    dx,
-                    dy
-                );
-
-            const count =
-                Math.max(
-                    7,
-                    Math.floor(
-                        distance / 34
-                    )
-                );
-
-            const len =
-                distance || 1;
-
-            const nx =
-                -dy / len;
-
-            const ny =
-                dx / len;
-
-            for(
-                let j = 1;
-                j < count;
-                j++
-            ){
-
-                const t =
-                    j / count;
-
-                let x =
-                    ax + dx * t;
-
-                let y =
-                    ay + dy * t;
-
-                const wave =
-                    Math.sin(
-                        t * Math.PI * 3 +
-                        p +
-                        time * .001
-                    ) * 10;
-
-                x += nx * wave;
-                y += ny * wave;
-
-                ctx.globalAlpha =
-                    .7 +
-                    Math.sin(
-                        time * .002 + j
-                    ) * .15;
-
-                ctx.fillStyle =
-                    colors[
-                        (j + p) %
-                        colors.length
-                    ];
-
-                ctx.font =
-                    "13px Arial";
-
-                ctx.fillText(
-                    first.path_emoji ||
-                    "☆",
-                    x,
-                    y
-                );
-            }
+            drawChain(
+                ax,
+                ay,
+                bx,
+                by,
+                time,
+                uid,
+                p + 1
+            );
         }
+    }
+
+    ctx.globalAlpha = 1;
+}
+
+function drawChain(
+    ax,
+    ay,
+    bx,
+    by,
+    time,
+    uid,
+    pathIndex
+){
+
+    const dx =
+        bx - ax;
+
+    const dy =
+        by - ay;
+
+    const distance =
+        Math.hypot(
+            dx,
+            dy
+        );
+
+    if(distance < 5)
+        return;
+
+    const count =
+        Math.max(
+            7,
+            Math.floor(
+                distance / 34
+            )
+        );
+
+    const len =
+        distance || 1;
+
+    const nx =
+        -dy / len;
+
+    const ny =
+        dx / len;
+
+    /*
+    emoji مخصوص صاحب این زنجیر
+    */
+
+    const ownerPost =
+        posts.find(
+            p =>
+                p.user_id === uid
+        );
+
+    const chainEmoji =
+        ownerPost &&
+        ownerPost.path_emoji
+            ? ownerPost.path_emoji
+            : "☆";
+
+    for(
+        let j = 1;
+        j < count;
+        j++
+    ){
+
+        const t =
+            j / count;
+
+        let x =
+            ax +
+            dx * t;
+
+        let y =
+            ay +
+            dy * t;
+
+        const wave =
+            Math.sin(
+                t * Math.PI * 3 +
+                pathIndex +
+                time * .001
+            ) * 10;
+
+        x += nx * wave;
+        y += ny * wave;
+
+        ctx.globalAlpha =
+            .7 +
+            Math.sin(
+                time * .002 + j
+            ) * .15;
+
+        ctx.fillStyle =
+            colors[
+                (j + pathIndex) %
+                colors.length
+            ];
+
+        ctx.font =
+            "13px Arial";
+
+        ctx.fillText(
+            chainEmoji,
+            x,
+            y
+        );
     }
 
     ctx.globalAlpha = 1;
@@ -1377,7 +1514,7 @@ function drawProfile(){
 
     ctx.globalAlpha = 1;
 }
-  
+
 /* =====================================  
    پست‌ها  
    هیچ ستاره‌ای دورشان نیست  
@@ -2085,142 +2222,215 @@ function showLoginMessage(
 window.currentAvatar = "";  
 window.profileImage = null;  
   
-  
-async function loadProfile(){  
-  
-    const {data} =  
-        await supabaseClient.auth.getUser();  
-  
-    const user =  
-        data.user;  
-  
-    if(!user)  
-        return;  
-  
-    const meta =  
-        user.user_metadata || {};  
-  
-    const name =  
-        meta.name ||  
-        meta.full_name ||  
-        user.email.split("@")[0];  
-  
-    const bio =  
-        meta.bio || "";  
-  
-    const avatar =  
-        meta.avatar_url || "";  
-  
-    settings.pathEmoji =  
-        meta.path_emoji ||  
-        "☆";  
-  
-    settings.postEmoji =  
-        meta.post_emoji ||  
-        "🌛";  
-  
-    settings.titleEmoji =  
-        meta.title_emoji ||  
-        "💫";  
-  
-    window.currentAvatar =  
-        avatar;  
-  
-    document.getElementById(  
-        "profileNameView"  
-    ).textContent =  
-        name;  
-  
-    document.getElementById(  
-        "profileEmailView"  
-    ).textContent =  
-        user.email;  
-  
-    document.getElementById(  
-        "profileBioView"  
-    ).textContent =  
-        bio ||  
-        "هنوز بیویی ننوشتی ☆";  
-  
-    document.getElementById(  
-        "nameInput"  
-    ).value =  
-        name;  
-  
-    document.getElementById(  
-        "bioInput"  
-    ).value =  
-        bio;  
-  
-    document.getElementById(  
-        "pathEmojiInput"  
-    ).value =  
-        settings.pathEmoji;  
-  
-    document.getElementById(  
-        "postEmojiInput"  
-    ).value =  
-        settings.postEmoji;  
-  
-    document.getElementById(  
-        "titleEmojiInput"  
-    ).value =  
-        settings.titleEmoji;  
-  
-    const avatarElement =  
-        document.getElementById(  
-            "profileAvatar"  
-        );  
-  
-    const button =  
-        document.getElementById(  
-            "profileButton"  
-        );  
-  
-    if(avatar){  
-  
-        avatarElement.src =  
-            avatar;  
-  
-        button.innerHTML =  
-            `<img src="${avatar}" alt="profile">`;  
-  
-        window.profileImage =  
-            new Image();  
-  
-        window.profileImage.src =  
-            avatar;  
-  
-    }else{  
-  
-        avatarElement.src =  
-            "data:image/svg+xml;charset=UTF-8," +  
-            encodeURIComponent(`  
-                <svg  
-                    xmlns="http://www.w3.org/2000/svg"  
-                    width="150"  
-                    height="150">  
-                    <rect  
-                        width="150"  
-                        height="150"  
-                        fill="#15151f"/>  
-                    <text  
-                        x="75"  
-                        y="92"  
-                        text-anchor="middle"  
-                        font-size="58">  
-                        🌛  
-                    </text>  
-                </svg>  
-            `);  
-  
-        button.textContent =  
-            "🌛";  
-  
-        window.profileImage =  
-            null;  
-    }  
-}  
+  async function loadProfile(){
+
+    const {data} =
+        await supabaseClient.auth.getUser();
+
+    const user =
+        data.user;
+
+    if(!user)
+        return;
+
+    /* شناسه کاربر فعلی */
+    window.currentUserId =
+        user.id;
+
+    const meta =
+        user.user_metadata || {};
+
+    /* پیدا کردن پروفایل همین کاربر */
+    let profile = null;
+
+    try{
+
+        const response =
+            await fetch(
+
+                SUPABASE_URL +
+                "/rest/v1/profiles" +
+                "?user_id=eq." +
+                encodeURIComponent(user.id) +
+                "&select=*",
+
+                {
+                    headers:{
+                        apikey:
+                            SUPABASE_KEY,
+
+                        Authorization:
+                            "Bearer " +
+                            SUPABASE_KEY
+                    }
+                }
+            );
+
+        if(response.ok){
+
+            const profiles =
+                await response.json();
+
+            if(profiles.length > 0){
+
+                profile =
+                    profiles[0];
+            }
+        }
+
+    }catch(error){
+
+        console.error(
+            "خطای دریافت پروفایل:",
+            error
+        );
+    }
+
+    /* اطلاعات پروفایل */
+
+    const name =
+        profile?.name ||
+        profile?.channel_name ||
+        meta.name ||
+        meta.full_name ||
+        user.email.split("@")[0];
+
+    const bio =
+        meta.bio ||
+        "";
+
+    const avatar =
+        profile?.avatar_url ||
+        meta.avatar_url ||
+        "";
+
+    /* اسم پروفایل فعلی */
+
+    window.currentProfileName =
+        name;
+
+    window.currentAvatar =
+        avatar;
+
+    /* ایموجی‌های مخصوص همین کاربر */
+
+    settings.pathEmoji =
+        profile?.emoji ||
+        meta.path_emoji ||
+        "☆";
+
+    settings.postEmoji =
+        meta.post_emoji ||
+        "🌛";
+
+    settings.titleEmoji =
+        meta.title_emoji ||
+        "💫";
+
+
+    /* نمایش پروفایل */
+
+    document.getElementById(
+        "profileNameView"
+    ).textContent =
+        name;
+
+    document.getElementById(
+        "profileEmailView"
+    ).textContent =
+        user.email;
+
+    document.getElementById(
+        "profileBioView"
+    ).textContent =
+        bio ||
+        "هنوز بیویی ننوشتی ☆";
+
+    document.getElementById(
+        "nameInput"
+    ).value =
+        name;
+
+    document.getElementById(
+        "bioInput"
+    ).value =
+        bio;
+
+    document.getElementById(
+        "pathEmojiInput"
+    ).value =
+        settings.pathEmoji;
+
+    document.getElementById(
+        "postEmojiInput"
+    ).value =
+        settings.postEmoji;
+
+    document.getElementById(
+        "titleEmojiInput"
+    ).value =
+        settings.titleEmoji;
+
+
+    /* عکس پروفایل */
+
+    const avatarElement =
+        document.getElementById(
+            "profileAvatar"
+        );
+
+    const button =
+        document.getElementById(
+            "profileButton"
+        );
+
+    if(avatar){
+
+        avatarElement.src =
+            avatar;
+
+        button.innerHTML =
+            `<img src="${avatar}" alt="profile">`;
+
+        window.profileImage =
+            new Image();
+
+        window.profileImage.src =
+            avatar;
+
+    }else{
+
+        avatarElement.src =
+            "data:image/svg+xml;charset=UTF-8," +
+            encodeURIComponent(`
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="150"
+                    height="150">
+
+                    <rect
+                        width="150"
+                        height="150"
+                        fill="#15151f"/>
+
+                    <text
+                        x="75"
+                        y="92"
+                        text-anchor="middle"
+                        font-size="58">
+                        🌛
+                    </text>
+
+                </svg>
+            `);
+
+        button.textContent =
+            "🌛";
+
+        window.profileImage =
+            null;
+    }
+}
   
   
 /* =====================================  
@@ -2772,7 +2982,9 @@ function animate(time){
     drawStars(time);  
   
     drawProfile();  
-  
+
+    drawPublicProfiles();
+
     drawMoonPath(time);  
   
     drawPosts();  
