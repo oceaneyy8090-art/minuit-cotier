@@ -3400,23 +3400,7 @@ function escapeHtml(text){
     .replaceAll("'","&#039;");
 }
 
-
-/* وصل کردن لایک و کامنت به پست بازشده */
-
-const oldOpenPost =
-    window.openPost;
-
-window.openPost =
-async function(post){
-
-    oldOpenPost(post);
-
-    setTimeout(function(){
-
-        loadEngagement(post);
-
-    },100);
-};
+loadEngagement(post);
 
 </script>
 
