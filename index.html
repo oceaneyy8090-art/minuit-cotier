@@ -2620,123 +2620,65 @@ function(){
 /* =====================================
    انتشار پست
 ===================================== */
-
-document.getElementById(
-    "publishPost"
-).onclick =
+document.getElementById("publishPost").onclick =
 async function(){
 
     const title =
-        document.getElementById(
-            "newTitle"
-        ).value.trim();
+        document.getElementById("newTitle").value.trim();
 
     const content =
-        document.getElementById(
-            "newContent"
-        ).value.trim();
+        document.getElementById("newContent").value.trim();
 
     const image =
-        document.getElementById(
-            "newImage"
-        ).value.trim();
+        document.getElementById("newImage").value.trim();
 
     const video =
-        document.getElementById(
-            "newVideo"
-        ).value.trim();
+        document.getElementById("newVideo").value.trim();
 
     const music =
-        document.getElementById(
-            "newMusic"
-        ).value.trim();
+        document.getElementById("newMusic").value.trim();
 
     const message =
-        document.getElementById(
-            "postMessage"
-        );
+        document.getElementById("postMessage");
 
     const {data} =
         await supabaseClient.auth.getUser();
 
     if(!data.user){
-
-        message.textContent =
-            "اول وارد حساب شو.";
-
+        message.textContent = "اول وارد حساب شو.";
         return;
     }
 
-    message.textContent =
-        "در حال انتشار...";
+    message.textContent = "در حال انتشار...";
 
     const {error} =
         await supabaseClient
         .from("posts")
         .insert({
-
-            title:
-                title ||
-                "بدون عنوان",
-
-            content:
-                content,
-
-            image_url:
-                image,
-
-            video_url:
-                video,
-
-            music_url:
-                music
+            title: title || "بدون عنوان",
+            content: content,
+            image_url: image,
+            video_url: video,
+            music_url: music,
+            user_id: data.user.id
         });
 
     if(error){
-
-        message.textContent =
-            "ذخیره نشد: " +
-            error.message;
-
+        console.error(error);
+        message.textContent = "خطا در انتشار پست.";
         return;
     }
 
-    message.textContent =
-        "پست منتشر شد ☆";
+    message.textContent = "پست منتشر شد ❤️";
 
-    document.getElementById(
-        "newTitle"
-    ).value = "";
-
-    document.getElementById(
-        "newContent"
-    ).value = "";
-
-    document.getElementById(
-        "newImage"
-    ).value = "";
-
-    document.getElementById(
-        "newVideo"
-    ).value = "";
-
-    document.getElementById(
-        "newMusic"
-    ).value = "";
+    document.getElementById("newTitle").value = "";
+    document.getElementById("newContent").value = "";
+    document.getElementById("newImage").value = "";
+    document.getElementById("newVideo").value = "";
+    document.getElementById("newMusic").value = "";
 
     await loadPosts();
-
-    setTimeout(
-        ()=>{
-            document.getElementById(
-                "composerWindow"
-            ).style.display =
-                "none";
-        },
-        700
-    );
 };
-
 
 /* =====================================
    خروج
