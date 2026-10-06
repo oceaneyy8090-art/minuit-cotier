@@ -1044,85 +1044,92 @@ function getPostPosition(
    بارگذاری پست‌ها  
 ===================================== */  
   
-async function loadPosts(){  
-  
-    try{  
-  
-        const response =  
-            await fetch(  
-  
-                SUPABASE_URL +  
-                "/rest/v1/posts?select=*&order=created_at.asc",  
-  
-                {  
-                    headers:{  
-                        apikey:  
-                            SUPABASE_KEY,  
-  
-                        Authorization:  
-                            "Bearer " +  
-                            SUPABASE_KEY  
-                    }  
-                }  
-            );  
-  
-        if(!response.ok)  
-            return;  
-  
-        const data =  
-            await response.json();  
-  
-        posts =  
-            data.map(  
-                (item,index)=>{  
-  
-                    const pos =  
-                        getPostPosition(  
-                            item.id,  
-                            index  
-                        );  
-  
-                    return {  
-  
-                        id:  
-                            item.id,  
-  
-                        x:  
-                            pos.x,  
-  
-                        y:  
-                            pos.y,  
-  
-                        title:  
-                            item.title ||  
-                            item.Title ||  
-                            "بدون عنوان",  
-  
-                        text:  
-                            item.content ||  
-                            "",  
-  
-                        image_url:  
-                            item.image_url ||  
-                            "",  
-  
-                        video_url:  
-                            item.video_url ||  
-                            "",  
-  
-                        music_url:  
-                            item.music_url ||  
-                            ""  
-                    };  
-                }  
-            );  
-  
-    }catch(error){  
-  
-        console.error(error);  
-    }  
-}  
-  
+async function loadPosts(){
+
+    try{
+
+        const response =
+            await fetch(
+
+                SUPABASE_URL +
+                "/rest/v1/posts?select=*&order=created_at.asc",
+
+                {
+                    headers:{
+                        apikey:
+                            SUPABASE_KEY,
+
+                        Authorization:
+                            "Bearer " +
+                            SUPABASE_KEY
+                    }
+                }
+            );
+
+        if(!response.ok)
+            return;
+
+        const data =
+            await response.json();
+
+        posts =
+            data.map(
+                (item,index)=>{
+
+                    const pos =
+                        getPostPosition(
+                            item.id,
+                            index
+                        );
+
+                    return {
+
+                        id:
+                            item.id,
+
+                        user_id:
+                            item.user_id,
+
+                        x:
+                            pos.x,
+
+                        y:
+                            pos.y,
+
+                        title:
+                            item.title ||
+                            item.Title ||
+                            "بدون عنوان",
+
+                        text:
+                            item.content ||
+                            "",
+
+                        image_url:
+                            item.image_url ||
+                            "",
+
+                        video_url:
+                            item.video_url ||
+                            "",
+
+                        music_url:
+                            item.music_url ||
+                            "",
+
+                        path_emoji:
+                            item.path_emoji ||
+                            "☆"
+
+                    };
+                }
+            );
+
+    }catch(error){
+
+        console.error(error);
+    }
+}
   
 /* =====================================  
    مسیر بین پست‌ها  
@@ -1246,11 +1253,11 @@ function drawMoonPath(time){
             ctx.font =  
                 "13px Arial";  
   
-            ctx.fillText(  
-                settings.pathEmoji || "☆",  
-                x,  
-                y  
-            );  
+            ctx.fillText(
+    settings.pathEmoji || "☆",
+    x,
+    y
+);
         }  
     }  
   
@@ -1363,77 +1370,81 @@ function drawProfile(){
    هیچ ستاره‌ای دورشان نیست  
 ===================================== */  
   
-function drawPosts(){  
-  
-    ctx.textAlign =  
-        "center";  
-  
-    ctx.textBaseline =  
-        "middle";  
-  
-    for(  
-        const post of posts  
-    ){  
-  
-        const x =  
-            post.x -  
-            camX +  
-            W/2;  
-  
-        const y =  
-            post.y -  
-            camY +  
-            H/2;  
-  
-        if(  
-            x < -70 ||  
-            x > W+70 ||  
-            y < -70 ||  
-            y > H+70  
-        )  
-            continue;  
-  
-        ctx.font =  
-            "30px Arial";  
-  
-        ctx.shadowColor =  
-            "rgba(255,255,255,.7)";  
-  
-        ctx.shadowBlur = 8;  
-  
-        ctx.fillText(  
-            settings.postEmoji || "🌛",  
-            x,  
-            y  
-        );  
-  
-        ctx.shadowBlur = 0;  
-  
-        /* عنوان کوچک زیر پست */  
-  
-        ctx.font =  
-            "12px Arial";  
-  
-        ctx.fillStyle =  
-            "#fff";  
-  
-        ctx.globalAlpha =  
-            .8;  
-  
-        ctx.fillText(  
-  
-            (settings.titleEmoji || "💫") +  
-            " " +  
-            post.title,  
-  
-            x,  
-            y+30  
-        );  
-  
-        ctx.globalAlpha = 1;  
-    }  
-}  
-  
+function drawPosts(){
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    for(
+        const post of posts
+    ){
+
+        const x =
+            post.x -
+            camX +
+            W/2;
+
+        const y =
+            post.y -
+            camY +
+            H/2;
+
+        if(
+            x < -70 ||
+            x > W+70 ||
+            y < -70 ||
+            y > H+70
+        )
+            continue;
+
+        ctx.font =
+            "30px Arial";
+
+        ctx.shadowColor =
+            "rgba(255,255,255,.7)";
+
+        ctx.shadowBlur = 8;
+
+        ctx.fillText(
+            post.post_emoji ||
+            settings.postEmoji ||
+            "🌛",
+            x,
+            y
+        );
+
+        ctx.shadowBlur = 0;
+
+        /* عنوان کوچک زیر پست */
+
+        ctx.font =
+            "12px Arial";
+
+        ctx.fillStyle =
+            "#fff";
+
+        ctx.globalAlpha =
+            .8;
+
+        ctx.fillText(
+
+            (post.title_emoji ||
+             settings.titleEmoji ||
+             "💫") +
+            " " +
+            post.title,
+
+            x,
+            y + 30
+        );
+
+        ctx.globalAlpha =
+            1;
+    }
+}
   
 /* =====================================  
    ستاره‌های لایک  
@@ -2573,18 +2584,21 @@ async function(){
                 title ||  
                 "بدون عنوان",  
   
-            content:  
-                content,  
-  
-            image_url:  
-                image,  
-  
-            video_url:  
-                video,  
-  
-            music_url:  
-                music  
-        });  
+            content:
+                content,
+
+            image_url:
+                image,
+
+            video_url:
+                video,
+
+            music_url:
+                music,
+
+            user_id:
+                data.user.id
+          });
   
     if(error){  
   
